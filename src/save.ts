@@ -6,10 +6,12 @@ export interface Save {
   stars: Record<string, number>;
   seen: string[];
   sound: boolean;
+  /** Upgrade-tree perks bought with stars (perks.ts). */
+  perks: string[];
 }
 
 const KEY = 'tower-defense.save.v1';
-const fresh = (): Save => ({ v: 1, stars: {}, seen: [], sound: true });
+const fresh = (): Save => ({ v: 1, stars: {}, seen: [], sound: true, perks: [] });
 
 let cache: Save | null = null;
 
@@ -18,7 +20,7 @@ export function save(): Save {
   try {
     const raw = localStorage.getItem(KEY);
     const s = raw ? (JSON.parse(raw) as Partial<Save>) : null;
-    cache = s && s.v === 1 ? { ...fresh(), ...s, stars: { ...(s.stars ?? {}) }, seen: [...(s.seen ?? [])] } : fresh();
+    cache = s && s.v === 1 ? { ...fresh(), ...s, stars: { ...(s.stars ?? {}) }, seen: [...(s.seen ?? [])], perks: [...(s.perks ?? [])] } : fresh();
   } catch { cache = fresh(); }
   return cache;
 }
@@ -47,3 +49,6 @@ export function unlocked(levelIds: string[], i: number): boolean {
 }
 
 export const totalStars = (): number => Object.values(save().stars).reduce((a, b) => a + b, 0);
+
+/** Stars not yet spent on perks. */
+export const freeStars = (spent: number): number => totalStars() - spent;

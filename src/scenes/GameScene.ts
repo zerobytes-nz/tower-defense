@@ -4,7 +4,7 @@ import Phaser from 'phaser';
 import { GAME_W, GAME_H, COLORS, DEBUG, BOT, SEED } from '../config.ts';
 import { centreCamera, wideBackground, BLEED } from '../systems/wide.ts';
 import { asset } from '../assets.ts';
-import { button, label, panel } from '../ui.ts';
+import { button, header, imageButton, label, panel } from '../ui.ts';
 import { Battle, DT, type Enemy, type Shot, type Tower, type Unit } from '../game/sim.ts';
 import { LEVELS } from '../game/levels.ts';
 import { ENEMIES, type EnemyKind } from '../game/enemies.ts';
@@ -12,6 +12,7 @@ import { TOWERS, TOWER_KINDS, MAX_TIER, towerArt, type TowerKind } from '../game
 import { SPELLS, SPELL_IDS, METEOR, HERO_XP, type SpellId } from '../game/heroes.ts';
 import { think } from '../game/bot.ts';
 import { save, markSeen, recordStars } from '../save.ts';
+import { modsFor } from '../game/perks.ts';
 import { sfx, soundOn, toggleSound } from '../systems/audio.ts';
 
 /** Where the archer stands on each tier of the Archer Tower, relative to the tower's base. */
@@ -76,7 +77,7 @@ export class GameScene extends Phaser.Scene {
 
   init(data: { level?: number }): void {
     this.levelIndex = data.level ?? 0;
-    this.b = new Battle({ level: LEVELS[this.levelIndex], seed: SEED || Math.floor(Math.random() * 1e9) });
+    this.b = new Battle({ level: LEVELS[this.levelIndex], seed: SEED || Math.floor(Math.random() * 1e9), mods: BOT ? undefined : modsFor(save().perks) });
     this.speed = 1; this.paused = false; this.acc = 0; this.steps = 0; this.menu = null; this.aim = null;
     this.overlay = undefined; this.card = undefined; this.cardQueue = [];
     this.enemyViews.clear(); this.towerViews.clear(); this.shotViews.clear(); this.unitViews.clear(); this.fireViews.clear(); this.spellBtns.clear();
@@ -300,7 +301,7 @@ export class GameScene extends Phaser.Scene {
       const cx = Phaser.Math.Clamp(p.x, 90, GAME_W - 90), cy = Phaser.Math.Clamp(p.y - 30, 100, GAME_H - 96);
       const spots = [[-74, -62], [74, -62], [-74, 62], [74, 62]];
       TOWER_KINDS.forEach((k, i) => {
-        const def = TOWERS[k], cost = def.tiers[0].cost;
+        const cost = b.price(TOWERS[k].tiers[0].cost);
         this.option(cx + spots[i][0], cy + spots[i][1], (c) => c.add(this.add.image(0, 22, `tower.${k}.1`).setOrigin(0.5, 1).setScale(0.5)),
           String(cost), b.gold >= cost, m.pick === k, () => {
             if (m.pick === k) { if (b.build(m.pad, k)) { sfx.build(); this.closeMenu(); } else { sfx.deny(); this.flash(this.hudGold); } return; }
@@ -308,7 +309,7 @@ export class GameScene extends Phaser.Scene {
           });
       });
       if (m.pick) {
-        this.drawRange(p.x, p.y - 18, TOWERS[m.pick].tiers[0].range * b.mods.range);
+        this.drawRange(p.x, p.y - 18, TOWERS[m.pick].tiers[0].range * b.mods.range[m.pick]);
         this.menuInfo(cx, cy, TOWERS[m.pick].name, TOWERS[m.pick].blurb);
       }
       return;
@@ -329,7 +330,7 @@ export class GameScene extends Phaser.Scene {
       const up = b.upgradeCost(t)!;
       this.option(cx, cy - 88, (c) => c.add(label(this, 0, -2, '▲', 34, '#b8f080')), String(up), b.gold >= up, m.pick === 'upgrade',
         () => confirm('upgrade', () => { const ok = b.upgrade(t); if (ok) sfx.upgrade(); return ok; }));
-      if (m.pick === 'upgrade') this.drawRange(t.x, t.y, def.tiers[t.tier].range * t.buff.range * b.mods.range, 0xb8f080);
+      if (m.pick === 'upgrade') this.drawRange(t.x, t.y, def.tiers[t.tier].range * t.buff.range * b.mods.range[t.kind], 0xb8f080);
     } else if (t.tier < MAX_TIER) {
       ([0, 1] as const).forEach((br) => {
         const d = def.branches[br], cost = b.upgradeCost(t, br)!, pick = br ? 'b1' : 'b0';
@@ -566,7 +567,7 @@ export class GameScene extends Phaser.Scene {
   private hitShot(s: Shot, x: number, y: number): void {
     this.shotViews.get(s.id)?.destroy();
     this.shotViews.delete(s.id);
-    if (s.kind === 'boulder') { this.blast(x, y, s.stats.splash ?? 48); sfx.boom(); }
+    if (s.kind === 'boulder') { this.blast(x, y, (s.stats.splash ?? 48) * this.b.mods.splash); sfx.boom(); }
     else if (s.kind === 'bolt') {
       const c = this.add.circle(x, y, 10, 0xff8a6a, 0.8).setDepth(801);
       this.tweens.add({ targets: c, scale: 2.4, alpha: 0, duration: 220, onComplete: () => c.destroy() });
@@ -716,38 +717,46 @@ export class GameScene extends Phaser.Scene {
   private showPause(): void {
     if (this.overlay) return;
     this.paused = true;
-    const c = this.shade(), x = GAME_W / 2, y = GAME_H / 2;
-    c.add(panel(this, x, y, 420, 450));
-    c.add(label(this, x, y - 165, 'Paused', 52, '#ffcc33'));
-    c.add(button(this, x, y - 80, 'Resume', () => { c.destroy(); this.overlay = undefined; this.paused = false; }, 260, 64, 0x4a8a2a));
-    const snd = button(this, x, y, `Sound: ${soundOn() ? 'on' : 'off'}`, () => { toggleSound(); (snd.list[1] as Phaser.GameObjects.Text).setText(`Sound: ${soundOn() ? 'on' : 'off'}`); }, 260, 64);
+    const c = this.shade(), x = GAME_W / 2, y = GAME_H / 2 + 20;
+    c.add(this.add.image(x, y, 'gui.table').setScale(0.95));
+    c.add(header(this, x, y - 180, 'gui.header.settings', 'Settings'));
+    c.add(label(this, x, y - 112, 'Paused', 40, '#ffcc33'));
+    const resume = () => { sfx.tap(); c.destroy(); this.overlay = undefined; this.paused = false; };
+    c.add(imageButton(this, x, y - 10, 'gui.btn.play', resume, 0.6));
+    const row = y + 82;
+    const snd = imageButton(this, x - 150, row, soundOn() ? 'gui.btn.sound' : 'gui.btn.soundoff', () => { toggleSound(); sfx.tap(); snd.setTexture(soundOn() ? 'gui.btn.sound' : 'gui.btn.soundoff'); }, 0.85);
     c.add(snd);
-    c.add(button(this, x, y + 80, 'Restart', () => this.scene.restart({ level: this.levelIndex }), 260, 64));
-    c.add(button(this, x, y + 160, 'Map', () => this.scene.start('Menu', { levels: true }), 260, 64));
+    c.add(imageButton(this, x, row, 'gui.btn.restart', () => this.scene.restart({ level: this.levelIndex }), 0.85));
+    c.add(imageButton(this, x + 150, row, 'gui.btn.menu', () => this.scene.start('Menu', { page: 'levels' }), 0.85));
+    for (const [dx, t] of [[-150, 'Sound'], [0, 'Restart'], [150, 'Levels']] as const) c.add(label(this, x + dx, row + 46, t, 18, '#e8d8b8'));
   }
 
   private showEnd(won: boolean): void {
     if (this.overlay) this.overlay.destroy();
     this.card?.destroy(); this.card = undefined;
-    const b = this.b, c = this.shade(), x = GAME_W / 2, y = GAME_H / 2;
-    c.add(panel(this, x, y, 560, 420));
-    c.add(label(this, x, y - 150, won ? 'Victory!' : 'Defeat', 64, won ? '#ffcc33' : '#ff7a6a'));
+    const b = this.b, c = this.shade(), x = GAME_W / 2, y = GAME_H / 2 + 20;
+    c.add(this.add.image(x, y, 'gui.table.tall').setScale(1.2));
+    c.add(header(this, x, y - 252, won ? 'gui.header.win' : 'gui.header.failed', won ? 'You win!' : 'Failed'));
+    c.add(this.add.image(x, y - 22, 'gui.window').setDisplaySize(330, 300));
+    const stars = this.add.sprite(x, y - 100, 'gui.stars', won ? 0 : 0).setScale(0.95);
+    c.add(stars);
     if (won) {
-      for (let i = 0; i < 3; i++) {
-        const s = this.add.image(x + (i - 1) * 84, y - 60, 'ui.star').setScale(0).setAlpha(i < b.stars ? 1 : 0.25);
-        if (i >= b.stars) s.setTint(0x333333);
-        c.add(s);
-        this.tweens.add({ targets: s, scale: 1.8, delay: 250 + i * 220, duration: 300, ease: 'Back.easeOut' });
-      }
-      c.add(label(this, x, y + 10, `${b.lives} lives left · ${b.kills} enemies beaten`, 24, '#e8d8b8'));
-      c.add(label(this, x, y + 44, b.stars < 3 ? 'Lose fewer lives for more stars.' : 'Perfect defence!', 20, '#b8a888'));
+      for (let i = 1; i <= b.stars; i++) this.time.delayedCall(250 + i * 260, () => { stars.setFrame(i); this.tweens.add({ targets: stars, scale: 1.05, duration: 120, yoyo: true }); sfx.coin(); });
+      c.add(label(this, x, y + 2, b.stars === 3 ? 'Perfect defence!' : 'Level complete!', 30, '#ffffff'));
+      c.add(label(this, x, y + 40, `${b.lives} lives left · ${b.kills} enemies`, 20, '#e8d8b8'));
+      c.add(label(this, x, y + 72, b.stars < 3 ? 'Lose fewer lives for more stars.' : 'Spend stars on upgrades!', 18, '#b8a888'));
     } else {
-      c.add(label(this, x, y - 50, `Held ${b.wave} of ${b.waveCount} waves`, 28, '#e8d8b8'));
-      c.add(label(this, x, y, 'Try the hero, spells and a different tower mix.', 20, '#b8a888'));
+      stars.setAlpha(0.35);
+      c.add(label(this, x, y + 2, `Held ${b.wave} of ${b.waveCount} waves`, 28, '#ffffff'));
+      c.add(label(this, x, y + 42, 'Try the hero, spells,', 20, '#e8d8b8'));
+      c.add(label(this, x, y + 68, 'upgrades or a new tower mix.', 20, '#e8d8b8'));
     }
     const next = won && this.levelIndex + 1 < LEVELS.length;
-    c.add(button(this, x - 180, y + 130, 'Map', () => this.scene.start('Menu', { levels: true }), 150, 60));
-    c.add(button(this, next ? x : x + 90, y + 130, won ? 'Replay' : 'Try again', () => this.scene.restart({ level: this.levelIndex }), 170, 60, next ? 0x7a4a22 : 0x4a8a2a));
-    if (next) c.add(button(this, x + 180, y + 130, 'Next', () => this.scene.restart({ level: this.levelIndex + 1 }), 150, 60, 0x4a8a2a));
+    const by = y + 218, btns: [string, () => void][] = [
+      ['gui.btn.menu', () => this.scene.start('Menu', { page: 'levels' })],
+      ['gui.btn.restart', () => this.scene.restart({ level: this.levelIndex })],
+    ];
+    if (next) btns.push(['gui.btn.next', () => this.scene.restart({ level: this.levelIndex + 1 })]);
+    btns.forEach(([key, fn], i) => c.add(imageButton(this, x + (i - (btns.length - 1) / 2) * 110, by, key, () => { sfx.tap(); fn(); }, 0.9)));
   }
 }

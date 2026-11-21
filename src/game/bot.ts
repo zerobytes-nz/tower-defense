@@ -41,7 +41,7 @@ export function think(b: Battle, opts: BotOptions = {}): void {
   const built = b.towers.length;
   if (free.length && built < mix.length) {
     const kind = mix[built];
-    if (b.gold >= TOWERS[kind].tiers[0].cost) { b.build(free[0], kind); return; }
+    if (b.gold >= b.price(TOWERS[kind].tiers[0].cost)) { b.build(free[0], kind); return; }
     if (built < 3) return; // save up for the first few towers
   }
   // …otherwise upgrade the cheapest upgradable tower (branches alternate by tower id).

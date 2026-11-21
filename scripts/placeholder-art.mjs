@@ -288,7 +288,75 @@ const star = (c, w, h) => {
   poly(c, pts, '#ffcc33', '#7a4a08', 2.5);
 };
 
+// ── GUI boards and buttons (the kit's look: wood boards with steel rims, round steel buttons) ────────
+const board = (rim = '#b8bcc4') => (c, w, h) => {
+  rr(c, 3, 3, w - 6, h - 6, 22, rim, '#4a4a52', 4);
+  rr(c, 14, 14, w - 28, h - 28, 14, '#6b3a22', '#3a1a0e', 3);
+  const r = prng(w * 7 + h);
+  c.strokeStyle = 'rgba(40,16,6,0.35)'; c.lineWidth = 2;
+  for (let y = 30; y < h - 24; y += 22) { c.beginPath(); c.moveTo(20, y); c.bezierCurveTo(w * 0.3, y + (r() - 0.5) * 10, w * 0.7, y + (r() - 0.5) * 10, w - 20, y); c.stroke(); }
+};
+const inset = (c, w, h) => rr(c, 4, 4, w - 8, h - 8, 18, '#3a2418', '#8a5a2a', 3);
+const ribbon = (c, w, h) => {
+  poly(c, [[4, h * 0.35], [w * 0.14, h * 0.3], [w * 0.14, h * 0.8], [4, h * 0.85], [w * 0.08, h * 0.58]], '#c86a18', OUT, 3);
+  poly(c, [[w - 4, h * 0.35], [w * 0.86, h * 0.3], [w * 0.86, h * 0.8], [w - 4, h * 0.85], [w * 0.92, h * 0.58]], '#c86a18', OUT, 3);
+  rr(c, w * 0.12, h * 0.14, w * 0.76, h * 0.62, 12, '#f0a020', OUT, 3);
+  rr(c, w * 0.15, h * 0.18, w * 0.7, h * 0.18, 8, 'rgba(255,255,255,0.25)');
+};
+const roundBtn = (icon) => (c, w, h) => {
+  const r = w / 2 - 4;
+  ell(c, w / 2, h / 2, r, r, '#c8ccd4', '#4a4a52', 4);
+  for (let i = 0; i < 8; i++) { const a = (i * TAU) / 8; ell(c, w / 2 + Math.cos(a) * r * 0.88, h / 2 + Math.sin(a) * r * 0.88, 3, 3, '#8a8a92'); }
+  ell(c, w / 2, h / 2, r * 0.74, r * 0.74, '#7a4226', '#3a1a0e', 3);
+  icon(c, w / 2, h / 2, r * 0.42);
+};
+const W = '#eeeef4';
+const ICON = {
+  play: (c, x, y, s) => poly(c, [[x - s * 0.6, y - s], [x + s, y], [x - s * 0.6, y + s]], W, OUT, 3),
+  menu: (c, x, y, s) => { for (const d of [-0.6, 0, 0.6]) rr(c, x - s, y + d * s - 4, s * 2, 8, 3, W, OUT, 2); },
+  next: (c, x, y, s) => poly(c, [[x - s, y - 5], [x + s * 0.1, y - 5], [x + s * 0.1, y - s * 0.7], [x + s, y], [x + s * 0.1, y + s * 0.7], [x + s * 0.1, y + 5], [x - s, y + 5]], W, OUT, 2.5),
+  back: (c, x, y, s) => poly(c, [[x + s, y - 5], [x - s * 0.1, y - 5], [x - s * 0.1, y - s * 0.7], [x - s, y], [x - s * 0.1, y + s * 0.7], [x - s * 0.1, y + 5], [x + s, y + 5]], W, OUT, 2.5),
+  restart: (c, x, y, s) => { c.lineWidth = 8; c.strokeStyle = OUT; c.beginPath(); c.arc(x, y, s * 0.75, -2.2, 2.6); c.stroke(); c.lineWidth = 5; c.strokeStyle = W; c.stroke(); poly(c, [[x - s * 0.95, y - s * 0.9], [x - s * 0.15, y - s * 0.75], [x - s * 0.7, y - s * 0.15]], W, OUT, 2); },
+  sound: (c, x, y, s) => { poly(c, [[x - s, y - s * 0.35], [x - s * 0.5, y - s * 0.35], [x, y - s * 0.8], [x, y + s * 0.8], [x - s * 0.5, y + s * 0.35], [x - s, y + s * 0.35]], W, OUT, 2.5); c.lineWidth = 4; c.strokeStyle = W; c.beginPath(); c.arc(x + s * 0.1, y, s * 0.6, -0.8, 0.8); c.stroke(); },
+  soundoff: (c, x, y, s) => { ICON.sound(c, x - s * 0.15, y, s * 0.85); c.lineWidth = 5; c.strokeStyle = '#e03a2a'; c.beginPath(); c.moveTo(x - s, y - s); c.lineTo(x + s, y + s); c.stroke(); },
+  settings: (c, x, y, s) => { for (let i = 0; i < 8; i++) { const a = (i * TAU) / 8; rr(c, x + Math.cos(a) * s * 0.8 - 5, y + Math.sin(a) * s * 0.8 - 5, 10, 10, 2, W); } ell(c, x, y, s * 0.7, s * 0.7, W, OUT, 2); ell(c, x, y, s * 0.28, s * 0.28, '#7a4226'); },
+  forward: null, close: null,
+};
+ICON.forward = ICON.next;
+const closeBtn = (c, w, h) => { rr(c, 4, 4, w - 8, h - 8, 12, '#c8ccd4', '#4a4a52', 3); rr(c, 10, 10, w - 20, h - 20, 8, '#a8302a'); c.lineWidth = 6; c.strokeStyle = W; c.lineCap = 'round'; c.beginPath(); c.moveTo(w * 0.33, h * 0.33); c.lineTo(w * 0.67, h * 0.67); c.moveTo(w * 0.67, h * 0.33); c.lineTo(w * 0.33, h * 0.67); c.stroke(); };
+const plateBtn = (fill, mark) => (c, w, h) => { rr(c, 3, 3, w - 6, h - 6, 12, '#c8ccd4', '#4a4a52', 3); rr(c, 10, 9, w - 20, h - 18, 7, fill, '#3a1a0e', 2); mark(c, w, h); };
+const levelBtn = (c, w, h) => { rr(c, 4, 4, w - 8, h - 8, 16, '#c8ccd4', '#4a4a52', 4); rr(c, 14, 14, w - 28, h - 28, 10, '#7a4226', '#3a1a0e', 3); for (const [x, y] of [[10, 10], [w - 10, 10], [10, h - 10], [w - 10, h - 10]]) ell(c, x, y, 5, 5, '#8a8a92', '#4a4a52', 2); };
+const starShape = (c, x, y, r, fill) => { const pts = []; for (let i = 0; i < 10; i++) { const rr2 = i % 2 ? r * 0.45 : r, a = -Math.PI / 2 + (i * Math.PI) / 5; pts.push([x + Math.cos(a) * rr2, y + Math.sin(a) * rr2]); } poly(c, pts, fill, OUT, 3); };
+const starGroup = (c, w, h, i) => {
+  const on = (k) => (i >= [2, 1, 3][k] ? '#ffcc33' : '#f4eee0');
+  starShape(c, w * 0.2, h * 0.62, h * 0.3, on(0)); starShape(c, w * 0.8, h * 0.62, h * 0.3, on(2)); starShape(c, w * 0.5, h * 0.45, h * 0.42, on(1));
+};
+const tag = (c, w, h) => { rr(c, 2, 2, w - 4, h - 4, 10, '#3a2418', '#c87a2a', 3); starShape(c, w - 18, h / 2, h * 0.28, '#ffcc33'); };
+const rope = (c, w, h) => { rr(c, w / 2 - 6, 0, 12, h, 5, '#a8783a', OUT, 2); c.strokeStyle = '#6a4a22'; c.lineWidth = 2; for (let y = 6; y < h; y += 12) { c.beginPath(); c.moveTo(w / 2 - 5, y); c.lineTo(w / 2 + 5, y + 8); c.stroke(); } };
+const PERK_COL = ['#3ad0e0', '#c8ccd4', '#e8d8a0', '#c8ccd4', '#e83a2a', '#8a5a32', '#c8ccd4', '#e8a020', '#a8a8b0', '#ff8a2a', '#b07a4a', '#5a5a64', '#e83a2a', '#4ab0e8', '#3ac890', '#f0d020', '#ff7a20', '#ffe040', '#7a7a84', '#8ae040', '#a8e8ff', '#e0b060', '#c8ccd4', '#5a5a64'];
+const perkIcon = (n) => (c, w, h) => {
+  levelBtn(c, w, h);
+  const col = PERK_COL[n - 1], x = w / 2, y = h / 2, s = w * 0.2;
+  if (n % 4 === 1) ell(c, x, y, s, s, col, OUT, 2.5);
+  else if (n % 4 === 2) poly(c, [[x, y - s * 1.2], [x + s, y], [x, y + s * 1.2], [x - s, y]], col, OUT, 2.5);
+  else if (n % 4 === 3) rr(c, x - s, y - s, s * 2, s * 2, 5, col, OUT, 2.5);
+  else starShape(c, x, y, s * 1.2, col);
+};
+const menuBg = (c, w, h) => {
+  const r = prng(3);
+  c.fillStyle = '#6a9a32'; c.fillRect(0, 0, w, h);
+  for (let i = 0; i < 300; i++) ell(c, r() * w, r() * h, 6 + r() * 22, 4 + r() * 12, '#78a83a');
+  ell(c, w * 0.72, h * 0.62, 120, 46, '#3a8ac8', '#2a5a7a', 4);
+  for (let i = 0; i < 70; i++) { const x = r() * w, y = r() * h; if (Math.hypot(x - w / 2, y - h / 2) < 260) continue; ell(c, x, y + 18, 22, 7, 'rgba(0,0,0,0.25)'); rr(c, x - 4, y, 8, 18, 2, '#6b4a2b'); ell(c, x, y - 8, 24, 20, '#3f8a2e', OUT, 2); }
+};
+
 export const drawers = {
+  'bg.menu': menuBg,
+  'gui.table': board(), 'gui.table.tall': board(), 'gui.upgrade.table': board(), 'gui.window': inset,
+  'gui.stars': starGroup, 'gui.btn.level': levelBtn, 'gui.btn.play': roundBtn(ICON.play), 'gui.btn.close': closeBtn,
+  'gui.btn.done': plateBtn('#4a8a2a', (c, w, h) => { c.lineWidth = 6; c.strokeStyle = W; c.lineCap = 'round'; c.beginPath(); c.moveTo(w * 0.36, h * 0.5); c.lineTo(w * 0.47, h * 0.64); c.lineTo(w * 0.66, h * 0.36); c.stroke(); }),
+  'gui.btn.reset': plateBtn('#7a4226', (c, w, h) => ICON.restart(c, w / 2, h / 2, h * 0.22)),
+  'gui.upgrade.bank': tag, 'gui.upgrade.cost': tag, 'gui.rope': rope,
   'bg.meadow': map('meadow', '#7aa83a', '#86b444', '#d8b860', '#a8883a'),
   'bg.jungle': map('jungle', '#3f7a2a', '#4a8a30', '#c8a060', '#8a6a3a'),
   'bg.ruins': map('ruins', '#8a9a6a', '#9aa678', '#b8b0a0', '#7a7468'),
@@ -311,3 +379,6 @@ for (const [kind, ids] of [['archer', ['longbow', 'crossbow']], ['catapult', ['f
   for (const id of ids) drawers[`tower.${kind}.${id}`] = t4(kind, id);
 for (const [key, who] of [['hero.silver', 'hero'], ['unit.soldier', 'soldier'], ['unit.militia', 'militia']])
   for (const m of ['idle', 'walk', 'attack', 'die']) drawers[`${key}.${m}`] = knight(who, m);
+for (const k of ['levels', 'win', 'failed', 'settings', 'upgrade']) drawers[`gui.header.${k}`] = ribbon;
+for (const k of ['menu', 'next', 'restart', 'back', 'forward', 'sound', 'soundoff', 'settings']) drawers[`gui.btn.${k}`] = roundBtn(ICON[k]);
+for (let i = 1; i <= 24; i++) drawers[`perk.${i}`] = perkIcon(i);

@@ -758,7 +758,7 @@
       "frameHeight": 88,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "HUD: \u00d72 speed button.",
+      "usedFor": "HUD: ×2 speed button.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/interface_game/button_quick.png"
@@ -1386,6 +1386,829 @@
       "displayScale": 1,
       "usedFor": "Rally-point flag for barracks soldiers.",
       "source": "own"
+    },
+    {
+      "key": "bg.menu",
+      "type": "image",
+      "path": "gui/menu-bg.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Title screen background.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/menu/bg.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "gui.table",
+      "type": "image",
+      "path": "gui/table.png",
+      "width": 580,
+      "height": 376,
+      "frameWidth": 580,
+      "frameHeight": 376,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Big wooden board: level select, pause.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/levels/table.png"
+      }
+    },
+    {
+      "key": "gui.table.tall",
+      "type": "image",
+      "path": "gui/table-tall.png",
+      "width": 352,
+      "height": 440,
+      "frameWidth": 352,
+      "frameHeight": 440,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Tall wooden board: win and lose screens.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/win/table.png"
+      }
+    },
+    {
+      "key": "gui.window",
+      "type": "image",
+      "path": "gui/window.png",
+      "width": 264,
+      "height": 292,
+      "frameWidth": 264,
+      "frameHeight": 292,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Dark inset on the win and lose boards.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/win/window.png"
+      }
+    },
+    {
+      "key": "gui.header.levels",
+      "type": "image",
+      "path": "gui/header-levels.png",
+      "width": 236,
+      "height": 97,
+      "frameWidth": 236,
+      "frameHeight": 97,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Board header ribbon: Levels. The kit art has the word painted in; the placeholder shows it as text.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/levels/header_levels.png"
+      }
+    },
+    {
+      "key": "gui.header.win",
+      "type": "image",
+      "path": "gui/header-win.png",
+      "width": 236,
+      "height": 97,
+      "frameWidth": 236,
+      "frameHeight": 97,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Board header ribbon: You win!. The kit art has the word painted in; the placeholder shows it as text.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/win/header_win.png"
+      }
+    },
+    {
+      "key": "gui.header.failed",
+      "type": "image",
+      "path": "gui/header-failed.png",
+      "width": 236,
+      "height": 97,
+      "frameWidth": 236,
+      "frameHeight": 97,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Board header ribbon: Failed. The kit art has the word painted in; the placeholder shows it as text.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/failed/header_failed.png"
+      }
+    },
+    {
+      "key": "gui.header.settings",
+      "type": "image",
+      "path": "gui/header-settings.png",
+      "width": 236,
+      "height": 97,
+      "frameWidth": 236,
+      "frameHeight": 97,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Board header ribbon: Settings (pause). The kit art has the word painted in; the placeholder shows it as text.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/settings/header_settings.png"
+      }
+    },
+    {
+      "key": "gui.header.upgrade",
+      "type": "image",
+      "path": "gui/header-upgrade.png",
+      "width": 236,
+      "height": 97,
+      "frameWidth": 236,
+      "frameHeight": 97,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Board header ribbon: Upgrade. The kit art has the word painted in; the placeholder shows it as text.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/header_upgrade.png"
+      }
+    },
+    {
+      "key": "gui.stars",
+      "type": "spritesheet",
+      "path": "gui/stars.png",
+      "width": 864,
+      "height": 119,
+      "frameWidth": 216,
+      "frameHeight": 119,
+      "frameCount": 4,
+      "displayScale": 1,
+      "usedFor": "Three-star group: frame 0 = no stars … frame 3 = three stars.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/levels",
+        "match": "star_"
+      }
+    },
+    {
+      "key": "gui.btn.level",
+      "type": "image",
+      "path": "gui/btn-level.png",
+      "width": 106,
+      "height": 105,
+      "frameWidth": 106,
+      "frameHeight": 105,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Square level button.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/levels/btton_empty.png"
+      }
+    },
+    {
+      "key": "gui.btn.play",
+      "type": "image",
+      "path": "gui/btn-play.png",
+      "width": 198,
+      "height": 197,
+      "frameWidth": 198,
+      "frameHeight": 197,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Big round Play button.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/menu/button_play.png"
+      }
+    },
+    {
+      "key": "gui.btn.menu",
+      "type": "image",
+      "path": "gui/btn-menu.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Round button: menu.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/win/button_menu.png"
+      }
+    },
+    {
+      "key": "gui.btn.next",
+      "type": "image",
+      "path": "gui/btn-next.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Round button: next.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/win/button_right.png"
+      }
+    },
+    {
+      "key": "gui.btn.restart",
+      "type": "image",
+      "path": "gui/btn-restart.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Round button: restart.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/failed/button_restart.png"
+      }
+    },
+    {
+      "key": "gui.btn.back",
+      "type": "image",
+      "path": "gui/btn-back.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Round button: back.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/levels/button_left.png"
+      }
+    },
+    {
+      "key": "gui.btn.forward",
+      "type": "image",
+      "path": "gui/btn-forward.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Round button: forward.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/levels/button_right.png"
+      }
+    },
+    {
+      "key": "gui.btn.sound",
+      "type": "image",
+      "path": "gui/btn-sound.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Round button: sound.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/menu/button_music.png"
+      }
+    },
+    {
+      "key": "gui.btn.soundoff",
+      "type": "image",
+      "path": "gui/btn-soundoff.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Round button: soundoff.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/menu/button_music_off.png"
+      }
+    },
+    {
+      "key": "gui.btn.settings",
+      "type": "image",
+      "path": "gui/btn-settings.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Round button: settings.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/menu/button_settings.png"
+      }
+    },
+    {
+      "key": "gui.btn.close",
+      "type": "image",
+      "path": "gui/btn-close.png",
+      "width": 62,
+      "height": 62,
+      "frameWidth": 62,
+      "frameHeight": 62,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Close (×) button.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/button_close.png"
+      }
+    },
+    {
+      "key": "gui.btn.done",
+      "type": "image",
+      "path": "gui/btn-done.png",
+      "width": 100,
+      "height": 60,
+      "frameWidth": 100,
+      "frameHeight": 60,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade screen: Done (the kit art says DONE).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/button_done.png"
+      }
+    },
+    {
+      "key": "gui.btn.reset",
+      "type": "image",
+      "path": "gui/btn-reset.png",
+      "width": 100,
+      "height": 60,
+      "frameWidth": 100,
+      "frameHeight": 60,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade screen: Reset (the kit art says RESET).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/button_reset.png"
+      }
+    },
+    {
+      "key": "gui.upgrade.table",
+      "type": "image",
+      "path": "gui/upgrade-table.png",
+      "width": 792,
+      "height": 632,
+      "frameWidth": 792,
+      "frameHeight": 632,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree board.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/table.png"
+      }
+    },
+    {
+      "key": "gui.upgrade.bank",
+      "type": "image",
+      "path": "gui/upgrade-bank.png",
+      "width": 115,
+      "height": 68,
+      "frameWidth": 115,
+      "frameHeight": 68,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade screen: stars to spend.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/window_1.png"
+      }
+    },
+    {
+      "key": "gui.upgrade.cost",
+      "type": "image",
+      "path": "gui/upgrade-cost.png",
+      "width": 69,
+      "height": 41,
+      "frameWidth": 69,
+      "frameHeight": 41,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade screen: price tag under a perk.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/window_.png"
+      }
+    },
+    {
+      "key": "gui.rope",
+      "type": "image",
+      "path": "gui/rope.png",
+      "width": 24,
+      "height": 283,
+      "frameWidth": 24,
+      "frameHeight": 283,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Rope that boards hang from.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/rope_big.png"
+      }
+    },
+    {
+      "key": "perk.1",
+      "type": "image",
+      "path": "gui/perks/1.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 1.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_1.png"
+      }
+    },
+    {
+      "key": "perk.2",
+      "type": "image",
+      "path": "gui/perks/2.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 2.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_2.png"
+      }
+    },
+    {
+      "key": "perk.3",
+      "type": "image",
+      "path": "gui/perks/3.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 3.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_3.png"
+      }
+    },
+    {
+      "key": "perk.4",
+      "type": "image",
+      "path": "gui/perks/4.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 4.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_4.png"
+      }
+    },
+    {
+      "key": "perk.5",
+      "type": "image",
+      "path": "gui/perks/5.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 5.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_5.png"
+      }
+    },
+    {
+      "key": "perk.6",
+      "type": "image",
+      "path": "gui/perks/6.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 6.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_6.png"
+      }
+    },
+    {
+      "key": "perk.7",
+      "type": "image",
+      "path": "gui/perks/7.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 7.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_7.png"
+      }
+    },
+    {
+      "key": "perk.8",
+      "type": "image",
+      "path": "gui/perks/8.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 8.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_8.png"
+      }
+    },
+    {
+      "key": "perk.9",
+      "type": "image",
+      "path": "gui/perks/9.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 9.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_9.png"
+      }
+    },
+    {
+      "key": "perk.10",
+      "type": "image",
+      "path": "gui/perks/10.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 10.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_10.png"
+      }
+    },
+    {
+      "key": "perk.11",
+      "type": "image",
+      "path": "gui/perks/11.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 11.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_11.png"
+      }
+    },
+    {
+      "key": "perk.12",
+      "type": "image",
+      "path": "gui/perks/12.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 12.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_12.png"
+      }
+    },
+    {
+      "key": "perk.13",
+      "type": "image",
+      "path": "gui/perks/13.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 13.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_13.png"
+      }
+    },
+    {
+      "key": "perk.14",
+      "type": "image",
+      "path": "gui/perks/14.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 14.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_14.png"
+      }
+    },
+    {
+      "key": "perk.15",
+      "type": "image",
+      "path": "gui/perks/15.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 15.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_15.png"
+      }
+    },
+    {
+      "key": "perk.16",
+      "type": "image",
+      "path": "gui/perks/16.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 16.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_16.png"
+      }
+    },
+    {
+      "key": "perk.17",
+      "type": "image",
+      "path": "gui/perks/17.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 17.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_17.png"
+      }
+    },
+    {
+      "key": "perk.18",
+      "type": "image",
+      "path": "gui/perks/18.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 18.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_18.png"
+      }
+    },
+    {
+      "key": "perk.19",
+      "type": "image",
+      "path": "gui/perks/19.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 19.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_19.png"
+      }
+    },
+    {
+      "key": "perk.20",
+      "type": "image",
+      "path": "gui/perks/20.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 20.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_20.png"
+      }
+    },
+    {
+      "key": "perk.21",
+      "type": "image",
+      "path": "gui/perks/21.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 21.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_21.png"
+      }
+    },
+    {
+      "key": "perk.22",
+      "type": "image",
+      "path": "gui/perks/22.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 22.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_22.png"
+      }
+    },
+    {
+      "key": "perk.23",
+      "type": "image",
+      "path": "gui/perks/23.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 23.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_23.png"
+      }
+    },
+    {
+      "key": "perk.24",
+      "type": "image",
+      "path": "gui/perks/24.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Upgrade tree icon 24.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/upgrade/ico_24.png"
+      }
     }
   ]
 }

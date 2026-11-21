@@ -1,6 +1,7 @@
 // Small UI helpers shared by the scenes: outlined text and wooden buttons drawn with Phaser shapes.
 import Phaser from 'phaser';
 import { COLORS, FONT } from './config.ts';
+import { isRealArt } from './assets.ts';
 
 export function label(scene: Phaser.Scene, x: number, y: number, text: string, size = 24, color = COLORS.text): Phaser.GameObjects.Text {
   return scene.add.text(x, y, text, { fontFamily: FONT, fontSize: `${size}px`, color, stroke: COLORS.stroke, strokeThickness: Math.max(3, size / 6) })
@@ -28,4 +29,20 @@ export function button(scene: Phaser.Scene, x: number, y: number, text: string, 
   c.on('pointerout', () => c.setScale(1));
   c.on('pointerup', () => { c.setScale(1); onTap(); });
   return c;
+}
+
+/** A kit header ribbon. The kit art has its word painted in; the placeholder ribbon gets it as text. */
+export function header(scene: Phaser.Scene, x: number, y: number, key: string, text: string): Phaser.GameObjects.Container {
+  const c = scene.add.container(x, y, [scene.add.image(0, 0, key)]);
+  if (!isRealArt(key)) c.add(label(scene, 0, -8, text, 30, '#fff4d0'));
+  return c;
+}
+
+/** A button made from one image (the kit's round and square buttons), with a press effect. */
+export function imageButton(scene: Phaser.Scene, x: number, y: number, key: string, onTap: () => void, scale = 1): Phaser.GameObjects.Image {
+  const b = scene.add.image(x, y, key).setScale(scale).setInteractive({ useHandCursor: true });
+  b.on('pointerdown', () => b.setScale(scale * 0.92));
+  b.on('pointerout', () => b.setScale(scale));
+  b.on('pointerup', () => { b.setScale(scale); onTap(); });
+  return b;
 }

@@ -52,8 +52,13 @@ and variety between fights. The plan now leans on these:
    Title screen, level select with stars and locks, pause (sound, restart, map), win/lose with Next. Local save.
    Bot (`npm run sim`): wins all three levels, ★ 3.0 / 2.6 / 1.9. Moved to M3: the between-level upgrade tree
    and the kit's GUI art for the screens (M2 uses the shared wooden panels).
-3. **Campaign**
-   Upgrade tree (stars buy tower / hero / spell perks, the `Mods` the sim already takes). Kit GUI screens. Worlds 2–4 (9 more maps from the kit, 3 bosses: Stone Golem, Yeti, Skull Knight) with their world rules, the new
+3. **Campaign** (in progress)
+   - ✅ Part 1 (2026-11-22): upgrade tree (24 perks in 6 columns, bought top-down with stars, Reset refunds;
+     `src/game/perks.ts` → the sim's `Mods`), kit GUI on the title, level select, upgrade, pause and win/lose screens.
+     The whole tree makes World 1 easy even for a build-only player; Worlds 2–4 are balanced assuming some perks.
+   - Part 2: Worlds 2 and 3. Part 3: World 4, Heroic, Endless.
+
+   Worlds 2–4 (9 more maps from the kit, 3 bosses: Stone Golem, Yeti, Skull Knight) with their world rules, the new
    enemies, two-path maps. Heroic per level, Endless.
 4. **AWIs**
    New configs for Free (default) and Theo Swap, drafted and shown as a dry run before anything changes: Towers

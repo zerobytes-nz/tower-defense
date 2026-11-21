@@ -13,13 +13,16 @@ export interface Mods {
   gold: number;                               // extra starting gold
   lives: number;                              // extra lives
   damage: Record<TowerKind, number>;          // tower damage ×
-  range: number;                              // tower range ×
+  range: Record<TowerKind, number>;           // tower range ×
+  splash: number;                             // catapult blast radius ×
+  cost: number;                               // tower build and upgrade prices ×
   soldierHp: number;
   heroPower: number;                          // hero hp and damage ×
   spellPower: number;
   cooldown: number;                           // spell cooldowns ×
 }
-export const noMods = (): Mods => ({ gold: 0, lives: 0, damage: { archer: 1, catapult: 1, mage: 1, barracks: 1 }, range: 1, soldierHp: 1, heroPower: 1, spellPower: 1, cooldown: 1 });
+const each = (v: number): Record<TowerKind, number> => ({ archer: v, catapult: v, mage: v, barracks: v });
+export const noMods = (): Mods => ({ gold: 0, lives: 0, damage: each(1), range: each(1), splash: 1, cost: 1, soldierHp: 1, heroPower: 1, spellPower: 1, cooldown: 1 });
 
 export interface Enemy {
   id: number;
@@ -209,8 +212,11 @@ export class Battle {
 
   towerOn(pad: number) { return this.towers.find((t) => t.pad === pad); }
 
+  /** A price after the upgrade tree's discount. */
+  price(base: number) { return Math.round(base * this.mods.cost); }
+
   build(pad: number, kind: TowerKind): Tower | null {
-    const cost = TOWERS[kind].tiers[0].cost;
+    const cost = this.price(TOWERS[kind].tiers[0].cost);
     if (this.over || this.towerOn(pad) || this.gold < cost || !this.map.pads[pad]) return null;
     this.gold -= cost;
     const p = this.map.pads[pad];
@@ -227,7 +233,7 @@ export class Battle {
   /** Cost of the next tier; for tier 3 → 4 pass the branch. null when maxed. */
   upgradeCost(t: Tower, branch: 0 | 1 = 0): number | null {
     if (t.tier >= MAX_TIER) return null;
-    return t.tier === 3 ? TOWERS[t.kind].branches[branch].cost : TOWERS[t.kind].tiers[t.tier].cost;
+    return this.price(t.tier === 3 ? TOWERS[t.kind].branches[branch].cost : TOWERS[t.kind].tiers[t.tier].cost);
   }
 
   upgrade(t: Tower, branch: 0 | 1 = 0): boolean {
@@ -241,7 +247,7 @@ export class Battle {
     return true;
   }
 
-  sellValue(t: Tower) { return Math.floor(spentTo(t.kind, t.tier, t.branch) * SELL_BACK); }
+  sellValue(t: Tower) { return Math.floor(spentTo(t.kind, t.tier, t.branch) * this.mods.cost * SELL_BACK); }
 
   sell(t: Tower): number {
     const gold = this.sellValue(t);
@@ -339,7 +345,7 @@ export class Battle {
   // ── Helpers ───────────────────────────────────────────────────────────────────────────────────────
 
   stats(t: Tower): TowerTier { return tierStats(t.kind, t.tier, t.branch); }
-  range(t: Tower) { return this.stats(t).range * t.buff.range * this.mods.range; }
+  range(t: Tower) { return this.stats(t).range * t.buff.range * this.mods.range[t.kind]; }
 
   /** The closest point on the road to (x, y). */
   nearestRoad(x: number, y: number): Pt {
@@ -633,7 +639,7 @@ export class Battle {
   private land(s: Shot, x: number, y: number, target: Enemy | null) {
     const st = s.stats, now = this.time;
     if (s.kind === 'boulder' || (s.kind === 'bolt' && st.splash)) {
-      const r = st.splash ?? 0;
+      const r = (st.splash ?? 0) * (s.kind === 'boulder' ? this.mods.splash : 1);
       for (const e of this.enemies) {
         if (!e.alive || (s.kind === 'boulder' && e.def.flying) || Math.hypot(e.x - x, e.y - (y + (s.kind === 'bolt' ? 22 : 0))) > r) continue;
         if (st.stun) e.stunUntil = Math.max(e.stunUntil, now + st.stun * (e.def.boss ? 0.3 : 1));

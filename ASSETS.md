@@ -45,7 +45,7 @@ Edit `assets.manifest.json` (key, path, size, frames, what it's for, source). If
 `scripts/placeholder-art.mjs`. Then run `npm run assets:placeholders && npm run assets:docs` and commit the
 manifest, the placeholder, and this file. Game code refers to assets **only by manifest key**.
 
-## Every file to replace (73)
+## Every file to replace (124)
 
 ### Maps
 
@@ -54,6 +54,7 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `bg.meadow` | `maps/meadow.png` | 1280×720 | Level map: Mill Meadow (road, painted build pads). | `td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_1/game_background_1.png` (crop 0, 0, 1920, 1080) |
 | `bg.jungle` | `maps/jungle.png` | 1280×720 | Level map: Jungle Camp (two roads). | `td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_1/game_background_1.png` (crop 0, 0, 1920, 1080) |
 | `bg.ruins` | `maps/ruins.png` | 1280×720 | Level map: Old Ruins (the road splits in two). | `td-tileset3/PNG/game_background_4/game_background_4.png` (crop 0, 0, 1920, 1080) |
+| `bg.menu` | `gui/menu-bg.png` | 1280×720 | Title screen background. | `td-gui/PNG/menu/bg.png` (crop 0, 0, 1920, 1080) |
 
 ### Map pieces
 
@@ -164,6 +165,66 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `hero.silver.walk` | `units/silver-walk.png` | 384×64 · 6 × 64×64 @ 10 fps, loop | Hero Sir Aldric: walk (faces right). Original art. | Original. Keep the placeholder. |
 | `hero.silver.attack` | `units/silver-attack.png` | 384×64 · 6 × 64×64 @ 12 fps | Hero Sir Aldric: attack (faces right). Original art. | Original. Keep the placeholder. |
 | `hero.silver.die` | `units/silver-die.png` | 384×64 · 6 × 64×64 @ 10 fps | Hero Sir Aldric: die (faces right). Original art. | Original. Keep the placeholder. |
+
+### gui
+
+| Key | File (under `public/assets/licensed/`) | Size · frames | Used for | From the kit |
+|---|---|---|---|---|
+| `gui.table` | `gui/table.png` | 580×376 | Big wooden board: level select, pause. | `td-gui/PNG/levels/table.png` |
+| `gui.table.tall` | `gui/table-tall.png` | 352×440 | Tall wooden board: win and lose screens. | `td-gui/PNG/win/table.png` |
+| `gui.window` | `gui/window.png` | 264×292 | Dark inset on the win and lose boards. | `td-gui/PNG/win/window.png` |
+| `gui.header.levels` | `gui/header-levels.png` | 236×97 | Board header ribbon: Levels. The kit art has the word painted in; the placeholder shows it as text. | `td-gui/PNG/levels/header_levels.png` |
+| `gui.header.win` | `gui/header-win.png` | 236×97 | Board header ribbon: You win!. The kit art has the word painted in; the placeholder shows it as text. | `td-gui/PNG/win/header_win.png` |
+| `gui.header.failed` | `gui/header-failed.png` | 236×97 | Board header ribbon: Failed. The kit art has the word painted in; the placeholder shows it as text. | `td-gui/PNG/failed/header_failed.png` |
+| `gui.header.settings` | `gui/header-settings.png` | 236×97 | Board header ribbon: Settings (pause). The kit art has the word painted in; the placeholder shows it as text. | `td-gui/PNG/settings/header_settings.png` |
+| `gui.header.upgrade` | `gui/header-upgrade.png` | 236×97 | Board header ribbon: Upgrade. The kit art has the word painted in; the placeholder shows it as text. | `td-gui/PNG/upgrade/header_upgrade.png` |
+| `gui.stars` | `gui/stars.png` | 864×119 · 4 × 216×119 | Three-star group: frame 0 = no stars … frame 3 = three stars. | `td-gui/PNG/levels` |
+| `gui.btn.level` | `gui/btn-level.png` | 106×105 | Square level button. | `td-gui/PNG/levels/btton_empty.png` |
+| `gui.btn.play` | `gui/btn-play.png` | 198×197 | Big round Play button. | `td-gui/PNG/menu/button_play.png` |
+| `gui.btn.menu` | `gui/btn-menu.png` | 88×88 | Round button: menu. | `td-gui/PNG/win/button_menu.png` |
+| `gui.btn.next` | `gui/btn-next.png` | 88×88 | Round button: next. | `td-gui/PNG/win/button_right.png` |
+| `gui.btn.restart` | `gui/btn-restart.png` | 88×88 | Round button: restart. | `td-gui/PNG/failed/button_restart.png` |
+| `gui.btn.back` | `gui/btn-back.png` | 88×88 | Round button: back. | `td-gui/PNG/levels/button_left.png` |
+| `gui.btn.forward` | `gui/btn-forward.png` | 88×88 | Round button: forward. | `td-gui/PNG/levels/button_right.png` |
+| `gui.btn.sound` | `gui/btn-sound.png` | 88×88 | Round button: sound. | `td-gui/PNG/menu/button_music.png` |
+| `gui.btn.soundoff` | `gui/btn-soundoff.png` | 88×88 | Round button: soundoff. | `td-gui/PNG/menu/button_music_off.png` |
+| `gui.btn.settings` | `gui/btn-settings.png` | 88×88 | Round button: settings. | `td-gui/PNG/menu/button_settings.png` |
+| `gui.btn.close` | `gui/btn-close.png` | 62×62 | Close (×) button. | `td-gui/PNG/upgrade/button_close.png` |
+| `gui.btn.done` | `gui/btn-done.png` | 100×60 | Upgrade screen: Done (the kit art says DONE). | `td-gui/PNG/upgrade/button_done.png` |
+| `gui.btn.reset` | `gui/btn-reset.png` | 100×60 | Upgrade screen: Reset (the kit art says RESET). | `td-gui/PNG/upgrade/button_reset.png` |
+| `gui.upgrade.table` | `gui/upgrade-table.png` | 792×632 | Upgrade tree board. | `td-gui/PNG/upgrade/table.png` |
+| `gui.upgrade.bank` | `gui/upgrade-bank.png` | 115×68 | Upgrade screen: stars to spend. | `td-gui/PNG/upgrade/window_1.png` |
+| `gui.upgrade.cost` | `gui/upgrade-cost.png` | 69×41 | Upgrade screen: price tag under a perk. | `td-gui/PNG/upgrade/window_.png` |
+| `gui.rope` | `gui/rope.png` | 24×283 | Rope that boards hang from. | `td-gui/PNG/upgrade/rope_big.png` |
+
+### perk
+
+| Key | File (under `public/assets/licensed/`) | Size · frames | Used for | From the kit |
+|---|---|---|---|---|
+| `perk.1` | `gui/perks/1.png` | 88×88 | Upgrade tree icon 1. | `td-gui/PNG/upgrade/ico_1.png` |
+| `perk.2` | `gui/perks/2.png` | 88×88 | Upgrade tree icon 2. | `td-gui/PNG/upgrade/ico_2.png` |
+| `perk.3` | `gui/perks/3.png` | 88×88 | Upgrade tree icon 3. | `td-gui/PNG/upgrade/ico_3.png` |
+| `perk.4` | `gui/perks/4.png` | 88×88 | Upgrade tree icon 4. | `td-gui/PNG/upgrade/ico_4.png` |
+| `perk.5` | `gui/perks/5.png` | 88×88 | Upgrade tree icon 5. | `td-gui/PNG/upgrade/ico_5.png` |
+| `perk.6` | `gui/perks/6.png` | 88×88 | Upgrade tree icon 6. | `td-gui/PNG/upgrade/ico_6.png` |
+| `perk.7` | `gui/perks/7.png` | 88×88 | Upgrade tree icon 7. | `td-gui/PNG/upgrade/ico_7.png` |
+| `perk.8` | `gui/perks/8.png` | 88×88 | Upgrade tree icon 8. | `td-gui/PNG/upgrade/ico_8.png` |
+| `perk.9` | `gui/perks/9.png` | 88×88 | Upgrade tree icon 9. | `td-gui/PNG/upgrade/ico_9.png` |
+| `perk.10` | `gui/perks/10.png` | 88×88 | Upgrade tree icon 10. | `td-gui/PNG/upgrade/ico_10.png` |
+| `perk.11` | `gui/perks/11.png` | 88×88 | Upgrade tree icon 11. | `td-gui/PNG/upgrade/ico_11.png` |
+| `perk.12` | `gui/perks/12.png` | 88×88 | Upgrade tree icon 12. | `td-gui/PNG/upgrade/ico_12.png` |
+| `perk.13` | `gui/perks/13.png` | 88×88 | Upgrade tree icon 13. | `td-gui/PNG/upgrade/ico_13.png` |
+| `perk.14` | `gui/perks/14.png` | 88×88 | Upgrade tree icon 14. | `td-gui/PNG/upgrade/ico_14.png` |
+| `perk.15` | `gui/perks/15.png` | 88×88 | Upgrade tree icon 15. | `td-gui/PNG/upgrade/ico_15.png` |
+| `perk.16` | `gui/perks/16.png` | 88×88 | Upgrade tree icon 16. | `td-gui/PNG/upgrade/ico_16.png` |
+| `perk.17` | `gui/perks/17.png` | 88×88 | Upgrade tree icon 17. | `td-gui/PNG/upgrade/ico_17.png` |
+| `perk.18` | `gui/perks/18.png` | 88×88 | Upgrade tree icon 18. | `td-gui/PNG/upgrade/ico_18.png` |
+| `perk.19` | `gui/perks/19.png` | 88×88 | Upgrade tree icon 19. | `td-gui/PNG/upgrade/ico_19.png` |
+| `perk.20` | `gui/perks/20.png` | 88×88 | Upgrade tree icon 20. | `td-gui/PNG/upgrade/ico_20.png` |
+| `perk.21` | `gui/perks/21.png` | 88×88 | Upgrade tree icon 21. | `td-gui/PNG/upgrade/ico_21.png` |
+| `perk.22` | `gui/perks/22.png` | 88×88 | Upgrade tree icon 22. | `td-gui/PNG/upgrade/ico_22.png` |
+| `perk.23` | `gui/perks/23.png` | 88×88 | Upgrade tree icon 23. | `td-gui/PNG/upgrade/ico_23.png` |
+| `perk.24` | `gui/perks/24.png` | 88×88 | Upgrade tree icon 24. | `td-gui/PNG/upgrade/ico_24.png` |
 
 ## Sources
 

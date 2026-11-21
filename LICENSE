@@ -1,0 +1,40 @@
+MIT License
+
+Copyright (c) 2026 The Tower Defense authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+Third-party art is NOT covered by this licence.
+
+This licence covers the source code and the original placeholder art in
+public/assets/placeholder/ (drawn by scripts/placeholder-art.mjs).
+
+public/assets/cc0/ may contain art released by its authors under CC0 1.0 /
+public domain. It is included as-is and is not relicensed under MIT. Each
+file's source and licence page are listed in assets.manifest.json.
+
+The game's art comes from the CraftPix.net "Tower Defense 2D Game Kit",
+which is NOT included. It remains under the CraftPix.net file
+licence (https://craftpix.net/file-licenses/), which forbids redistributing
+the files. See ASSETS.md for how to download it and import it into
+public/assets/licensed/ (gitignored).
+
+public/fonts/PassionOne-Regular.ttf is the Passion One font by Fontstage,
+licensed under the SIL Open Font License 1.1 (public/fonts/OFL.txt), not MIT.

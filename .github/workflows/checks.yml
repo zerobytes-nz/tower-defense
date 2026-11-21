@@ -1,0 +1,23 @@
+name: checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  assets-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # No licensed art or secrets in git; every committed image is a listed placeholder.
+      - run: npm run check-assets
+      # ASSETS.md must match assets.manifest.json.
+      - run: npm run assets:docs -- --check
+      # Placeholders must match what the generator produces from the manifest.
+      - run: npm run assets:placeholders && git diff --exit-code --stat -- public/assets/placeholder
+      - run: npm run build

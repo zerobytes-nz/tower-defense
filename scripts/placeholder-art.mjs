@@ -1,0 +1,210 @@
+// Original placeholder art (MIT), drawn from code so a fresh clone runs without the CraftPix kit.
+// One drawer per manifest key: draw(ctx, w, h, frame, frames) in the frame's own coordinates.
+// Same sizes, frame counts and anchor points (feet / tower base on the bottom edge) as the real art.
+// No text: fonts differ between machines, and CI checks that this output is byte-for-byte reproducible.
+import { MAPS, buildTrack } from '../src/game/maps.ts';
+
+const TAU = Math.PI * 2;
+const OUT = '#2b1d14';
+const ell = (c, x, y, rx, ry, fill, stroke, lw = 3) => {
+  c.beginPath(); c.ellipse(x, y, Math.max(0.1, rx), Math.max(0.1, ry), 0, 0, TAU);
+  if (fill) { c.fillStyle = fill; c.fill(); }
+  if (stroke) { c.lineWidth = lw; c.strokeStyle = stroke; c.stroke(); }
+};
+const rr = (c, x, y, w, h, r, fill, stroke, lw = 3) => {
+  c.beginPath(); c.roundRect(x, y, w, h, r);
+  if (fill) { c.fillStyle = fill; c.fill(); }
+  if (stroke) { c.lineWidth = lw; c.strokeStyle = stroke; c.stroke(); }
+};
+const poly = (c, pts, fill, stroke, lw = 3) => {
+  c.beginPath(); pts.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.closePath();
+  if (fill) { c.fillStyle = fill; c.fill(); }
+  if (stroke) { c.lineWidth = lw; c.strokeStyle = stroke; c.stroke(); }
+};
+/** Deterministic pseudo-random numbers, so the output never changes. */
+const prng = (seed) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+
+// ── Maps ────────────────────────────────────────────────────────────────────────────────────────────
+function map(id, grass, grass2, road, edge) {
+  return (c, w, h) => {
+    const m = MAPS[id], r = prng(7);
+    c.fillStyle = grass; c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 260; i++) ell(c, r() * w, r() * h, 6 + r() * 22, 4 + r() * 12, grass2);
+    const t = buildTrack(m.path);
+    const stroke = (lw, col) => { c.lineWidth = lw; c.strokeStyle = col; c.lineCap = 'round'; c.lineJoin = 'round'; c.beginPath(); t.pts.forEach((p, i) => (i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y))); c.stroke(); };
+    stroke(84, edge); stroke(72, road);
+    for (let i = 0; i < 120; i++) { const p = t.pts[Math.floor(r() * t.pts.length)]; ell(c, p.x + (r() - 0.5) * 50, p.y + (r() - 0.5) * 50, 3, 2, edge); }
+    for (const p of m.pads.filter((p) => p.painted)) padShape(c, p.x, p.y, 55, 26);
+    // trees around the edges
+    for (let i = 0; i < 40; i++) {
+      const x = r() * w, y = r() * h;
+      if (t.pts.some((p) => Math.hypot(p.x - x, p.y - y) < 80) || m.pads.some((p) => Math.hypot(p.x - x, p.y - y) < 90)) continue;
+      ell(c, x, y + 18, 20, 7, 'rgba(0,0,0,0.25)');
+      rr(c, x - 4, y, 8, 18, 2, '#6b4a2b');
+      ell(c, x, y - 8, 22, 20, '#3f8a2e', OUT, 2); ell(c, x - 6, y - 14, 8, 6, '#5fae3f');
+    }
+  };
+}
+function padShape(c, x, y, rx, ry) {
+  ell(c, x, y, rx + 4, ry + 4, '#8a6a2e');
+  ell(c, x, y, rx, ry, '#d9b45a');
+  for (let i = 0; i < 6; i++) ell(c, x - rx * 0.6 + i * rx * 0.24, y + ((i % 2) - 0.5) * ry * 0.6, 4, 2, '#b8923e');
+}
+
+// ── Towers (base on the bottom edge, centred) ───────────────────────────────────────────────────────
+const TIER = ['#8a5a32', '#9a9aa2', '#d0b060'];
+function archerTower(tier) {
+  return (c, w, h) => {
+    const cx = w / 2, b = h - 8, wide = 34 + tier * 4;
+    ell(c, cx, b, wide + 6, 10, 'rgba(0,0,0,0.3)');
+    poly(c, [[cx - wide, b], [cx + wide, b], [cx + wide - 10, b - 70], [cx - wide + 10, b - 70]], tier === 1 ? '#7a4f2c' : '#a7a29a', OUT);
+    for (let i = 1; i < 4; i++) { c.strokeStyle = OUT; c.lineWidth = 2; c.beginPath(); c.moveTo(cx - wide + 6, b - i * 18); c.lineTo(cx + wide - 6, b - i * 18); c.stroke(); }
+    rr(c, cx - wide + 4, b - 86, (wide - 4) * 2, 18, 4, TIER[tier - 1], OUT);
+    rr(c, cx - 8, b - 30, 16, 30, 6, '#3a2414');
+  };
+}
+function catapultTower(tier) {
+  return (c, w, h) => {
+    const cx = w / 2, b = h - 10;
+    ell(c, cx, b, 54, 12, 'rgba(0,0,0,0.3)');
+    rr(c, cx - 50, b - 22, 100, 22, 8, ['#8a5a32', '#8f8f99', '#7a3a3a'][tier - 1], OUT);
+    for (const s of [-1, 1]) rr(c, cx + s * 30 - 6, b - 82 - tier * 6, 12, 64 + tier * 6, 4, '#5a3a22', OUT);
+    rr(c, cx - 36, b - 62, 72, 10, 4, '#6b4a2b', OUT);
+    c.lineWidth = 8; c.strokeStyle = '#4a2e18'; c.lineCap = 'round'; c.beginPath(); c.moveTo(cx - 20, b - 30); c.lineTo(cx + 22, b - 92); c.stroke();
+    ell(c, cx + 24, b - 96, 12, 8, '#3a2414', OUT, 2);
+    if (tier === 3) ell(c, cx, b - 12, 10, 6, '#ffb030');
+  };
+}
+function mageTower(tier) {
+  return (c, w, h) => {
+    const cx = w / 2, b = h - 8, top = b - 70 - tier * 10;
+    ell(c, cx, b, 50, 11, 'rgba(0,0,0,0.3)');
+    c.beginPath(); c.moveTo(cx - 46, b); c.quadraticCurveTo(cx - 50, top, cx, top - 10); c.quadraticCurveTo(cx + 50, top, cx + 46, b); c.closePath();
+    c.fillStyle = '#c8a070'; c.fill(); c.lineWidth = 3; c.strokeStyle = OUT; c.stroke();
+    rr(c, cx - 12, b - 36, 24, 36, 12, '#5a3a22', OUT, 2);
+    for (let i = 0; i < tier; i++) ell(c, cx - 20 + i * 20, top + 26, 6, 6, '#e8443a', OUT, 2);
+    ell(c, cx, top - 18, 10, 10, '#ff6a5a', OUT, 2);
+  };
+}
+function supportTower(tier) {
+  return (c, w, h) => {
+    const cx = w / 2, b = h - 8;
+    ell(c, cx, b, 56, 12, 'rgba(0,0,0,0.3)');
+    rr(c, cx - 44, b - 56, 88, 56, 6, ['#c8a060', '#b07a4a', '#9a9aa2'][tier - 1], OUT);
+    poly(c, [[cx - 54, b - 52], [cx, b - 96], [cx + 54, b - 52]], ['#e8b040', '#e07a30', '#7a7a84'][tier - 1], OUT);
+    c.lineWidth = 5; c.strokeStyle = '#d8d8e0';
+    for (const s of [-1, 1]) { c.beginPath(); c.moveTo(cx - s * 14, b - 44); c.lineTo(cx + s * 14, b - 14); c.stroke(); }
+    rr(c, cx - 4, b - 36, 8, 12, 2, '#6b4a2b');
+  };
+}
+
+// ── Archer unit on the tower (feet on the bottom edge) ──────────────────────────────────────────────
+function archerUnit(tier) {
+  const cloak = ['#2f3b4a', '#9aa4b0', '#5a7a2a'][tier - 1];
+  return (c, w, h, i, n) => {
+    const cx = w / 2 - 4, b = h - 2, pull = Math.sin((i / n) * Math.PI) * 6;
+    rr(c, cx - 11, b - 30, 22, 28, 8, cloak, OUT, 2);
+    ell(c, cx, b - 38, 10, 10, '#f0d0a0', OUT, 2);
+    c.beginPath(); c.ellipse(cx, b - 42, 11, 8, 0, Math.PI, TAU); c.fillStyle = '#c8ccd4'; c.fill();
+    c.lineWidth = 2.5; c.strokeStyle = '#7a4a22';
+    c.beginPath(); c.arc(cx + 10, b - 24, 16, -1.2, 1.2); c.stroke();
+    c.lineWidth = 1; c.strokeStyle = '#eee'; c.beginPath(); c.moveTo(cx + 15, b - 39); c.lineTo(cx + 10 - pull, b - 24); c.lineTo(cx + 15, b - 9); c.stroke();
+  };
+}
+
+// ── Shots and effects ───────────────────────────────────────────────────────────────────────────────
+const arrow = (c, w, h) => {
+  c.lineWidth = 2; c.strokeStyle = '#7a4a22'; c.beginPath(); c.moveTo(4, h / 2); c.lineTo(w - 8, h / 2); c.stroke();
+  poly(c, [[w - 2, h / 2], [w - 10, h / 2 - 4], [w - 10, h / 2 + 4]], '#ccc');
+  poly(c, [[2, h / 2 - 4], [8, h / 2], [2, h / 2 + 4]], '#e8e0d0');
+};
+const boulder = (c, w, h) => { ell(c, w / 2, h / 2, w / 2 - 3, h / 2 - 4, '#9a7a5a', OUT, 2); ell(c, w / 2 - 4, h / 2 - 4, 4, 3, '#b89a7a'); };
+const bolt = (c, w, h) => { ell(c, w / 2, h / 2, w / 2 - 2, h / 2 - 2, 'rgba(255,90,70,0.5)'); ell(c, w / 2, h / 2, w / 4, h / 4, '#ffd0c0'); };
+const blast = (c, w, h, i, n) => {
+  const k = (i + 1) / n, r = w * 0.18 + w * 0.3 * k;
+  if (k < 0.6) { ell(c, w / 2, h / 2, r, r * 0.8, '#ff8a2a'); ell(c, w / 2, h / 2, r * 0.6, r * 0.5, '#ffe06a'); }
+  else { c.lineWidth = 6 * (1 - k) + 1; c.strokeStyle = `rgba(70,60,55,${(1 - k) * 2})`; c.beginPath(); c.ellipse(w / 2, h / 2, r, r * 0.8, 0, 0, TAU); c.stroke(); }
+};
+
+// ── Enemies (face right, feet on the bottom edge) ───────────────────────────────────────────────────
+const SKIN = { grunt: '#6f8a3a', runner: '#8aa63a', brute: '#c86a3a', shaman: '#3a3a44', bat: '#7a6a6a', ogre: '#3a8a8a' };
+const SIZE = { grunt: 0.5, runner: 0.38, brute: 0.52, shaman: 0.5, bat: 0.45, ogre: 0.62 };
+function enemy(kind, mode) {
+  return (c, w, h, i, n) => {
+    const s = SIZE[kind] * (w / 96) * 96, cx = w / 2, b = h - 4, t = i / n;
+    const fall = mode === 'die' ? t : 0;
+    c.save();
+    c.globalAlpha = 1 - fall * 0.6;
+    c.translate(cx, b); c.rotate(fall * 1.3); c.translate(-cx, -b);
+    if (kind === 'bat') {
+      const y = b - s * 0.9 + Math.sin(t * TAU) * 4, flap = Math.sin(t * TAU * 2) * 0.6;
+      for (const sd of [-1, 1]) poly(c, [[cx, y], [cx + sd * s * 0.9, y - s * (0.3 + flap * 0.3)], [cx + sd * s * 0.6, y + s * 0.2]], SKIN.bat, OUT, 2);
+      ell(c, cx, y, s * 0.3, s * 0.26, SKIN.bat, OUT, 2);
+      ell(c, cx + s * 0.08, y - 2, 3, 2, '#e03030');
+    } else {
+      const step = mode === 'walk' ? Math.sin(t * TAU) * s * 0.08 : 0;
+      ell(c, cx, b, s * 0.4, s * 0.08, 'rgba(0,0,0,0.25)');
+      rr(c, cx - s * 0.22 + step, b - s * 0.22, s * 0.16, s * 0.22, 3, '#3a2a22');
+      rr(c, cx + s * 0.06 - step, b - s * 0.22, s * 0.16, s * 0.22, 3, '#3a2a22');
+      rr(c, cx - s * 0.3, b - s * 0.78, s * 0.6, s * 0.6, s * 0.2, SKIN[kind], OUT, 2.5);
+      ell(c, cx + s * 0.05, b - s * 0.92, s * 0.26, s * 0.24, kind === 'shaman' ? '#e8d8b0' : SKIN[kind], OUT, 2.5);
+      if (kind === 'shaman') { c.beginPath(); c.ellipse(cx + s * 0.02, b - s * 0.98, s * 0.3, s * 0.3, 0, Math.PI, TAU); c.fillStyle = '#2a2a32'; c.fill(); }
+      if (kind === 'brute') { c.beginPath(); c.ellipse(cx + s * 0.05, b - s * 0.98, s * 0.28, s * 0.22, 0, Math.PI, TAU); c.fillStyle = '#c8ccd4'; c.fill(); }
+      ell(c, cx + s * 0.15, b - s * 0.94, 2.5, 2.5, kind === 'ogre' ? '#ffe040' : '#ffffff');
+      // weapon
+      c.lineWidth = Math.max(2, s * 0.06); c.lineCap = 'round';
+      c.strokeStyle = kind === 'shaman' ? '#d0b060' : kind === 'runner' ? '#a07040' : '#c8ccd4';
+      c.beginPath(); c.moveTo(cx + s * 0.25, b - s * 0.45); c.lineTo(cx + s * 0.62, b - s * (0.6 + step / s)); c.stroke();
+    }
+    c.restore();
+  };
+}
+
+// ── UI ──────────────────────────────────────────────────────────────────────────────────────────────
+const heart = (c, w, h) => {
+  c.beginPath(); c.moveTo(w / 2, h - 4);
+  c.bezierCurveTo(2, h * 0.55, 2, 4, w * 0.3, 4); c.bezierCurveTo(w * 0.42, 4, w / 2, h * 0.2, w / 2, h * 0.28);
+  c.bezierCurveTo(w / 2, h * 0.2, w * 0.58, 4, w * 0.7, 4); c.bezierCurveTo(w - 2, 4, w - 2, h * 0.55, w / 2, h - 4);
+  c.fillStyle = '#e8504a'; c.fill(); c.lineWidth = 3; c.strokeStyle = '#7a1a1a'; c.stroke();
+  ell(c, w * 0.3, h * 0.3, 4, 3, '#ffa0a0');
+};
+const coin = (c, w, h) => {
+  ell(c, w / 2, h / 2 + 2, w / 2 - 3, h / 2 - 4, '#a86a10');
+  ell(c, w / 2, h / 2, w / 2 - 3, h / 2 - 4, '#ffcc33', '#7a4a08', 3);
+  ell(c, w / 2, h / 2, w / 2 - 10, h / 2 - 11, null, '#d89a18', 2.5);
+  rr(c, w / 2 - 3, h / 2 - 8, 6, 16, 2, '#e8a820');
+  ell(c, w / 2 - 6, h / 2 - 7, 3, 2, '#fff6c0');
+};
+const woodButton = (inner) => (c, w, h) => {
+  rr(c, 4, 4, w - 8, h - 8, 10, '#6b4226', '#3a3a44', 5);
+  rr(c, 12, 12, w - 24, h - 24, 6, '#8a5a32');
+  for (const [x, y] of [[12, 12], [w - 12, 12], [12, h - 12], [w - 12, h - 12]]) ell(c, x, y, 4, 4, '#c8ccd4');
+  inner(c, w, h);
+};
+const pause = woodButton((c, w, h) => { for (const x of [w * 0.38, w * 0.62]) rr(c, x - 6, h * 0.3, 12, h * 0.4, 5, '#e8e8f0', OUT, 2); });
+const fast = woodButton((c, w, h) => { for (const x of [w * 0.3, w * 0.5]) poly(c, [[x, h * 0.32], [x + w * 0.2, h / 2], [x, h * 0.68]], '#e8e8f0', OUT, 2); });
+const wave = (c, w, h) => {
+  ell(c, w / 2, h / 2, w / 2 - 3, h / 2 - 3, '#c8402a', '#5a1a10', 5);
+  ell(c, w / 2, h / 2 - 4, w * 0.26, h * 0.24, '#eeeae0', OUT, 3);
+  rr(c, w * 0.36, h * 0.6, w * 0.28, h * 0.14, 4, '#eeeae0', OUT, 3);
+  ell(c, w * 0.4, h * 0.46, 6, 7, '#c8402a'); ell(c, w * 0.6, h * 0.46, 6, 7, '#c8402a');
+};
+const star = (c, w, h) => {
+  const pts = []; for (let i = 0; i < 10; i++) { const r = i % 2 ? w * 0.2 : w * 0.46, a = -Math.PI / 2 + (i * Math.PI) / 5; pts.push([w / 2 + Math.cos(a) * r, h / 2 + 2 + Math.sin(a) * r]); }
+  poly(c, pts, '#ffcc33', '#7a4a08', 2.5);
+};
+
+export const drawers = {
+  'bg.meadow': map('meadow', '#7aa83a', '#86b444', '#d8b860', '#a8883a'),
+  'map.pad': (c, w, h) => padShape(c, w / 2, h / 2, w / 2 - 6, h / 2 - 6),
+  'shot.arrow': arrow, 'shot.boulder': boulder, 'shot.bolt': bolt, 'fx.blast': blast,
+  'ui.heart': heart, 'ui.coin': coin, 'ui.wave': wave, 'ui.pause': pause, 'ui.fast': fast, 'ui.star': star,
+};
+for (const t of [1, 2, 3]) {
+  drawers[`tower.archer.${t}`] = archerTower(t);
+  drawers[`tower.catapult.${t}`] = catapultTower(t);
+  drawers[`tower.mage.${t}`] = mageTower(t);
+  drawers[`tower.support.${t}`] = supportTower(t);
+  drawers[`unit.archer.${t}`] = archerUnit(t);
+}
+for (const k of Object.keys(SKIN)) for (const m of ['walk', 'die']) drawers[`enemy.${k}.${m}`] = enemy(k, m);

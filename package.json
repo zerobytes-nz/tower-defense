@@ -1,0 +1,39 @@
+{
+  "name": "tower-defense",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "check-assets": "node scripts/check-assets.mjs",
+    "assets:status": "node scripts/assets-status.mjs",
+    "assets:docs": "node scripts/assets-docs.mjs",
+    "assets:placeholders": "node scripts/gen-placeholders.mjs",
+    "assets:pack": "node scripts/pack-frames.mjs",
+    "assets:import": "node scripts/import-kit.mjs",
+    "pwa:icons": "node scripts/gen-pwa-icons.mjs",
+    "pwa:icons:licensed": "node scripts/gen-pwa-icons.mjs --licensed",
+    "deploy": "node scripts/deploy.mjs",
+    "deploy:check": "node scripts/deploy.mjs --dry-run",
+    "sim": "node scripts/sim.mjs",
+    "prepare": "simple-git-hooks"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "^1.1.1",
+    "simple-git-hooks": "^2.14.0",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.6"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npm run --silent check-assets && npm run --silent assets:docs -- --check"
+  }
+}

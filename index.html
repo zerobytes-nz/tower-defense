@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#1f1a14" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="description" content="A landscape tower defense game where your NFTs become tower, hero and spell AWIs (Altered World Items)." />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="./icons/favicon-64.png" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  <title>Tower Defense</title>
+  <style>
+    @font-face { font-family: 'Passion One'; src: url('./fonts/PassionOne-Regular.ttf') format('truetype'); font-display: block; }
+    html, body { margin: 0; height: 100%; background: #1f1a14; overflow: hidden; touch-action: none;
+      -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; overscroll-behavior: none; }
+    #game { position: fixed; inset: 0; }
+    #rotate { display: none; position: fixed; inset: 0; z-index: 10; background: #1f1a14; color: #e8ecff;
+      font: 600 20px system-ui, sans-serif; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+    @media (orientation: portrait) and (pointer: coarse) { #rotate { display: flex; } }
+    #loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      color: #ffd02a; font: 600 16px system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="loading">Loading…</div>
+  <div id="game"></div>
+  <div id="rotate"><div>↻<br />Turn your phone sideways</div></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

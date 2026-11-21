@@ -1,0 +1,784 @@
+{
+  "about": "Single source of truth for every art file. The game loads the first of public/<roots.licensed>/<path>, public/<roots.cc0>/<path>, public/<roots.placeholder>/<path> that exists with the right size. `kit` says where the file comes from in the CraftPix kit (npm run assets:import). Edit this file, then run `npm run assets:placeholders && npm run assets:docs`.",
+  "version": 1,
+  "roots": {
+    "licensed": "assets/licensed",
+    "cc0": "assets/cc0",
+    "placeholder": "assets/placeholder"
+  },
+  "sources": {
+    "craftpix-td-kit": {
+      "name": "CraftPix: Tower Defense 2D Game Kit",
+      "url": "https://craftpix.net/product/tower-defense-2d-game-kit/",
+      "licence": "craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored).",
+      "licenceUrl": "https://craftpix.net/file-licenses/"
+    },
+    "own": {
+      "name": "Tower Defense original (placeholder generator)",
+      "url": "scripts/placeholder-art.mjs",
+      "licence": "MIT, same as the code. Fine to commit."
+    }
+  },
+  "assets": [
+    {
+      "key": "bg.meadow",
+      "type": "image",
+      "path": "maps/meadow.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Mill Meadow (road, painted build pads).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_1/game_background_1.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "map.pad",
+      "type": "image",
+      "path": "maps/pad.png",
+      "width": 128,
+      "height": 64,
+      "frameWidth": 128,
+      "frameHeight": 64,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Extra build pad drawn on maps where the art has none.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_1/layers/dot.png",
+        "scale": 0.67
+      }
+    },
+    {
+      "key": "tower.archer.1",
+      "type": "image",
+      "path": "towers/archer-1.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Archer Tower, tier 1.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG/2.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.archer.2",
+      "type": "image",
+      "path": "towers/archer-2.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Archer Tower, tier 2.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG/4.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.archer.3",
+      "type": "image",
+      "path": "towers/archer-3.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Archer Tower, tier 3.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG/6.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.catapult.1",
+      "type": "image",
+      "path": "towers/catapult-1.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Catapult, tier 1.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "stone-tower-game-assets/PNG/3.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.catapult.2",
+      "type": "image",
+      "path": "towers/catapult-2.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Catapult, tier 2.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "stone-tower-game-assets/PNG/7.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.catapult.3",
+      "type": "image",
+      "path": "towers/catapult-3.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Catapult, tier 3.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "stone-tower-game-assets/PNG/17.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.mage.1",
+      "type": "image",
+      "path": "towers/mage-1.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Mage Tower, tier 1.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "magic-tower-game-assets/PNG/2.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.mage.2",
+      "type": "image",
+      "path": "towers/mage-2.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Mage Tower, tier 2.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "magic-tower-game-assets/PNG/3.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.mage.3",
+      "type": "image",
+      "path": "towers/mage-3.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Mage Tower, tier 3.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "magic-tower-game-assets/PNG/4.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.support.1",
+      "type": "image",
+      "path": "towers/support-1.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "War Camp, tier 1.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "support-tower-game-assets/PNG/1.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.support.2",
+      "type": "image",
+      "path": "towers/support-2.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "War Camp, tier 2.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "support-tower-game-assets/PNG/2.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.support.3",
+      "type": "image",
+      "path": "towers/support-3.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "War Camp, tier 3.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "support-tower-game-assets/PNG/3.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "unit.archer.1",
+      "type": "spritesheet",
+      "path": "towers/archer-unit-1.png",
+      "width": 672,
+      "height": 64,
+      "frameWidth": 56,
+      "frameHeight": 64,
+      "frameCount": 12,
+      "displayScale": 0.62,
+      "animation": {
+        "frameRate": 24,
+        "repeat": 0
+      },
+      "usedFor": "Archer on top of the Archer Tower, tier 1: draw and shoot.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG",
+        "range": [
+          38,
+          49
+        ],
+        "scale": 1
+      }
+    },
+    {
+      "key": "unit.archer.2",
+      "type": "spritesheet",
+      "path": "towers/archer-unit-2.png",
+      "width": 672,
+      "height": 64,
+      "frameWidth": 56,
+      "frameHeight": 64,
+      "frameCount": 12,
+      "displayScale": 0.62,
+      "animation": {
+        "frameRate": 24,
+        "repeat": 0
+      },
+      "usedFor": "Archer on top of the Archer Tower, tier 2: draw and shoot.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG",
+        "range": [
+          50,
+          61
+        ],
+        "scale": 1
+      }
+    },
+    {
+      "key": "unit.archer.3",
+      "type": "spritesheet",
+      "path": "towers/archer-unit-3.png",
+      "width": 672,
+      "height": 64,
+      "frameWidth": 56,
+      "frameHeight": 64,
+      "frameCount": 12,
+      "displayScale": 0.62,
+      "animation": {
+        "frameRate": 24,
+        "repeat": 0
+      },
+      "usedFor": "Archer on top of the Archer Tower, tier 3: draw and shoot.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG",
+        "range": [
+          64,
+          75
+        ],
+        "scale": 1
+      }
+    },
+    {
+      "key": "shot.arrow",
+      "type": "image",
+      "path": "shots/arrow.png",
+      "width": 32,
+      "height": 12,
+      "frameWidth": 32,
+      "frameHeight": 12,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Archer arrow.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG/37.png"
+      }
+    },
+    {
+      "key": "shot.boulder",
+      "type": "image",
+      "path": "shots/boulder.png",
+      "width": 32,
+      "height": 32,
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Catapult boulder.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "stone-tower-game-assets/PNG/34.png"
+      }
+    },
+    {
+      "key": "shot.bolt",
+      "type": "image",
+      "path": "shots/bolt.png",
+      "width": 28,
+      "height": 28,
+      "frameWidth": 28,
+      "frameHeight": 28,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Mage bolt.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "magic-tower-game-assets/PNG/14.png"
+      }
+    },
+    {
+      "key": "fx.blast",
+      "type": "spritesheet",
+      "path": "fx/blast.png",
+      "width": 768,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 8,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 20,
+        "repeat": 0
+      },
+      "usedFor": "Boulder impact explosion.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "stone-tower-game-assets/PNG",
+        "range": [
+          54,
+          61
+        ],
+        "align": "center"
+      }
+    },
+    {
+      "key": "enemy.grunt.walk",
+      "type": "spritesheet",
+      "path": "enemies/grunt-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy grunt: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/1",
+        "match": "walk",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.grunt.die",
+      "type": "spritesheet",
+      "path": "enemies/grunt-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy grunt: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/1",
+        "match": "die",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.runner.walk",
+      "type": "spritesheet",
+      "path": "enemies/runner-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy runner: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/3",
+        "match": "walk",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.runner.die",
+      "type": "spritesheet",
+      "path": "enemies/runner-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy runner: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/3",
+        "match": "die",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.brute.walk",
+      "type": "spritesheet",
+      "path": "enemies/brute-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy brute: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/4",
+        "match": "walk",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.brute.die",
+      "type": "spritesheet",
+      "path": "enemies/brute-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy brute: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/4",
+        "match": "die",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.shaman.walk",
+      "type": "spritesheet",
+      "path": "enemies/shaman-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy shaman: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/5",
+        "match": "walk",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.shaman.die",
+      "type": "spritesheet",
+      "path": "enemies/shaman-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy shaman: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/5",
+        "match": "die",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.bat.walk",
+      "type": "spritesheet",
+      "path": "enemies/bat-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy bat: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/10",
+        "match": "walk",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.bat.die",
+      "type": "spritesheet",
+      "path": "enemies/bat-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy bat: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/10",
+        "match": "die",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.ogre.walk",
+      "type": "spritesheet",
+      "path": "enemies/ogre-walk.png",
+      "width": 1280,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy ogre: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-character-2d-sprites/PNG/10",
+        "match": "walk",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.ogre.die",
+      "type": "spritesheet",
+      "path": "enemies/ogre-die.png",
+      "width": 1280,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy ogre: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-character-2d-sprites/PNG/10",
+        "match": "die",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "ui.heart",
+      "type": "image",
+      "path": "ui/heart.png",
+      "width": 40,
+      "height": 36,
+      "frameWidth": 40,
+      "frameHeight": 36,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "HUD: lives.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/heart.png"
+      }
+    },
+    {
+      "key": "ui.coin",
+      "type": "image",
+      "path": "ui/coin.png",
+      "width": 40,
+      "height": 40,
+      "frameWidth": 40,
+      "frameHeight": 40,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "HUD: gold. Original art (the kit has no coin).",
+      "source": "own"
+    },
+    {
+      "key": "ui.wave",
+      "type": "image",
+      "path": "ui/wave.png",
+      "width": 96,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Call the next wave (skull button by the road entrance).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/skull.png"
+      }
+    },
+    {
+      "key": "ui.pause",
+      "type": "image",
+      "path": "ui/pause.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "HUD: pause button.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/button_pause.png"
+      }
+    },
+    {
+      "key": "ui.fast",
+      "type": "image",
+      "path": "ui/fast.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "HUD: ×2 speed button.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/button_quick.png"
+      }
+    },
+    {
+      "key": "ui.star",
+      "type": "image",
+      "path": "ui/star.png",
+      "width": 40,
+      "height": 40,
+      "frameWidth": 40,
+      "frameHeight": 40,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Stars (result screen).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/star.png"
+      }
+    }
+  ]
+}

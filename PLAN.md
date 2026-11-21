@@ -1,0 +1,68 @@
+# Tower Defense: plan
+
+TheoSwap game 5 (code `of8EB6RG`), replacing the old Fiverr build at https://games.theoswap.io/tower_defense/.
+A classic path tower defense for phones (landscape 1280×720): build towers on pads along a road and stop the enemy
+waves. The same NFTs that are hero skins in Altered Run and unit cards in Altered Arena become **AWIs (Altered World
+Items)** here: towers, heroes and spells.
+
+Art: the CraftPix *Tower Defense 2D Game Kit* (never committed; see ASSETS.md), plus the CraftPix knight and wizard
+packs that Altered Arena already uses (heroes and soldiers). Sound: our own Web Audio synth (no sound files).
+
+## What makes it fun (review, 2026-11-22)
+
+Milestone 1 plays, but it is a "place and watch" game. Classic TD games stay fun through decisions during the fight
+and variety between fights. The plan now leans on these:
+
+1. **Hands on the battlefield.** A **hero** you tap-to-move, who blocks and fights on the road and has an ability
+   button. **Barracks** soldiers block the road too, so enemies stop and fight (the kit monsters all have attack
+   animations). Blocking + ranged fire is the core fun of the genre, and it makes every pad matter more.
+   (Support tower becomes the Barracks; the War Camp aura moves to a tier-4 branch.)
+2. **Spells with cooldowns**, cast by dragging onto the road: two for everyone (Meteor, Reinforcements), and
+   AWI spells in the loadout. Something to do between builds.
+3. **Real choices per tower:** tier 4 splits into two branches, each with a signature trick (Longbow crits / Crossbow
+   armour pierce; Fire Pot burning ground / Spiked Boulder stun; Storm chain lightning / Frost slow; War Drums aura /
+   Paladins that heal).
+4. **Enemies that ask questions:** armoured (needs magic), magic-resistant (needs physical), flyers (no catapults,
+   no blocking), runners, healers, shield walls, splitters, and bosses with two phases. Each new enemy gets an
+   intro card the first time it appears, so players learn the counters.
+5. **Each world plays differently:** Greenwood (the basics), Sunscorch (two entrances), Frostfall (icy road: enemies
+   speed up; frozen pads), Ashlands (lava bursts disable towers). Maps with two paths force split defences.
+6. **Juice:** coins fly to the counter, kill popups, boss intro and slow-motion finish, screen shake on leaks, sounds
+   for every shot and hit (moved forward from milestone 4: sound is half of how a TD game feels).
+7. **Reasons to replay:** 3 stars per level (lives), a **Heroic** challenge per level (one tower type banned / one
+   life), **Endless** on cleared maps with a best-wave record, and a star-paid **upgrade tree** (the kit's upgrade
+   screen) so failed runs still move you forward.
+8. **AWIs that feel special but stay fair:** an AWI tower is a named variant with its own look (tint, aura, particles)
+   and one perk that is a sidegrade, with rarity giving a capped stat bonus. Guests can clear everything; AWIs make it
+   faster, flashier and give 3 stars more easily.
+
+## Milestones
+
+1. **Core loop** ✅ (2026-11-22)
+   Repo rails (licensed / placeholder split, manifest → ASSETS.md, check-assets hook + CI, PWA, MIT, `.env.example`,
+   TheoSwap proxy client, `?userCode=` deep link), kit import script, Mill Meadow map with traced path and pads,
+   4 towers × 3 tiers, 6 enemies, 10 waves, gold/lives/stars, call-wave-early bonus, ×2 speed, pause, win/lose,
+   `npm run sim` + `?bot`.
+2. **Depth** (next)
+   Hero (tap to move, blocks, levels up in the fight, one ability) and Barracks soldiers; melee combat (enemies stop
+   and fight blockers). Tier-4 branches with tricks. Spells: Meteor + Reinforcements with cooldowns. New-enemy intro
+   cards. Sound effects. World 1, Greenwood: 3 levels (Mill Meadow, Jungle Camp, Old Ruins) ending with the Treant
+   boss. Kit GUI screens: title, level select, win/fail, pause/settings. Save, stars, upgrade tree.
+3. **Campaign**
+   Worlds 2–4 (9 more maps from the kit, 3 bosses: Stone Golem, Yeti, Skull Knight) with their world rules, the new
+   enemies, two-path maps. Heroic per level, Endless.
+4. **AWIs**
+   New configs for Free (default) and Theo Swap, drafted and shown as a dry run before anything changes: Towers
+   (2 named variants per family), Heroes (Silver / Bronze / Black Knight, Arcane / Fire Wizard), Spells (8), Crystals
+   (3, paid out once per NFT). Loadout of up to 5 AWIs (the listing's inventory size). Connect screen with code and
+   deep link, NFT reveal, demo profiles (Guest / Collector / Whale) and test items.
+5. **Polish and launch**
+   Daily challenge, achievements (kit screen), balance sim per world, real-phone FPS. With the user's OK at each step:
+   GitHub repo + CI, Jira epic, back up `/tower_defense/` on the server, deploy, nginx proxy with the new API key,
+   publish the configs and set the default, TheoSwap icon / banner / item images.
+
+## Notes
+
+- The old game is unbundled source on the server; its client code contained a live API key. The user is rolling a
+  new key; the new game never ships one (check-assets and deploy both refuse).
+- `tower-defence.pdf` (the old brief) is out of date and is not used.

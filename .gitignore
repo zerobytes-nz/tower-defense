@@ -1,0 +1,23 @@
+node_modules
+dist
+.DS_Store
+
+# ── Licensed third-party art (CraftPix.net, itch.io packs) ─────────────────
+# Their licences forbid redistributing the files. Only the README is tracked.
+# `npm run check-assets` (pre-commit + CI) also fails if anything here is staged.
+public/assets/licensed/*
+!public/assets/licensed/README.md
+
+# Raw downloads / source packs, wherever they are dropped
+*.zip
+*.rar
+/art-src/
+/vendor-art/
+
+# ── Secrets ─────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# Local editor / agent settings
+.claude/

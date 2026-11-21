@@ -43,13 +43,17 @@ and variety between fights. The plan now leans on these:
    TheoSwap proxy client, `?userCode=` deep link), kit import script, Mill Meadow map with traced path and pads,
    4 towers × 3 tiers, 6 enemies, 10 waves, gold/lives/stars, call-wave-early bonus, ×2 speed, pause, win/lose,
    `npm run sim` + `?bot`.
-2. **Depth** (next)
-   Hero (tap to move, blocks, levels up in the fight, one ability) and Barracks soldiers; melee combat (enemies stop
-   and fight blockers). Tier-4 branches with tricks. Spells: Meteor + Reinforcements with cooldowns. New-enemy intro
-   cards. Sound effects. World 1, Greenwood: 3 levels (Mill Meadow, Jungle Camp, Old Ruins) ending with the Treant
-   boss. Kit GUI screens: title, level select, win/fail, pause/settings. Save, stars, upgrade tree.
+2. **Depth** ✅ (2026-11-22)
+   Hero Sir Aldric (tap him or his portrait, then the road; blocks, levels up to 5 in the fight, Shield Slam) and
+   Barracks soldiers with a movable rally flag; melee (enemies stop and fight blockers, flyers pass over). Tier-4
+   branches, two per tower (Longbow / Crossbow, Firepot / Spiked, Storm / Frost, Paladins / War Drums). Spells:
+   Meteor Shower + Reinforcements on cooldowns. New-enemy cards. Synth sound effects with an on/off switch.
+   World 1: Mill Meadow, Jungle Camp (two roads), Old Ruins (the road splits; the Old Treant boss roots towers).
+   Title screen, level select with stars and locks, pause (sound, restart, map), win/lose with Next. Local save.
+   Bot (`npm run sim`): wins all three levels, ★ 3.0 / 2.6 / 1.9. Moved to M3: the between-level upgrade tree
+   and the kit's GUI art for the screens (M2 uses the shared wooden panels).
 3. **Campaign**
-   Worlds 2–4 (9 more maps from the kit, 3 bosses: Stone Golem, Yeti, Skull Knight) with their world rules, the new
+   Upgrade tree (stars buy tower / hero / spell perks, the `Mods` the sim already takes). Kit GUI screens. Worlds 2–4 (9 more maps from the kit, 3 bosses: Stone Golem, Yeti, Skull Knight) with their world rules, the new
    enemies, two-path maps. Heroic per level, Endless.
 4. **AWIs**
    New configs for Free (default) and Theo Swap, drafted and shown as a dry run before anything changes: Towers
@@ -60,6 +64,16 @@ and variety between fights. The plan now leans on these:
    Daily challenge, achievements (kit screen), balance sim per world, real-phone FPS. With the user's OK at each step:
    GitHub repo + CI, Jira epic, back up `/tower_defense/` on the server, deploy, nginx proxy with the new API key,
    publish the configs and set the default, TheoSwap icon / banner / item images.
+
+## Art still wanted
+
+The kit has no knights or spell art in its style, so these are original placeholder art for now (fine to ship,
+but a matching pack would look better). Each is listed in ASSETS.md with `source: own`.
+
+- **Knights** (hero, barracks soldier, militia): idle / walk / attack / die, side view, ~64 px, in the kit's
+  thick-outline cartoon style. The pixel-art knights in `altered-arena/art-src` clash with this kit.
+- **Spell and hero buttons** (`ui.meteor`, `ui.reinforce`, `ui.hero`), the rally flag, the meteor, ground fire and roots.
+- Later (M4): AWI hero portraits for the other knights and the wizards.
 
 ## Notes
 

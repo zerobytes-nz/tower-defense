@@ -45,13 +45,15 @@ Edit `assets.manifest.json` (key, path, size, frames, what it's for, source). If
 `scripts/placeholder-art.mjs`. Then run `npm run assets:placeholders && npm run assets:docs` and commit the
 manifest, the placeholder, and this file. Game code refers to assets **only by manifest key**.
 
-## Every file to replace (39)
+## Every file to replace (73)
 
 ### Maps
 
 | Key | File (under `public/assets/licensed/`) | Size · frames | Used for | From the kit |
 |---|---|---|---|---|
 | `bg.meadow` | `maps/meadow.png` | 1280×720 | Level map: Mill Meadow (road, painted build pads). | `td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_1/game_background_1.png` (crop 0, 0, 1920, 1080) |
+| `bg.jungle` | `maps/jungle.png` | 1280×720 | Level map: Jungle Camp (two roads). | `td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_1/game_background_1.png` (crop 0, 0, 1920, 1080) |
+| `bg.ruins` | `maps/ruins.png` | 1280×720 | Level map: Old Ruins (the road splits in two). | `td-tileset3/PNG/game_background_4/game_background_4.png` (crop 0, 0, 1920, 1080) |
 
 ### Map pieces
 
@@ -72,9 +74,17 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `tower.mage.1` | `towers/mage-1.png` | 128×128 | Mage Tower, tier 1. | `magic-tower-game-assets/PNG/2.png` |
 | `tower.mage.2` | `towers/mage-2.png` | 128×128 | Mage Tower, tier 2. | `magic-tower-game-assets/PNG/3.png` |
 | `tower.mage.3` | `towers/mage-3.png` | 128×128 | Mage Tower, tier 3. | `magic-tower-game-assets/PNG/4.png` |
-| `tower.support.1` | `towers/support-1.png` | 128×128 | War Camp, tier 1. | `support-tower-game-assets/PNG/1.png` |
-| `tower.support.2` | `towers/support-2.png` | 128×128 | War Camp, tier 2. | `support-tower-game-assets/PNG/2.png` |
-| `tower.support.3` | `towers/support-3.png` | 128×128 | War Camp, tier 3. | `support-tower-game-assets/PNG/3.png` |
+| `tower.barracks.1` | `towers/barracks-1.png` | 128×128 | Barracks, tier 1. | `support-tower-game-assets/PNG/1.png` |
+| `tower.barracks.2` | `towers/barracks-2.png` | 128×128 | Barracks, tier 2. | `support-tower-game-assets/PNG/2.png` |
+| `tower.barracks.3` | `towers/barracks-3.png` | 128×128 | Barracks, tier 3. | `support-tower-game-assets/PNG/3.png` |
+| `tower.archer.longbow` | `towers/archer-longbow.png` | 128×128 | Longbow Keep (tier-4 branch of the archer tower). | `archer-tower-game-assets/PNG/10.png` |
+| `tower.archer.crossbow` | `towers/archer-crossbow.png` | 128×128 | Crossbow Fort (tier-4 branch of the archer tower). | `archer-tower-game-assets/PNG/12.png` |
+| `tower.catapult.firepot` | `towers/catapult-firepot.png` | 128×128 | Firepot Catapult (tier-4 branch of the catapult tower). | `stone-tower-game-assets/PNG/12.png` |
+| `tower.catapult.spiked` | `towers/catapult-spiked.png` | 128×128 | Spiked Ballista (tier-4 branch of the catapult tower). | `stone-tower-game-assets/PNG/26.png` |
+| `tower.mage.storm` | `towers/mage-storm.png` | 128×128 | Storm Spire (tier-4 branch of the mage tower). | `magic-tower-game-assets/PNG/13.png` |
+| `tower.mage.frost` | `towers/mage-frost.png` | 128×128 | Frost Sanctum (tier-4 branch of the mage tower). | `magic-tower-game-assets/PNG/8.png` |
+| `tower.barracks.paladins` | `towers/barracks-paladins.png` | 128×128 | Paladin Hall (tier-4 branch of the barracks tower). | `support-tower-game-assets/PNG/11.png` |
+| `tower.barracks.drums` | `towers/barracks-drums.png` | 128×128 | War Drums (tier-4 branch of the barracks tower). | `support-tower-game-assets/PNG/9.png` |
 
 ### Tower crews
 
@@ -83,6 +93,12 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `unit.archer.1` | `towers/archer-unit-1.png` | 672×64 · 12 × 56×64 @ 24 fps | Archer on top of the Archer Tower, tier 1: draw and shoot. | `archer-tower-game-assets/PNG` |
 | `unit.archer.2` | `towers/archer-unit-2.png` | 672×64 · 12 × 56×64 @ 24 fps | Archer on top of the Archer Tower, tier 2: draw and shoot. | `archer-tower-game-assets/PNG` |
 | `unit.archer.3` | `towers/archer-unit-3.png` | 672×64 · 12 × 56×64 @ 24 fps | Archer on top of the Archer Tower, tier 3: draw and shoot. | `archer-tower-game-assets/PNG` |
+| `unit.soldier.walk` | `units/soldier-walk.png` | 384×64 · 6 × 64×64 @ 10 fps, loop | Barracks soldier: walk (faces right). Original art. | Original. Keep the placeholder. |
+| `unit.soldier.attack` | `units/soldier-attack.png` | 384×64 · 6 × 64×64 @ 12 fps | Barracks soldier: attack (faces right). Original art. | Original. Keep the placeholder. |
+| `unit.soldier.die` | `units/soldier-die.png` | 384×64 · 6 × 64×64 @ 10 fps | Barracks soldier: die (faces right). Original art. | Original. Keep the placeholder. |
+| `unit.militia.walk` | `units/militia-walk.png` | 384×64 · 6 × 64×64 @ 10 fps, loop | Reinforcements militia: walk (faces right). Original art. | Original. Keep the placeholder. |
+| `unit.militia.attack` | `units/militia-attack.png` | 384×64 · 6 × 64×64 @ 12 fps | Reinforcements militia: attack (faces right). Original art. | Original. Keep the placeholder. |
+| `unit.militia.die` | `units/militia-die.png` | 384×64 · 6 × 64×64 @ 10 fps | Reinforcements militia: die (faces right). Original art. | Original. Keep the placeholder. |
 
 ### Shots
 
@@ -97,6 +113,9 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | Key | File (under `public/assets/licensed/`) | Size · frames | Used for | From the kit |
 |---|---|---|---|---|
 | `fx.blast` | `fx/blast.png` | 768×96 · 8 × 96×96 @ 20 fps | Boulder impact explosion. | `stone-tower-game-assets/PNG` |
+| `fx.meteor` | `fx/meteor.png` | 48×48 | Meteor Shower: falling rock. | Original. Keep the placeholder. |
+| `fx.fire` | `fx/fire.png` | 384×48 · 6 × 64×48 @ 12 fps, loop | Burning ground (Meteor Shower, Firepot Catapult). | Original. Keep the placeholder. |
+| `fx.roots` | `fx/roots.png` | 96×48 | Boss roots holding a tower. | Original. Keep the placeholder. |
 
 ### Enemies
 
@@ -114,6 +133,13 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `enemy.bat.die` | `enemies/bat-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy bat: death. | `tower-defense-monster-2d-sprites/PNG/10` |
 | `enemy.ogre.walk` | `enemies/ogre-walk.png` | 1280×128 · 10 × 128×128 @ 14 fps, loop | Enemy ogre: walk loop (faces right). | `monster-character-2d-sprites/PNG/10` |
 | `enemy.ogre.die` | `enemies/ogre-die.png` | 1280×128 · 10 × 128×128 @ 16 fps | Enemy ogre: death. | `monster-character-2d-sprites/PNG/10` |
+| `enemy.scorpion.walk` | `enemies/scorpion-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy scorpion: walk loop (faces right). | `2d-monster-sprites/PNG/1` |
+| `enemy.scorpion.die` | `enemies/scorpion-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy scorpion: death. | `2d-monster-sprites/PNG/1` |
+| `enemy.imp.walk` | `enemies/imp-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy imp: walk loop (faces right). | `monster-enemy-game-sprites/PNG/5` |
+| `enemy.imp.die` | `enemies/imp-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy imp: death. | `monster-enemy-game-sprites/PNG/5` |
+| `enemy.treant.walk` | `enemies/treant-walk.png` | 1920×192 · 10 × 192×192 @ 14 fps, loop | Enemy treant: walk loop (faces right). | `boss-monster-game-sprites/boss_1/PNG` |
+| `enemy.treant.die` | `enemies/treant-die.png` | 1920×192 · 10 × 192×192 @ 16 fps | Enemy treant: death. | `boss-monster-game-sprites/boss_1/PNG` |
+| `enemy.treant.cast` | `enemies/treant-cast.png` | 1920×192 · 10 × 192×192 @ 14 fps | Boss: the Old Treant slams the ground and roots towers. | `boss-monster-game-sprites/boss_1/PNG` |
 
 ### HUD / UI
 
@@ -125,6 +151,19 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `ui.pause` | `ui/pause.png` | 88×88 | HUD: pause button. | `td-gui/PNG/interface_game/button_pause.png` |
 | `ui.fast` | `ui/fast.png` | 88×88 | HUD: ×2 speed button. | `td-gui/PNG/interface_game/button_quick.png` |
 | `ui.star` | `ui/star.png` | 40×40 | Stars (result screen). | `td-gui/PNG/interface_game/star.png` |
+| `ui.meteor` | `ui/meteor.png` | 88×88 | Spell button: Meteor Shower. | Original. Keep the placeholder. |
+| `ui.reinforce` | `ui/reinforce.png` | 88×88 | Spell button: Reinforcements. | Original. Keep the placeholder. |
+| `ui.hero` | `ui/hero.png` | 88×88 | Hero portrait button (select hero, Shield Slam). | Original. Keep the placeholder. |
+| `ui.rally` | `ui/rally.png` | 40×40 | Rally-point flag for barracks soldiers. | Original. Keep the placeholder. |
+
+### hero
+
+| Key | File (under `public/assets/licensed/`) | Size · frames | Used for | From the kit |
+|---|---|---|---|---|
+| `hero.silver.idle` | `units/silver-idle.png` | 256×64 · 4 × 64×64 @ 6 fps, loop | Hero Sir Aldric: idle (faces right). Original art. | Original. Keep the placeholder. |
+| `hero.silver.walk` | `units/silver-walk.png` | 384×64 · 6 × 64×64 @ 10 fps, loop | Hero Sir Aldric: walk (faces right). Original art. | Original. Keep the placeholder. |
+| `hero.silver.attack` | `units/silver-attack.png` | 384×64 · 6 × 64×64 @ 12 fps | Hero Sir Aldric: attack (faces right). Original art. | Original. Keep the placeholder. |
+| `hero.silver.die` | `units/silver-die.png` | 384×64 · 6 × 64×64 @ 10 fps | Hero Sir Aldric: die (faces right). Original art. | Original. Keep the placeholder. |
 
 ## Sources
 

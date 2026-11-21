@@ -222,16 +222,16 @@
       }
     },
     {
-      "key": "tower.support.1",
+      "key": "tower.barracks.1",
       "type": "image",
-      "path": "towers/support-1.png",
+      "path": "towers/barracks-1.png",
       "width": 128,
       "height": 128,
       "frameWidth": 128,
       "frameHeight": 128,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "War Camp, tier 1.",
+      "usedFor": "Barracks, tier 1.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "support-tower-game-assets/PNG/1.png",
@@ -240,16 +240,16 @@
       }
     },
     {
-      "key": "tower.support.2",
+      "key": "tower.barracks.2",
       "type": "image",
-      "path": "towers/support-2.png",
+      "path": "towers/barracks-2.png",
       "width": 128,
       "height": 128,
       "frameWidth": 128,
       "frameHeight": 128,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "War Camp, tier 2.",
+      "usedFor": "Barracks, tier 2.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "support-tower-game-assets/PNG/2.png",
@@ -258,16 +258,16 @@
       }
     },
     {
-      "key": "tower.support.3",
+      "key": "tower.barracks.3",
       "type": "image",
-      "path": "towers/support-3.png",
+      "path": "towers/barracks-3.png",
       "width": 128,
       "height": 128,
       "frameWidth": 128,
       "frameHeight": 128,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "War Camp, tier 3.",
+      "usedFor": "Barracks, tier 3.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "support-tower-game-assets/PNG/3.png",
@@ -758,7 +758,7 @@
       "frameHeight": 88,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "HUD: ×2 speed button.",
+      "usedFor": "HUD: \u00d72 speed button.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/interface_game/button_quick.png"
@@ -779,6 +779,613 @@
       "kit": {
         "files": "td-gui/PNG/interface_game/star.png"
       }
+    },
+    {
+      "key": "bg.jungle",
+      "type": "image",
+      "path": "maps/jungle.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Jungle Camp (two roads).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_1/game_background_1.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "bg.ruins",
+      "type": "image",
+      "path": "maps/ruins.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Old Ruins (the road splits in two).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tileset3/PNG/game_background_4/game_background_4.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "tower.archer.longbow",
+      "type": "image",
+      "path": "towers/archer-longbow.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Longbow Keep (tier-4 branch of the archer tower).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG/10.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.archer.crossbow",
+      "type": "image",
+      "path": "towers/archer-crossbow.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Crossbow Fort (tier-4 branch of the archer tower).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "archer-tower-game-assets/PNG/12.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.catapult.firepot",
+      "type": "image",
+      "path": "towers/catapult-firepot.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Firepot Catapult (tier-4 branch of the catapult tower).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "stone-tower-game-assets/PNG/12.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.catapult.spiked",
+      "type": "image",
+      "path": "towers/catapult-spiked.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Spiked Ballista (tier-4 branch of the catapult tower).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "stone-tower-game-assets/PNG/26.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.mage.storm",
+      "type": "image",
+      "path": "towers/mage-storm.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Storm Spire (tier-4 branch of the mage tower).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "magic-tower-game-assets/PNG/13.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.mage.frost",
+      "type": "image",
+      "path": "towers/mage-frost.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Frost Sanctum (tier-4 branch of the mage tower).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "magic-tower-game-assets/PNG/8.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.barracks.paladins",
+      "type": "image",
+      "path": "towers/barracks-paladins.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Paladin Hall (tier-4 branch of the barracks tower).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "support-tower-game-assets/PNG/11.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "tower.barracks.drums",
+      "type": "image",
+      "path": "towers/barracks-drums.png",
+      "width": 128,
+      "height": 128,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "War Drums (tier-4 branch of the barracks tower).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "support-tower-game-assets/PNG/9.png",
+        "scale": 0.62,
+        "align": "bottom"
+      }
+    },
+    {
+      "key": "enemy.scorpion.walk",
+      "type": "spritesheet",
+      "path": "enemies/scorpion-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy scorpion: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "2d-monster-sprites/PNG/1",
+        "match": "walk",
+        "scale": 0.4
+      }
+    },
+    {
+      "key": "enemy.scorpion.die",
+      "type": "spritesheet",
+      "path": "enemies/scorpion-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy scorpion: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "2d-monster-sprites/PNG/1",
+        "match": "die",
+        "scale": 0.4
+      }
+    },
+    {
+      "key": "enemy.imp.walk",
+      "type": "spritesheet",
+      "path": "enemies/imp-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy imp: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-enemy-game-sprites/PNG/5",
+        "match": "walk",
+        "scale": 0.31
+      }
+    },
+    {
+      "key": "enemy.imp.die",
+      "type": "spritesheet",
+      "path": "enemies/imp-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy imp: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-enemy-game-sprites/PNG/5",
+        "match": "die",
+        "scale": 0.31
+      }
+    },
+    {
+      "key": "enemy.treant.walk",
+      "type": "spritesheet",
+      "path": "enemies/treant-walk.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy treant: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_1/PNG",
+        "match": "walk",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.treant.die",
+      "type": "spritesheet",
+      "path": "enemies/treant-die.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy treant: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_1/PNG",
+        "match": "die",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.treant.cast",
+      "type": "spritesheet",
+      "path": "enemies/treant-cast.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": 0
+      },
+      "usedFor": "Boss: the Old Treant slams the ground and roots towers.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_1/PNG",
+        "match": "attack",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "hero.silver.idle",
+      "type": "spritesheet",
+      "path": "units/silver-idle.png",
+      "width": 256,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 4,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 6,
+        "repeat": -1
+      },
+      "usedFor": "Hero Sir Aldric: idle (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "hero.silver.walk",
+      "type": "spritesheet",
+      "path": "units/silver-walk.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 10,
+        "repeat": -1
+      },
+      "usedFor": "Hero Sir Aldric: walk (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "hero.silver.attack",
+      "type": "spritesheet",
+      "path": "units/silver-attack.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 12,
+        "repeat": 0
+      },
+      "usedFor": "Hero Sir Aldric: attack (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "hero.silver.die",
+      "type": "spritesheet",
+      "path": "units/silver-die.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 10,
+        "repeat": 0
+      },
+      "usedFor": "Hero Sir Aldric: die (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "unit.soldier.walk",
+      "type": "spritesheet",
+      "path": "units/soldier-walk.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 10,
+        "repeat": -1
+      },
+      "usedFor": "Barracks soldier: walk (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "unit.soldier.attack",
+      "type": "spritesheet",
+      "path": "units/soldier-attack.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 12,
+        "repeat": 0
+      },
+      "usedFor": "Barracks soldier: attack (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "unit.soldier.die",
+      "type": "spritesheet",
+      "path": "units/soldier-die.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 10,
+        "repeat": 0
+      },
+      "usedFor": "Barracks soldier: die (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "unit.militia.walk",
+      "type": "spritesheet",
+      "path": "units/militia-walk.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 10,
+        "repeat": -1
+      },
+      "usedFor": "Reinforcements militia: walk (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "unit.militia.attack",
+      "type": "spritesheet",
+      "path": "units/militia-attack.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 12,
+        "repeat": 0
+      },
+      "usedFor": "Reinforcements militia: attack (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "unit.militia.die",
+      "type": "spritesheet",
+      "path": "units/militia-die.png",
+      "width": 384,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 10,
+        "repeat": 0
+      },
+      "usedFor": "Reinforcements militia: die (faces right). Original art.",
+      "source": "own"
+    },
+    {
+      "key": "fx.meteor",
+      "type": "image",
+      "path": "fx/meteor.png",
+      "width": 48,
+      "height": 48,
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Meteor Shower: falling rock.",
+      "source": "own"
+    },
+    {
+      "key": "fx.fire",
+      "type": "spritesheet",
+      "path": "fx/fire.png",
+      "width": 384,
+      "height": 48,
+      "frameWidth": 64,
+      "frameHeight": 48,
+      "frameCount": 6,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 12,
+        "repeat": -1
+      },
+      "usedFor": "Burning ground (Meteor Shower, Firepot Catapult).",
+      "source": "own"
+    },
+    {
+      "key": "fx.roots",
+      "type": "image",
+      "path": "fx/roots.png",
+      "width": 96,
+      "height": 48,
+      "frameWidth": 96,
+      "frameHeight": 48,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Boss roots holding a tower.",
+      "source": "own"
+    },
+    {
+      "key": "ui.meteor",
+      "type": "image",
+      "path": "ui/meteor.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Spell button: Meteor Shower.",
+      "source": "own"
+    },
+    {
+      "key": "ui.reinforce",
+      "type": "image",
+      "path": "ui/reinforce.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Spell button: Reinforcements.",
+      "source": "own"
+    },
+    {
+      "key": "ui.hero",
+      "type": "image",
+      "path": "ui/hero.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Hero portrait button (select hero, Shield Slam).",
+      "source": "own"
+    },
+    {
+      "key": "ui.rally",
+      "type": "image",
+      "path": "ui/rally.png",
+      "width": 40,
+      "height": 40,
+      "frameWidth": 40,
+      "frameHeight": 40,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Rally-point flag for barracks soldiers.",
+      "source": "own"
     }
   ]
 }

@@ -30,15 +30,16 @@ function map(id, grass, grass2, road, edge) {
     const m = MAPS[id], r = prng(7);
     c.fillStyle = grass; c.fillRect(0, 0, w, h);
     for (let i = 0; i < 260; i++) ell(c, r() * w, r() * h, 6 + r() * 22, 4 + r() * 12, grass2);
-    const t = buildTrack(m.path);
-    const stroke = (lw, col) => { c.lineWidth = lw; c.strokeStyle = col; c.lineCap = 'round'; c.lineJoin = 'round'; c.beginPath(); t.pts.forEach((p, i) => (i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y))); c.stroke(); };
+    const tracks = m.paths.map((p) => buildTrack(p));
+    const stroke = (lw, col) => { for (const t of tracks) { c.lineWidth = lw; c.strokeStyle = col; c.lineCap = 'round'; c.lineJoin = 'round'; c.beginPath(); t.pts.forEach((p, i) => (i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y))); c.stroke(); } };
     stroke(84, edge); stroke(72, road);
-    for (let i = 0; i < 120; i++) { const p = t.pts[Math.floor(r() * t.pts.length)]; ell(c, p.x + (r() - 0.5) * 50, p.y + (r() - 0.5) * 50, 3, 2, edge); }
+    const pts = tracks.flatMap((t) => t.pts);
+    for (let i = 0; i < 120; i++) { const p = pts[Math.floor(r() * pts.length)]; ell(c, p.x + (r() - 0.5) * 50, p.y + (r() - 0.5) * 50, 3, 2, edge); }
     for (const p of m.pads.filter((p) => p.painted)) padShape(c, p.x, p.y, 55, 26);
     // trees around the edges
     for (let i = 0; i < 40; i++) {
       const x = r() * w, y = r() * h;
-      if (t.pts.some((p) => Math.hypot(p.x - x, p.y - y) < 80) || m.pads.some((p) => Math.hypot(p.x - x, p.y - y) < 90)) continue;
+      if (pts.some((p) => Math.hypot(p.x - x, p.y - y) < 80) || m.pads.some((p) => Math.hypot(p.x - x, p.y - y) < 90)) continue;
       ell(c, x, y + 18, 20, 7, 'rgba(0,0,0,0.25)');
       rr(c, x - 4, y, 8, 18, 2, '#6b4a2b');
       ell(c, x, y - 8, 22, 20, '#3f8a2e', OUT, 2); ell(c, x - 6, y - 14, 8, 6, '#5fae3f');
@@ -86,7 +87,7 @@ function mageTower(tier) {
     ell(c, cx, top - 18, 10, 10, '#ff6a5a', OUT, 2);
   };
 }
-function supportTower(tier) {
+function barracksTower(tier) {
   return (c, w, h) => {
     const cx = w / 2, b = h - 8;
     ell(c, cx, b, 56, 12, 'rgba(0,0,0,0.3)');
@@ -127,8 +128,8 @@ const blast = (c, w, h, i, n) => {
 };
 
 // ── Enemies (face right, feet on the bottom edge) ───────────────────────────────────────────────────
-const SKIN = { grunt: '#6f8a3a', runner: '#8aa63a', brute: '#c86a3a', shaman: '#3a3a44', bat: '#7a6a6a', ogre: '#3a8a8a' };
-const SIZE = { grunt: 0.5, runner: 0.38, brute: 0.52, shaman: 0.5, bat: 0.45, ogre: 0.62 };
+const SKIN = { grunt: '#6f8a3a', runner: '#8aa63a', brute: '#c86a3a', shaman: '#3a3a44', bat: '#7a6a6a', ogre: '#3a8a8a', imp: '#6a3a9a' };
+const SIZE = { grunt: 0.5, runner: 0.38, brute: 0.52, shaman: 0.5, bat: 0.45, ogre: 0.62, imp: 0.46 };
 function enemy(kind, mode) {
   return (c, w, h, i, n) => {
     const s = SIZE[kind] * (w / 96) * 96, cx = w / 2, b = h - 4, t = i / n;
@@ -159,6 +160,99 @@ function enemy(kind, mode) {
     c.restore();
   };
 }
+
+function scorpion(mode) {
+  return (c, w, h, i, n) => {
+    const t = i / n, fall = mode === 'die' ? t : 0, cx = w / 2, b = h - 6, s = w * 0.42;
+    c.save(); c.globalAlpha = 1 - fall * 0.6;
+    ell(c, cx, b, s * 0.7, s * 0.1, 'rgba(0,0,0,0.25)');
+    for (let k = 0; k < 3; k++) { const st = mode === 'walk' ? Math.sin(t * TAU + k) * 3 : 0; c.lineWidth = 3; c.strokeStyle = OUT; c.beginPath(); c.moveTo(cx - s * 0.3 + k * s * 0.3, b - s * 0.2); c.lineTo(cx - s * 0.4 + k * s * 0.3 + st, b); c.stroke(); }
+    ell(c, cx, b - s * 0.28, s * 0.55, s * 0.22 * (1 - fall * 0.5), '#c89a4a', OUT, 2.5);
+    c.lineWidth = s * 0.12; c.strokeStyle = '#b0843a'; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(cx - s * 0.5, b - s * 0.3); c.quadraticCurveTo(cx - s * 0.9, b - s * 1.1, cx - s * 0.2, b - s * (1 - fall * 0.6)); c.stroke();
+    ell(c, cx - s * 0.18, b - s * (1 - fall * 0.6), s * 0.08, s * 0.08, '#3a2414');
+    for (const d of [-1, 1]) ell(c, cx + s * 0.65, b - s * 0.3 + d * s * 0.12, s * 0.14, s * 0.08, '#b0843a', OUT, 2);
+    c.restore();
+  };
+}
+function treant(mode) {
+  return (c, w, h, i, n) => {
+    const t = i / n, fall = mode === 'die' ? t : 0, cx = w * 0.36, b = h - 6, s = w * 0.3, sway = mode === 'walk' ? Math.sin(t * TAU) * 4 : 0;
+    const lift = mode === 'cast' ? Math.sin(t * Math.PI) : 0;
+    c.save(); c.globalAlpha = 1 - fall * 0.6; c.translate(cx, b); c.rotate(fall * 0.9); c.translate(-cx, -b);
+    ell(c, cx, b, s * 0.8, s * 0.12, 'rgba(0,0,0,0.3)');
+    for (const d of [-1, 1]) rr(c, cx + d * s * 0.25 - s * 0.12 + d * sway, b - s * 0.5, s * 0.24, s * 0.5, 6, '#5a3a22', OUT, 2.5);
+    rr(c, cx - s * 0.45, b - s * 1.4, s * 0.9, s * 1.0, s * 0.3, '#6b4a2b', OUT, 3);
+    for (const d of [-1, 1]) { c.lineWidth = s * 0.14; c.strokeStyle = '#5a3a22'; c.beginPath(); c.moveTo(cx + d * s * 0.4, b - s * 1.1); c.lineTo(cx + d * s * 0.85, b - s * (0.8 + lift * 0.9)); c.stroke(); }
+    ell(c, cx, b - s * 1.6, s * 0.75, s * 0.45, '#3f8a2e', OUT, 3); ell(c, cx - s * 0.3, b - s * 1.75, s * 0.25, s * 0.15, '#5fae3f');
+    for (const d of [-1, 1]) ell(c, cx + d * s * 0.16 + s * 0.1, b - s * 1.15, s * 0.07, s * 0.07, lift ? '#ffe040' : '#a0e060');
+    c.restore();
+  };
+}
+/** Knights: one drawer, three liveries. Feet on the bottom edge, facing right. */
+const LIVERY = { hero: ['#c8ccd8', '#3a5aa8', '#ffd040'], soldier: ['#b08050', '#8a3a2a', '#c8ccd4'], militia: ['#8a8a6a', '#5a6a3a', '#a08060'] };
+function knight(who, mode) {
+  const [armour, cloth, trim] = LIVERY[who];
+  return (c, w, h, i, n) => {
+    const t = i / n, cx = w / 2, b = h - 3, s = who === 'hero' ? 1 : 0.85;
+    const fall = mode === 'die' ? t : 0, step = mode === 'walk' ? Math.sin(t * TAU) * 4 : 0, bob = mode === 'idle' ? Math.sin(t * TAU) * 1.2 : 0;
+    const swing = mode === 'attack' ? Math.sin(t * Math.PI) : 0;
+    c.save(); c.globalAlpha = 1 - fall * 0.6; c.translate(cx, b); c.rotate(-fall * 1.2); c.scale(s, s); c.translate(-cx, -b);
+    ell(c, cx, b, 16, 4, 'rgba(0,0,0,0.25)');
+    rr(c, cx - 9 + step, b - 14, 7, 14, 2, '#4a4a52'); rr(c, cx + 2 - step, b - 14, 7, 14, 2, '#4a4a52');
+    rr(c, cx - 12, b - 36 + bob, 24, 24, 7, armour, OUT, 2);
+    rr(c, cx - 12, b - 22 + bob, 24, 8, 3, cloth);
+    ell(c, cx + 1, b - 44 + bob, 10, 10, armour, OUT, 2);
+    rr(c, cx + 2, b - 46 + bob, 9, 3, 1, OUT);
+    if (who === 'hero') poly(c, [[cx - 4, b - 54 + bob], [cx + 2, b - 62 + bob], [cx + 6, b - 53 + bob]], trim, OUT, 1.5);
+    // shield (left) and sword (right)
+    rr(c, cx - 20, b - 34 + bob, 11, 18, 4, cloth, OUT, 2); ell(c, cx - 14.5, b - 25 + bob, 2.5, 2.5, trim);
+    const a = -1.3 + swing * 2.2, hx = cx + 12, hy = b - 28 + bob;
+    c.lineWidth = 3.5; c.strokeStyle = '#e8e8f0'; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(hx, hy); c.lineTo(hx + Math.cos(a) * 22, hy + Math.sin(a) * 22); c.stroke();
+    c.lineWidth = 2; c.strokeStyle = trim; c.beginPath(); c.moveTo(hx - Math.sin(a) * 5, hy + Math.cos(a) * 5); c.lineTo(hx + Math.sin(a) * 5, hy - Math.cos(a) * 5); c.stroke();
+    c.restore();
+  };
+}
+function t4(kind, id) {
+  const base = { archer: archerTower(3), catapult: catapultTower(3), mage: mageTower(3), barracks: barracksTower(3) }[kind];
+  const col = { longbow: '#5a8a2a', crossbow: '#5a5a6a', firepot: '#ff7a20', spiked: '#9aa0aa', storm: '#4ab0ff', frost: '#a8e8ff', paladins: '#ffd040', drums: '#c8402a' }[id];
+  return (c, w, h) => {
+    base(c, w, h);
+    const cx = w / 2;
+    poly(c, [[cx - 3, 12], [cx - 3, 34], [cx + 1, 34], [cx + 1, 12]], '#4a2e18');
+    poly(c, [[cx + 1, 12], [cx + 22, 18], [cx + 1, 25]], col, OUT, 2);
+    ell(c, cx, h - 22, 9, 9, col, OUT, 2);
+  };
+}
+const meteor = (c, w, h) => {
+  ell(c, w * 0.62, h * 0.38, w * 0.3, h * 0.3, 'rgba(255,140,40,0.55)');
+  ell(c, w * 0.5, h * 0.5, w * 0.28, h * 0.27, '#7a4a3a', OUT, 2.5); ell(c, w * 0.42, h * 0.42, 5, 4, '#a8705a'); ell(c, w * 0.6, h * 0.58, 4, 3, '#ff9a40');
+};
+const fire = (c, w, h, i, n) => {
+  const t = i / n, r = prng(11);
+  ell(c, w / 2, h - 10, w / 2 - 4, 9, 'rgba(60,20,10,0.45)');
+  for (let k = 0; k < 5; k++) {
+    const x = 10 + k * ((w - 20) / 4), f = 0.6 + 0.4 * Math.sin((t + r()) * TAU), fh = (14 + r() * 14) * f;
+    poly(c, [[x - 7, h - 10], [x, h - 10 - fh], [x + 7, h - 10]], '#ff7a20');
+    poly(c, [[x - 3.5, h - 10], [x, h - 10 - fh * 0.55], [x + 3.5, h - 10]], '#ffe060');
+  }
+};
+const roots = (c, w, h) => {
+  c.lineCap = 'round';
+  for (const [x0, a] of [[16, -1.1], [34, -1.4], [52, -1.6], [70, -1.9], [84, -2.2]]) {
+    c.lineWidth = 7; c.strokeStyle = OUT; c.beginPath(); c.moveTo(x0, h - 4); c.quadraticCurveTo(x0 + Math.cos(a) * 14, h - 24, x0 + Math.cos(a) * 6, h - 40); c.stroke();
+    c.lineWidth = 4.5; c.strokeStyle = '#6b4a2b'; c.stroke();
+  }
+};
+const roundButton = (inner) => (c, w, h) => { ell(c, w / 2, h / 2, w / 2 - 4, h / 2 - 4, '#6b4226', '#3a3a44', 5); ell(c, w / 2, h / 2, w / 2 - 12, h / 2 - 12, '#8a5a32'); inner(c, w, h); };
+const uiMeteor = roundButton((c, w, h) => { meteor(c, w, h); });
+const uiReinforce = roundButton((c, w, h) => {
+  for (const d of [-1, 1]) { c.lineWidth = 6; c.strokeStyle = '#e8e8f0'; c.lineCap = 'round'; c.beginPath(); c.moveTo(w / 2 - d * 16, h * 0.68); c.lineTo(w / 2 + d * 16, h * 0.3); c.stroke(); }
+  rr(c, w / 2 - 10, h * 0.62, 20, 6, 2, '#ffd040');
+});
+const uiHero = roundButton((c, w, h) => { c.save(); c.translate(w / 2 - 32, h / 2 - 38); knight('hero', 'idle')(c, 64, 64, 0, 4); c.restore(); });
+const rally = (c, w, h) => { rr(c, w * 0.3, 4, 3, h - 8, 1, '#5a3a22'); poly(c, [[w * 0.3 + 3, 5], [w - 4, 11], [w * 0.3 + 3, 19]], '#3a5aa8', OUT, 2); ell(c, w * 0.32, h - 5, 8, 3, 'rgba(0,0,0,0.3)'); };
 
 // ── UI ──────────────────────────────────────────────────────────────────────────────────────────────
 const heart = (c, w, h) => {
@@ -196,6 +290,9 @@ const star = (c, w, h) => {
 
 export const drawers = {
   'bg.meadow': map('meadow', '#7aa83a', '#86b444', '#d8b860', '#a8883a'),
+  'bg.jungle': map('jungle', '#3f7a2a', '#4a8a30', '#c8a060', '#8a6a3a'),
+  'bg.ruins': map('ruins', '#8a9a6a', '#9aa678', '#b8b0a0', '#7a7468'),
+  'fx.meteor': meteor, 'fx.fire': fire, 'fx.roots': roots, 'ui.meteor': uiMeteor, 'ui.reinforce': uiReinforce, 'ui.hero': uiHero, 'ui.rally': rally,
   'map.pad': (c, w, h) => padShape(c, w / 2, h / 2, w / 2 - 6, h / 2 - 6),
   'shot.arrow': arrow, 'shot.boulder': boulder, 'shot.bolt': bolt, 'fx.blast': blast,
   'ui.heart': heart, 'ui.coin': coin, 'ui.wave': wave, 'ui.pause': pause, 'ui.fast': fast, 'ui.star': star,
@@ -204,7 +301,13 @@ for (const t of [1, 2, 3]) {
   drawers[`tower.archer.${t}`] = archerTower(t);
   drawers[`tower.catapult.${t}`] = catapultTower(t);
   drawers[`tower.mage.${t}`] = mageTower(t);
-  drawers[`tower.support.${t}`] = supportTower(t);
+  drawers[`tower.barracks.${t}`] = barracksTower(t);
   drawers[`unit.archer.${t}`] = archerUnit(t);
 }
 for (const k of Object.keys(SKIN)) for (const m of ['walk', 'die']) drawers[`enemy.${k}.${m}`] = enemy(k, m);
+for (const m of ['walk', 'die']) { drawers[`enemy.scorpion.${m}`] = scorpion(m); drawers[`enemy.treant.${m}`] = treant(m); }
+drawers['enemy.treant.cast'] = treant('cast');
+for (const [kind, ids] of [['archer', ['longbow', 'crossbow']], ['catapult', ['firepot', 'spiked']], ['mage', ['storm', 'frost']], ['barracks', ['paladins', 'drums']]])
+  for (const id of ids) drawers[`tower.${kind}.${id}`] = t4(kind, id);
+for (const [key, who] of [['hero.silver', 'hero'], ['unit.soldier', 'soldier'], ['unit.militia', 'militia']])
+  for (const m of ['idle', 'walk', 'attack', 'die']) drawers[`${key}.${m}`] = knight(who, m);

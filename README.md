@@ -38,8 +38,9 @@ The import only reads the kit and writes packed sheets to `public/assets/license
 
 | Path | What |
 |---|---|
-| `src/game/` | Rules, pure TypeScript (no Phaser): `sim.ts` (the battle, seeded, 60 Hz), `towers.ts`, `enemies.ts`, `levels.ts`, `maps.ts` (paths and pads), `bot.ts`. `npm run sim` runs these in Node. |
-| `src/scenes/` | Boot, Menu, Game (draws the battle and handles taps). |
+| `src/game/` | Rules, pure TypeScript (no Phaser): `sim.ts` (the battle, seeded, 60 Hz), `towers.ts` (tiers and tier-4 branches), `enemies.ts`, `heroes.ts` (hero and spells), `levels.ts`, `maps.ts` (roads and pads), `bot.ts`. `npm run sim` runs these in Node. |
+| `src/scenes/` | Boot, Menu (title and level select), Game (draws the battle and handles taps, hero orders, spells). |
+| `src/save.ts`, `src/systems/audio.ts` | Local save (stars, seen enemies, sound) and synthesized sound effects. |
 | `src/assets.ts` | Loads art by manifest key; `assets.manifest.json` is the list of every file. |
 | `src/theoswap.ts`, `src/profile.ts`, `src/deeplink.ts` | TheoSwap connection (wired in in milestone 4). |
 | `scripts/` | Asset rails (import, placeholders, docs, checks), PWA icons, deploy, sim. |

@@ -20,15 +20,26 @@ export function centreCamera(scene: Phaser.Scene): void {
 }
 
 /**
- * A 1280×720 background with mirrored copies to the left and right, so the side margins on wide phones continue the
- * art. Returned as one container (depth, alpha, destroy act on all three).
+ * A 1280×720 background with mirrored copies all round, so the margins on wide phones (left/right) and on tall
+ * windows or tablets (top/bottom) continue the art. Returned as one container (depth, alpha, destroy act on all).
  */
 export function wideBackground(scene: Phaser.Scene, key: string): Phaser.GameObjects.Container {
   // The copies tuck 4 px under the real image, so the art's 1–2 px edge border doesn't show as a seam.
-  const tuck = 4;
-  return scene.add.container(0, 0, [
-    scene.add.image(tuck, 0, key).setOrigin(1, 0).setFlipX(true),
-    scene.add.image(GAME_W - tuck, 0, key).setOrigin(0, 0).setFlipX(true),
-    scene.add.image(0, 0, key).setOrigin(0),
-  ]);
+  const tuck = 4, c = scene.add.container(0, 0);
+  for (const row of [-1, 1, 0]) {
+    for (const col of [-1, 1, 0]) {
+      const x = col < 0 ? tuck : col > 0 ? GAME_W - tuck : 0, y = row < 0 ? tuck : row > 0 ? GAME_H - tuck : 0;
+      c.add(scene.add.image(x, y, key).setOrigin(col < 0 ? 1 : 0, row < 0 ? 1 : 0).setFlip(col !== 0, row !== 0));
+    }
+  }
+  return c;
+}
+
+/**
+ * How much to enlarge HUD buttons so they stay thumb-sized when the 1280×720 design area is shrunk onto a small
+ * screen (a phone in landscape shows it at about half size). 1 on desktop and tablets.
+ */
+export function uiBoost(scene: Phaser.Scene): number {
+  const zoom = 1 / scene.scale.displayScale.y;
+  return zoom < 0.62 ? 1.3 : zoom < 0.8 ? 1.15 : 1;
 }

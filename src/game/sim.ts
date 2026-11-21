@@ -41,6 +41,7 @@ export interface Enemy {
   /** The unit that stops this enemy (null: walking). `held`: that unit has reached it. */
   blocker: number | null;
   held: boolean;
+  shield: number; maxShield: number;
   atkCd: number;
   bossCd: number;
 }
@@ -122,7 +123,8 @@ export type SimEvent =
   | { type: 'slam'; x: number; y: number; r: number }
   | { type: 'meteor'; x: number; y: number; r: number }
   | { type: 'meteorFall'; x: number; y: number; at: number }
-  | { type: 'roots'; enemy: Enemy; towers: Tower[] }
+  | { type: 'roots'; enemy: Enemy; towers: Tower[] }   // roots or freeze (the boss's ability says which)
+  | { type: 'summon'; enemy: Enemy }
   | { type: 'end'; won: boolean };
 
 /** Small, fast, seedable PRNG (mulberry32). */
@@ -212,12 +214,15 @@ export class Battle {
 
   towerOn(pad: number) { return this.towers.find((t) => t.pad === pad); }
 
+  /** Snowed-in pads (Frostfall) open when wave `frozen.wave` starts. */
+  padFrozen(pad: number) { const f = this.level.frozen; return !!f && f.pads.includes(pad) && this.wave + 1 < f.wave; }
+
   /** A price after the upgrade tree's discount. */
   price(base: number) { return Math.round(base * this.mods.cost); }
 
   build(pad: number, kind: TowerKind): Tower | null {
     const cost = this.price(TOWERS[kind].tiers[0].cost);
-    if (this.over || this.towerOn(pad) || this.gold < cost || !this.map.pads[pad]) return null;
+    if (this.over || this.towerOn(pad) || this.gold < cost || !this.map.pads[pad] || this.padFrozen(pad)) return null;
     this.gold -= cost;
     const p = this.map.pads[pad];
     const t: Tower = {
@@ -426,13 +431,14 @@ export class Battle {
     this.events.push({ type: 'wave', n });
   }
 
-  private spawn(p: Pending) {
+  private spawn(p: Pending, dist = 0) {
     const def = ENEMIES[p.kind];
-    const hp = Math.round(def.hp * (def.boss ? 1 : 1 + this.level.hpGrowth * p.wave));
+    const k = def.boss ? 1 : (1 + this.level.hpGrowth * p.wave) * (this.level.hp ?? 1);
+    const hp = Math.round(def.hp * k), shield = Math.round((def.shield ?? 0) * k);
     const e: Enemy = {
-      id: this.nextId++, def, hp, maxHp: hp, path: p.path, dist: 0, offset: def.boss ? 0 : (this.rand() - 0.5) * 26,
+      id: this.nextId++, def, hp, maxHp: hp, path: p.path, dist, offset: def.boss ? 0 : (this.rand() - 0.5) * 26,
       x: 0, y: 0, facing: 1, alive: true, slowUntil: 0, slow: 0, stunUntil: 0, burnUntil: 0, burnDps: 0,
-      blocker: null, held: false, atkCd: 0.5, bossCd: def.boss?.every ?? 0,
+      blocker: null, held: false, shield, maxShield: shield, atkCd: 0.5, bossCd: def.boss?.every ?? 0,
     };
     this.place(e);
     this.enemies.push(e);
@@ -455,10 +461,19 @@ export class Battle {
     return { x: p.x - Math.sin(p.angle) * e.offset, y: p.y + Math.cos(p.angle) * e.offset };
   }
 
-  private speedOf(e: Enemy) { return e.def.speed * (this.time < e.slowUntil ? 1 - e.slow : 1); }
+  private speedOf(e: Enemy) {
+    const ice = this.level.ice && !e.def.flying ? this.level.ice : 1;
+    return e.def.speed * ice * (this.time < e.slowUntil ? 1 - e.slow : 1);
+  }
 
   private damage(e: Enemy, amount: number, magic: boolean, pierce = 0) {
     if (!e.alive) return;
+    if (!magic && e.shield > 0) {
+      // The shield takes physical hits first (armour doesn't apply to it); what's left goes on to health.
+      const soak = Math.min(e.shield, amount);
+      e.shield -= soak; amount -= soak;
+      if (amount <= 0) return;
+    }
     const cut = magic ? e.def.resist : e.def.armor * (1 - pierce);
     e.hp -= amount * (1 - cut);
     if (e.hp <= 0) this.kill(e);
@@ -480,6 +495,8 @@ export class Battle {
       }
     }
     this.events.push({ type: 'death', enemy: e, gold: e.def.bounty });
+    const sp = e.def.split;
+    if (sp) for (let i = 0; i < sp.count; i++) this.spawn({ at: this.time, kind: sp.kind, wave: Math.max(0, this.wave), path: e.path }, Math.max(0, e.dist + (i - (sp.count - 1) / 2) * 14));
   }
 
   // ── Simulation ────────────────────────────────────────────────────────────────────────────────────
@@ -544,6 +561,11 @@ export class Battle {
       e.bossCd -= DT;
       if (e.bossCd > 0) continue;
       e.bossCd = b.every;
+      if (b.ability === 'summon' && b.summon) {
+        for (let i = 0; i < b.summon.count; i++) this.spawn({ at: now, kind: b.summon.kind, wave: Math.max(0, this.wave), path: e.path }, Math.max(0, e.dist + 10 + i * 12));
+        this.events.push({ type: 'summon', enemy: e });
+        continue;
+      }
       const hit = this.towers.filter((t) => Math.hypot(t.x - e.x, t.y - e.y) <= b.radius);
       for (const t of hit) t.rootedUntil = now + b.time;
       this.events.push({ type: 'roots', enemy: e, towers: hit });

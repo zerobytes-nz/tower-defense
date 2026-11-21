@@ -56,7 +56,17 @@ and variety between fights. The plan now leans on these:
    - ✅ Part 1 (2026-11-22): upgrade tree (24 perks in 6 columns, bought top-down with stars, Reset refunds;
      `src/game/perks.ts` → the sim's `Mods`), kit GUI on the title, level select, upgrade, pause and win/lose screens.
      The whole tree makes World 1 easy even for a build-only player; Worlds 2–4 are balanced assuming some perks.
-   - Part 2: Worlds 2 and 3. Part 3: World 4, Heroic, Endless.
+   - ✅ Part 2 (2026-11-22): World 2 Sunscorch (two entrances: Sunbaked Oasis, Bone Canyon, Ember Pass with the
+     Stone Golem, who summons Dust Mites) and World 3 Frostfall (icy roads speed ground enemies up, snowed-in pads
+     open at a set wave: Frozen Pass, Crystal Lake, Twilight Moor with the Yeti, who freezes towers). New enemies:
+     Bone Knight (shield that soaks physical damage; magic goes through), Sand Polyp (splits into 3 Dust Mites),
+     Wraith, Ice Ape, Ice Troll. Level select pages per world. Per-level `hp` tuned so the bot (no perks) wins all
+     nine: ★ 3.0/2.7/1.8 · 2.8/1.8/2.1 · 1.9/1.8/1.4; with the whole tree, 3★ everywhere.
+     Phone and desktop pass: HUD, speed/pause, wave and action buttons grow ×1.15–1.3 when the screen shows the game
+     below 80 % size (about 48 px on a 667×375 phone); backgrounds mirror on all four sides (tall windows, tablets);
+     full screen + landscape lock on Android at the first level start; portrait phones get "Turn your phone sideways".
+     Checked at 667×375, 375×812, 768×1024, 1024×768 and 1366×768.
+   - Part 3: World 4, Heroic, Endless.
 
    Worlds 2–4 (9 more maps from the kit, 3 bosses: Stone Golem, Yeti, Skull Knight) with their world rules, the new
    enemies, two-path maps. Heroic per level, Endless.

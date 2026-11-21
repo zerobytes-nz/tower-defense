@@ -758,7 +758,7 @@
       "frameHeight": 88,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "HUD: ×2 speed button.",
+      "usedFor": "HUD: \u00d72 speed button.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/interface_game/button_quick.png"
@@ -1547,7 +1547,7 @@
       "frameHeight": 119,
       "frameCount": 4,
       "displayScale": 1,
-      "usedFor": "Three-star group: frame 0 = no stars … frame 3 = three stars.",
+      "usedFor": "Three-star group: frame 0 = no stars \u2026 frame 3 = three stars.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/levels",
@@ -1724,7 +1724,7 @@
       "frameHeight": 62,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "Close (×) button.",
+      "usedFor": "Close (\u00d7) button.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/upgrade/button_close.png"
@@ -2208,6 +2208,534 @@
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/upgrade/ico_24.png"
+      }
+    },
+    {
+      "key": "bg.oasis",
+      "type": "image",
+      "path": "maps/oasis.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Sunbaked Oasis.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_2/game_background_2.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "bg.canyon",
+      "type": "image",
+      "path": "maps/canyon.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Bone Canyon.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tileset3/PNG/game_background_1/game_background_1.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "bg.cave",
+      "type": "image",
+      "path": "maps/cave.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Ember Pass.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tileset3/PNG/game_background_3/game_background_3.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "bg.snow",
+      "type": "image",
+      "path": "maps/snow.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Frozen Watch.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_4/game_background_4.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "bg.crystal",
+      "type": "image",
+      "path": "maps/crystal.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Crystal Hollow.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tileset3/PNG/game_background_2/game_background_2.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "bg.dusk",
+      "type": "image",
+      "path": "maps/dusk.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Twilight Moor.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_3/game_background_3.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "enemy.raider.walk",
+      "type": "spritesheet",
+      "path": "enemies/raider-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy raider: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-enemy-game-sprites/PNG/3",
+        "match": "walk",
+        "scale": 0.28
+      }
+    },
+    {
+      "key": "enemy.raider.die",
+      "type": "spritesheet",
+      "path": "enemies/raider-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy raider: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-enemy-game-sprites/PNG/3",
+        "match": "die",
+        "scale": 0.28
+      }
+    },
+    {
+      "key": "enemy.polyp.walk",
+      "type": "spritesheet",
+      "path": "enemies/polyp-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy polyp: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-enemy-game-sprites/PNG/1",
+        "match": "walk",
+        "scale": 0.31
+      }
+    },
+    {
+      "key": "enemy.polyp.die",
+      "type": "spritesheet",
+      "path": "enemies/polyp-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy polyp: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-enemy-game-sprites/PNG/1",
+        "match": "die",
+        "scale": 0.31
+      }
+    },
+    {
+      "key": "enemy.mite.walk",
+      "type": "spritesheet",
+      "path": "enemies/mite-walk.png",
+      "width": 640,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy mite: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "2d-monster-sprites/PNG/9",
+        "match": "walk",
+        "scale": 0.22
+      }
+    },
+    {
+      "key": "enemy.mite.die",
+      "type": "spritesheet",
+      "path": "enemies/mite-die.png",
+      "width": 640,
+      "height": 64,
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy mite: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "2d-monster-sprites/PNG/9",
+        "match": "die",
+        "scale": 0.22
+      }
+    },
+    {
+      "key": "enemy.wraith.walk",
+      "type": "spritesheet",
+      "path": "enemies/wraith-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy wraith: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-character-2d-sprites/PNG/8",
+        "match": "WALK",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.wraith.die",
+      "type": "spritesheet",
+      "path": "enemies/wraith-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy wraith: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-character-2d-sprites/PNG/8",
+        "match": "DIE",
+        "scale": 0.24
+      }
+    },
+    {
+      "key": "enemy.ape.walk",
+      "type": "spritesheet",
+      "path": "enemies/ape-walk.png",
+      "width": 1120,
+      "height": 112,
+      "frameWidth": 112,
+      "frameHeight": 112,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy ape: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-character-2d-sprites/PNG/9",
+        "match": "WALK",
+        "scale": 0.26
+      }
+    },
+    {
+      "key": "enemy.ape.die",
+      "type": "spritesheet",
+      "path": "enemies/ape-die.png",
+      "width": 1120,
+      "height": 112,
+      "frameWidth": 112,
+      "frameHeight": 112,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy ape: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-character-2d-sprites/PNG/9",
+        "match": "DIE",
+        "scale": 0.26
+      }
+    },
+    {
+      "key": "enemy.troll.walk",
+      "type": "spritesheet",
+      "path": "enemies/troll-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy troll: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-character-2d-sprites/PNG/7",
+        "match": "WALK",
+        "scale": 0.28
+      }
+    },
+    {
+      "key": "enemy.troll.die",
+      "type": "spritesheet",
+      "path": "enemies/troll-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy troll: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-character-2d-sprites/PNG/7",
+        "match": "DIE",
+        "scale": 0.28
+      }
+    },
+    {
+      "key": "enemy.golem.walk",
+      "type": "spritesheet",
+      "path": "enemies/golem-walk.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy golem: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_2/PNG",
+        "match": "0_boss_walk",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.golem.die",
+      "type": "spritesheet",
+      "path": "enemies/golem-die.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy golem: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_2/PNG",
+        "match": "0_boss_die",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.yeti.walk",
+      "type": "spritesheet",
+      "path": "enemies/yeti-walk.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy yeti: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_4/PNG",
+        "match": "0_boss_walk",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.yeti.die",
+      "type": "spritesheet",
+      "path": "enemies/yeti-die.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy yeti: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_4/PNG",
+        "match": "0_boss_die",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.golem.cast",
+      "type": "spritesheet",
+      "path": "enemies/golem-cast.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": 0
+      },
+      "usedFor": "Boss: the Stone Golem shakes out Dust Mites.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_2/PNG",
+        "match": "0_boss_specialty_0",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.yeti.cast",
+      "type": "spritesheet",
+      "path": "enemies/yeti-cast.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": 0
+      },
+      "usedFor": "Boss: the Yeti roars and freezes towers.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_4/PNG",
+        "match": "0_boss_attack",
+        "scale": 0.3
       }
     }
   ]

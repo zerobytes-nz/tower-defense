@@ -37,7 +37,7 @@ export function think(b: Battle, opts: BotOptions = {}): void {
   if (!pads) { pads = b.map.pads.map((_, i) => i).sort((x, y) => padValue(b, y) - padValue(b, x)); order.set(b, pads); }
   const mix = opts.mix ?? PLAN;
   // Build on the next free pad if we can afford the planned tower…
-  const free = pads.filter((p) => !b.towerOn(p));
+  const free = pads.filter((p) => !b.towerOn(p) && !b.padFrozen(p));
   const built = b.towers.length;
   if (free.length && built < mix.length) {
     const kind = mix[built];

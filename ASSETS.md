@@ -45,7 +45,7 @@ Edit `assets.manifest.json` (key, path, size, frames, what it's for, source). If
 `scripts/placeholder-art.mjs`. Then run `npm run assets:placeholders && npm run assets:docs` and commit the
 manifest, the placeholder, and this file. Game code refers to assets **only by manifest key**.
 
-## Every file to replace (124)
+## Every file to replace (148)
 
 ### Maps
 
@@ -55,6 +55,12 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `bg.jungle` | `maps/jungle.png` | 1280×720 | Level map: Jungle Camp (two roads). | `td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_1/game_background_1.png` (crop 0, 0, 1920, 1080) |
 | `bg.ruins` | `maps/ruins.png` | 1280×720 | Level map: Old Ruins (the road splits in two). | `td-tileset3/PNG/game_background_4/game_background_4.png` (crop 0, 0, 1920, 1080) |
 | `bg.menu` | `gui/menu-bg.png` | 1280×720 | Title screen background. | `td-gui/PNG/menu/bg.png` (crop 0, 0, 1920, 1080) |
+| `bg.oasis` | `maps/oasis.png` | 1280×720 | Level map: Sunbaked Oasis. | `td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_2/game_background_2.png` (crop 0, 0, 1920, 1080) |
+| `bg.canyon` | `maps/canyon.png` | 1280×720 | Level map: Bone Canyon. | `td-tileset3/PNG/game_background_1/game_background_1.png` (crop 0, 0, 1920, 1080) |
+| `bg.cave` | `maps/cave.png` | 1280×720 | Level map: Ember Pass. | `td-tileset3/PNG/game_background_3/game_background_3.png` (crop 0, 0, 1920, 1080) |
+| `bg.snow` | `maps/snow.png` | 1280×720 | Level map: Frozen Watch. | `td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_4/game_background_4.png` (crop 0, 0, 1920, 1080) |
+| `bg.crystal` | `maps/crystal.png` | 1280×720 | Level map: Crystal Hollow. | `td-tileset3/PNG/game_background_2/game_background_2.png` (crop 0, 0, 1920, 1080) |
+| `bg.dusk` | `maps/dusk.png` | 1280×720 | Level map: Twilight Moor. | `td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_3/game_background_3.png` (crop 0, 0, 1920, 1080) |
 
 ### Map pieces
 
@@ -141,6 +147,24 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `enemy.treant.walk` | `enemies/treant-walk.png` | 1920×192 · 10 × 192×192 @ 14 fps, loop | Enemy treant: walk loop (faces right). | `boss-monster-game-sprites/boss_1/PNG` |
 | `enemy.treant.die` | `enemies/treant-die.png` | 1920×192 · 10 × 192×192 @ 16 fps | Enemy treant: death. | `boss-monster-game-sprites/boss_1/PNG` |
 | `enemy.treant.cast` | `enemies/treant-cast.png` | 1920×192 · 10 × 192×192 @ 14 fps | Boss: the Old Treant slams the ground and roots towers. | `boss-monster-game-sprites/boss_1/PNG` |
+| `enemy.raider.walk` | `enemies/raider-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy raider: walk loop (faces right). | `monster-enemy-game-sprites/PNG/3` |
+| `enemy.raider.die` | `enemies/raider-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy raider: death. | `monster-enemy-game-sprites/PNG/3` |
+| `enemy.polyp.walk` | `enemies/polyp-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy polyp: walk loop (faces right). | `monster-enemy-game-sprites/PNG/1` |
+| `enemy.polyp.die` | `enemies/polyp-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy polyp: death. | `monster-enemy-game-sprites/PNG/1` |
+| `enemy.mite.walk` | `enemies/mite-walk.png` | 640×64 · 10 × 64×64 @ 14 fps, loop | Enemy mite: walk loop (faces right). | `2d-monster-sprites/PNG/9` |
+| `enemy.mite.die` | `enemies/mite-die.png` | 640×64 · 10 × 64×64 @ 16 fps | Enemy mite: death. | `2d-monster-sprites/PNG/9` |
+| `enemy.wraith.walk` | `enemies/wraith-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy wraith: walk loop (faces right). | `monster-character-2d-sprites/PNG/8` |
+| `enemy.wraith.die` | `enemies/wraith-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy wraith: death. | `monster-character-2d-sprites/PNG/8` |
+| `enemy.ape.walk` | `enemies/ape-walk.png` | 1120×112 · 10 × 112×112 @ 14 fps, loop | Enemy ape: walk loop (faces right). | `monster-character-2d-sprites/PNG/9` |
+| `enemy.ape.die` | `enemies/ape-die.png` | 1120×112 · 10 × 112×112 @ 16 fps | Enemy ape: death. | `monster-character-2d-sprites/PNG/9` |
+| `enemy.troll.walk` | `enemies/troll-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy troll: walk loop (faces right). | `monster-character-2d-sprites/PNG/7` |
+| `enemy.troll.die` | `enemies/troll-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy troll: death. | `monster-character-2d-sprites/PNG/7` |
+| `enemy.golem.walk` | `enemies/golem-walk.png` | 1920×192 · 10 × 192×192 @ 14 fps, loop | Enemy golem: walk loop (faces right). | `boss-monster-game-sprites/boss_2/PNG` |
+| `enemy.golem.die` | `enemies/golem-die.png` | 1920×192 · 10 × 192×192 @ 16 fps | Enemy golem: death. | `boss-monster-game-sprites/boss_2/PNG` |
+| `enemy.yeti.walk` | `enemies/yeti-walk.png` | 1920×192 · 10 × 192×192 @ 14 fps, loop | Enemy yeti: walk loop (faces right). | `boss-monster-game-sprites/boss_4/PNG` |
+| `enemy.yeti.die` | `enemies/yeti-die.png` | 1920×192 · 10 × 192×192 @ 16 fps | Enemy yeti: death. | `boss-monster-game-sprites/boss_4/PNG` |
+| `enemy.golem.cast` | `enemies/golem-cast.png` | 1920×192 · 10 × 192×192 @ 14 fps | Boss: the Stone Golem shakes out Dust Mites. | `boss-monster-game-sprites/boss_2/PNG` |
+| `enemy.yeti.cast` | `enemies/yeti-cast.png` | 1920×192 · 10 × 192×192 @ 14 fps | Boss: the Yeti roars and freezes towers. | `boss-monster-game-sprites/boss_4/PNG` |
 
 ### HUD / UI
 

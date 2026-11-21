@@ -3,7 +3,8 @@ import { GAME_W, GAME_H } from '../config.ts';
 import { centreCamera, wideBackground, BLEED } from '../systems/wide.ts';
 import { header, imageButton, label } from '../ui.ts';
 import { isRealArt } from '../assets.ts';
-import { LEVELS } from '../game/levels.ts';
+import { LEVELS, WORLDS } from '../game/levels.ts';
+import { ENEMIES } from '../game/enemies.ts';
 import { MAPS } from '../game/maps.ts';
 import { PERKS, canBuy, perkById, perksCost, type Perk } from '../game/perks.ts';
 import { save, write, totalStars, unlocked } from '../save.ts';
@@ -60,18 +61,26 @@ export class MenuScene extends Phaser.Scene {
     const ids = LEVELS.map((l) => l.id), cx = GAME_W / 2, cy = 392;
     this.layer.add(this.add.image(cx, cy, 'gui.table').setScale(1.6));
     this.layer.add(header(this, cx, 96, 'gui.header.levels', 'Levels'));
-    this.layer.add(label(this, cx, 158, 'World 1 · The Green Frontier', 32, '#ffcc33'));
+    const world = WORLDS[MenuScene.worldPage];
+    this.layer.add(label(this, cx, 152, `World ${world.id} · ${world.name}`, 32, '#ffcc33'));
+    this.layer.add(label(this, cx, 184, world.rule, 19, '#e8d8b8'));
+    const flip = (d: number) => { sfx.tap(); MenuScene.worldPage = (MenuScene.worldPage + d + WORLDS.length) % WORLDS.length; this.show('levels'); };
+    if (WORLDS.length > 1) {
+      this.layer.add(imageButton(this, cx - 470, cy, 'gui.btn.back', () => flip(-1), 0.85));
+      this.layer.add(imageButton(this, cx + 470, cy, 'gui.btn.forward', () => flip(1), 0.85));
+    }
 
-    const w = 270, gap = 22, x0 = cx - (LEVELS.length - 1) * (w + gap) / 2;
-    LEVELS.forEach((lv, i) => {
-      const x = x0 + i * (w + gap), y = 370, open = unlocked(ids, i), stars = save().stars[lv.id] ?? 0;
+    const list = LEVELS.map((lv, i) => ({ lv, i })).filter(({ lv }) => lv.world === world.id);
+    const w = 270, gap = 22, x0 = cx - (list.length - 1) * (w + gap) / 2;
+    list.forEach(({ lv, i }, k) => {
+      const x = x0 + k * (w + gap), y = 380, open = unlocked(ids, i), stars = save().stars[lv.id] ?? 0;
       const c = this.add.container(x, y);
       c.add(this.add.image(0, -40, 'gui.window').setDisplaySize(w, 300));
       const thumb = this.add.image(0, -88, MAPS[lv.map].bg).setDisplaySize(w - 34, (w - 34) * (9 / 16));
       if (!open) thumb.setTint(0x4a4a4a);
       c.add(thumb);
       c.add(label(this, 0, 18, `${i + 1}. ${lv.name}`, 26, open ? '#ffffff' : '#9a8a7a'));
-      const boss = lv.waves.some((wv) => wv.groups.some((g) => g.kind === 'treant'));
+      const boss = lv.waves.some((wv) => wv.groups.some((g) => ENEMIES[g.kind].boss));
       c.add(label(this, 0, 46, `${lv.waves.length} waves${boss ? ' · Boss' : ''}`, 18, '#e8d8b8'));
       c.add(this.add.sprite(0, 88, 'gui.stars', stars).setScale(0.55));
       if (!open) c.add(label(this, 0, -88, 'Locked', 34, '#e8d8b8'));
@@ -80,7 +89,7 @@ export class MenuScene extends Phaser.Scene {
         c.setInteractive({ useHandCursor: true });
         c.on('pointerdown', () => c.setScale(0.97));
         c.on('pointerout', () => c.setScale(1));
-        c.on('pointerup', () => { sfx.tap(); this.scene.start('Game', { level: i }); });
+        c.on('pointerup', () => { sfx.tap(); this.goFull(); this.scene.start('Game', { level: i }); });
       }
       this.layer.add(c);
     });
@@ -101,6 +110,8 @@ export class MenuScene extends Phaser.Scene {
   // ── Upgrade tree ──────────────────────────────────────────────────────────────────────────────────
 
   private pick: string | null = null;
+  /** The world page the level select shows (kept while the game runs). */
+  static worldPage = 0;
 
   private upgrades(): void {
     const s = save(), cx = GAME_W / 2, cy = 400;
@@ -147,6 +158,14 @@ export class MenuScene extends Phaser.Scene {
     this.layer.add(imageButton(this, cx + 300, 660, 'gui.btn.done', () => { sfx.tap(); this.pick = null; this.show('levels'); }));
     if (!isRealArt('gui.btn.reset')) this.layer.add(label(this, cx + 190, 700, 'Reset', 16, '#e8d8b8'));
     if (!isRealArt('gui.btn.done')) this.layer.add(label(this, cx + 300, 700, 'Done', 16, '#e8d8b8'));
+  }
+
+  /** Phones: full screen and landscape lock on the first level start (needs a tap; best effort, iOS ignores both). */
+  private goFull(): void {
+    if (!this.sys.game.device.input.touch || this.scale.isFullscreen) return;
+    try { this.scale.startFullscreen(); } catch { /* not allowed */ }
+    const o = screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> };
+    o?.lock?.('landscape').catch(() => {});
   }
 
   private tapPerk(p: Perk): void {

@@ -20,6 +20,10 @@ URL switches: `?bot` the bot plays · `?seed=N` same fight · `?debug` FPS meter
 Controls: tap the skull to send the first wave (or the next one early, for bonus gold). Tap a pad, pick a tower,
 tap it again to build. Tap a tower to upgrade or sell it (tap the button twice). ×2 speeds up, ❚❚ pauses.
 
+Screens: phones in landscape (portrait asks to turn the phone; Android goes full screen at the first level), tablets
+and desktop browsers. The game is laid out on 1280×720 and fills any shape of screen; on small screens the HUD
+buttons are drawn larger (`uiBoost` in `src/systems/wide.ts`).
+
 ## Art: read [ASSETS.md](ASSETS.md)
 
 A fresh clone runs on **original placeholder art** (MIT, `public/assets/placeholder/`). The real art is the CraftPix

@@ -2,7 +2,7 @@
 // All rules live in the sim; this file only shows them.
 import Phaser from 'phaser';
 import { GAME_W, GAME_H, COLORS, DEBUG, BOT, SEED } from '../config.ts';
-import { centreCamera, wideBackground, BLEED } from '../systems/wide.ts';
+import { centreCamera, wideBackground, BLEED, uiBoost } from '../systems/wide.ts';
 import { asset } from '../assets.ts';
 import { button, header, imageButton, label, panel } from '../ui.ts';
 import { Battle, DT, type Enemy, type Shot, type Tower, type Unit } from '../game/sim.ts';
@@ -11,6 +11,7 @@ import { ENEMIES, type EnemyKind } from '../game/enemies.ts';
 import { TOWERS, TOWER_KINDS, MAX_TIER, towerArt, type TowerKind } from '../game/towers.ts';
 import { SPELLS, SPELL_IDS, METEOR, HERO_XP, type SpellId } from '../game/heroes.ts';
 import { think } from '../game/bot.ts';
+import { MenuScene } from './MenuScene.ts';
 import { save, markSeen, recordStars } from '../save.ts';
 import { modsFor } from '../game/perks.ts';
 import { sfx, soundOn, toggleSound } from '../systems/audio.ts';
@@ -20,9 +21,8 @@ const ARCHER_Y = [-72, -76, -86, -96];
 /** Enemies are drawn a bit bigger than the packed frames; flyers float this far above the road. */
 const ENEMY_SCALE = 1.15, FLY_UP = 34;
 /** Sprite anchor per enemy where the art isn't centred in its frame. */
-const ORIGIN_X: Partial<Record<EnemyKind, number>> = { treant: 0.36 };
+const ORIGIN_X: Partial<Record<EnemyKind, number>> = { treant: 0.36, golem: 0.36, yeti: 0.37 };
 /** The bottom-left action bar. */
-const BAR_Y = GAME_H - 58;
 
 type Menu =
   | { kind: 'build'; pad: number; pick: TowerKind | null }
@@ -65,6 +65,8 @@ export class GameScene extends Phaser.Scene {
   private waveBonus!: Phaser.GameObjects.Text;
   private hint?: Phaser.GameObjects.Text;
   private fastBtn!: Phaser.GameObjects.Image;
+  /** HUD size boost on small screens (wide.ts uiBoost). */
+  private k = 1;
   private heroBtn?: ActionButton;
   private slamBtn?: ActionButton;
   private spellBtns = new Map<SpellId, ActionButton>();
@@ -72,15 +74,17 @@ export class GameScene extends Phaser.Scene {
   private card?: Phaser.GameObjects.Container;
   private cardQueue: EnemyKind[] = [];
   private fps?: Phaser.GameObjects.Text;
+  private snowViews = new Map<number, Phaser.GameObjects.Container>();
 
   constructor() { super('Game'); }
 
   init(data: { level?: number }): void {
     this.levelIndex = data.level ?? 0;
+    MenuScene.worldPage = Math.max(0, LEVELS[this.levelIndex].world - 1);
     this.b = new Battle({ level: LEVELS[this.levelIndex], seed: SEED || Math.floor(Math.random() * 1e9), mods: BOT ? undefined : modsFor(save().perks) });
     this.speed = 1; this.paused = false; this.acc = 0; this.steps = 0; this.menu = null; this.aim = null;
     this.overlay = undefined; this.card = undefined; this.cardQueue = [];
-    this.enemyViews.clear(); this.towerViews.clear(); this.shotViews.clear(); this.unitViews.clear(); this.fireViews.clear(); this.spellBtns.clear();
+    this.snowViews.clear(); this.enemyViews.clear(); this.towerViews.clear(); this.shotViews.clear(); this.unitViews.clear(); this.fireViews.clear(); this.spellBtns.clear();
   }
 
   create(): void {
@@ -96,6 +100,14 @@ export class GameScene extends Phaser.Scene {
     // Build pads: the painted ones are part of the map art; extra ones get the pad sprite. Each is a tap target.
     map.pads.forEach((p, i) => {
       if (!p.painted) this.add.image(p.x, p.y, 'map.pad').setDepth(-9);
+      if (this.b.padFrozen(i)) {
+        // Snowed in (Frostfall): a drift over the pad until its wave comes.
+        const snow = this.add.container(p.x, p.y).setDepth(-8);
+        snow.add(this.add.ellipse(0, 0, 118, 56, 0xf4f8fc, 0.92).setStrokeStyle(3, 0xa8c8e0));
+        snow.add(this.add.ellipse(-18, -8, 40, 14, 0xffffff, 0.9));
+        snow.add(label(this, 0, 2, `Wave ${this.b.level.frozen!.wave}`, 18, '#5a8ab0'));
+        this.snowViews.set(i, snow);
+      }
       this.add.zone(p.x, p.y - 20, 124, 110).setInteractive({ useHandCursor: true }).setDepth(1)
         .on('pointerup', (ptr: Phaser.Input.Pointer) => this.tapPad(i, ptr));
     });
@@ -119,7 +131,8 @@ export class GameScene extends Phaser.Scene {
   // ── HUD ───────────────────────────────────────────────────────────────────────────────────────────
 
   private makeHud(): void {
-    const top = this.add.container(16, 14).setDepth(950);
+    const k = this.k = uiBoost(this);
+    const top = this.add.container(16, 14).setDepth(950).setScale(k);
     const g = this.add.graphics();
     g.fillStyle(COLORS.panelEdge, 0.85).fillRoundedRect(0, 0, 360, 58, 14);
     g.fillStyle(COLORS.panel, 0.9).fillRoundedRect(3, 3, 354, 52, 12);
@@ -133,19 +146,19 @@ export class GameScene extends Phaser.Scene {
     this.hudWave = label(this, 236, 29, '', 24, '#e8d8b8').setOrigin(0, 0.5);
     top.add(this.hudWave);
 
-    const pause = this.add.image(GAME_W - 46, 46, 'ui.pause').setScale(0.72).setDepth(950).setInteractive({ useHandCursor: true });
+    const pause = this.add.image(GAME_W - 46 * k, 46 * k, 'ui.pause').setScale(0.72 * k).setDepth(950).setInteractive({ useHandCursor: true });
     pause.on('pointerup', () => { sfx.tap(); this.showPause(); });
-    this.fastBtn = this.add.image(GAME_W - 118, 46, 'ui.fast').setScale(0.72).setDepth(950).setInteractive({ useHandCursor: true });
+    this.fastBtn = this.add.image(GAME_W - 118 * k, 46 * k, 'ui.fast').setScale(0.72 * k).setDepth(950).setInteractive({ useHandCursor: true });
     this.fastBtn.on('pointerup', () => { sfx.tap(); this.speed = this.speed === 1 ? 2 : 1; this.fastBtn.setTint(this.speed === 2 ? 0xffe080 : 0xffffff); });
 
     const wb = this.b.map.waveButton;
-    this.waveRing = this.add.graphics({ x: wb.x, y: wb.y }).setDepth(940);
-    this.waveBtn = this.add.image(wb.x, wb.y, 'ui.wave').setScale(0.62).setDepth(941).setInteractive({ useHandCursor: true });
+    this.waveRing = this.add.graphics({ x: wb.x, y: wb.y }).setDepth(940).setScale(k);
+    this.waveBtn = this.add.image(wb.x, wb.y, 'ui.wave').setScale(0.62 * k).setDepth(941).setInteractive({ useHandCursor: true });
     this.waveBtn.on('pointerup', () => this.callWave());
-    this.waveBonus = label(this, wb.x, wb.y + 44, '', 22, '#ffdd66').setDepth(942);
-    this.tweens.add({ targets: this.waveBtn, scale: 0.7, duration: 520, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    this.waveBonus = label(this, wb.x, wb.y + 44 * k, '', 22 * k, '#ffdd66').setDepth(942);
+    this.tweens.add({ targets: this.waveBtn, scale: 0.7 * k, duration: 520, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     const right = wb.x > GAME_W / 2;
-    this.hint = label(this, wb.x + (right ? -70 : 70), wb.y + 4, 'Tap to start!', 26, '#ffffff').setOrigin(right ? 1 : 0, 0.5).setDepth(942);
+    this.hint = label(this, wb.x + (right ? -70 : 70) * k, wb.y + 4, 'Tap to start!', 26 * k, '#ffffff').setOrigin(right ? 1 : 0, 0.5).setDepth(942);
     this.tweens.add({ targets: this.hint, x: this.hint.x + (right ? -12 : 12), duration: 500, yoyo: true, repeat: -1 });
 
     this.aimHint = label(this, GAME_W / 2, GAME_H - 40, '', 26, '#ffffff').setDepth(960).setVisible(false);
@@ -153,18 +166,19 @@ export class GameScene extends Phaser.Scene {
 
   /** Hero portrait, his ability, and the two spells: bottom left. */
   private makeActionBar(): void {
-    let x = 58;
+    const k = this.k;
+    let x = 58 * k;
     if (this.b.hero) {
       this.heroBtn = this.actionButton(x, 'ui.hero', () => this.setAim(this.aim?.kind === 'hero' ? null : { kind: 'hero' }));
       this.heroBtn.text = label(this, 28, 26, '1', 20, '#ffdd66');
       this.heroBtn.c.add(this.heroBtn.text);
-      x += 86;
+      x += 86 * k;
       this.slamBtn = this.actionButton(x, 'ui.hero', () => {
         if (this.b.heroAbility()) { sfx.tap(); this.setAim(null); } else sfx.deny();
       });
       this.slamBtn.img.setTint(0xa0c8ff);
       this.slamBtn.c.add(label(this, 0, 2, '✦', 30, '#ffffff'));
-      x += 86;
+      x += 86 * k;
     }
     for (const id of SPELL_IDS) {
       this.spellBtns.set(id, this.actionButton(x, `ui.${id}`, () => {
@@ -172,12 +186,12 @@ export class GameScene extends Phaser.Scene {
         sfx.tap();
         this.setAim(this.aim?.kind === 'spell' && this.aim.id === id ? null : { kind: 'spell', id });
       }));
-      x += 86;
+      x += 86 * k;
     }
   }
 
   private actionButton(x: number, key: string, onTap: () => void): ActionButton {
-    const c = this.add.container(x, BAR_Y).setDepth(950);
+    const c = this.add.container(x, GAME_H - 58 * this.k).setDepth(950).setScale(this.k);
     const img = this.add.image(0, 0, key).setScale(0.8);
     const shade = this.add.graphics();
     const ring = this.add.graphics();
@@ -192,7 +206,7 @@ export class GameScene extends Phaser.Scene {
     if (charge < 1) {
       btn.shade.fillStyle(0x000000, 0.55).slice(0, 0, 34, -Math.PI / 2 + Math.PI * 2 * charge, Math.PI * 1.5, false).fillPath();
     } else btn.ring.lineStyle(4, armed ? 0x7aff7a : COLORS.gold, 1).strokeCircle(0, 0, 36);
-    btn.c.setScale(armed ? 1.1 : 1);
+    btn.c.setScale((armed ? 1.1 : 1) * this.k);
   }
 
   private refreshHud(): void {
@@ -262,6 +276,7 @@ export class GameScene extends Phaser.Scene {
   private tapPad(pad: number, ptr: Phaser.Input.Pointer): void {
     if (this.paused || this.overlay || this.card || this.b.over) return;
     if (this.aim) { this.doAim(ptr.worldX, ptr.worldY); return; }
+    if (this.b.padFrozen(pad)) { sfx.deny(); const p = this.b.map.pads[pad]; this.pop(p.x, p.y - 40, `Snowed in until wave ${this.b.level.frozen!.wave}`, '#cfe8ff', 20); return; }
     const t = this.b.towerOn(pad);
     if (this.menu && ((this.menu.kind === 'build' && this.menu.pad === pad) || (this.menu.kind === 'tower' && this.menu.tower === t))) { this.closeMenu(); return; }
     sfx.tap();
@@ -427,6 +442,7 @@ export class GameScene extends Phaser.Scene {
         case 'meteorFall': this.meteorFall(e.x, e.y, e.at); break;
         case 'meteor': this.blast(e.x, e.y, e.r); this.cameras.main.shake(140, 0.006); sfx.boom(); break;
         case 'roots': this.roots(e.enemy, e.towers); break;
+        case 'summon': this.summon(e.enemy); break;
         case 'end':
           if (e.won && !BOT) recordStars(b.level.id, b.stars);
           if (e.won) sfx.win(); else sfx.lose();
@@ -455,7 +471,9 @@ export class GameScene extends Phaser.Scene {
         const tint = stunned ? 0xfff08a : b.time < e.burnUntil ? 0xffa070 : b.time < e.slowUntil ? 0x9ad8ff : null;
         if (tint === null) v.sprite.clearTint(); else v.sprite.setTint(tint);
       }
-      if (e.hp < e.maxHp) this.hpBar(e.x, e.y - 50 * e.def.size * ENEMY_SCALE - fy, 30 * e.def.size, e.hp / e.maxHp, e.def.boss ? 0xd04ae0 : undefined);
+      const by = e.y - 50 * e.def.size * ENEMY_SCALE - fy;
+      if (e.hp < e.maxHp) this.hpBar(e.x, by, 30 * e.def.size, e.hp / e.maxHp, e.def.boss ? 0xd04ae0 : undefined);
+      if (e.shield > 0) this.hpBar(e.x, by - 6, 30 * e.def.size, e.shield / e.maxShield, 0x9ad8ff);
     }
     for (const s of b.shots) {
       const v = this.shotViews.get(s.id);
@@ -491,6 +509,13 @@ export class GameScene extends Phaser.Scene {
       if (this.fireViews.has(f.id)) continue;
       const s = this.add.sprite(f.x, f.y + 8, 'fx.fire').setOrigin(0.5, 1).setScale(f.r / 32).setDepth(f.y - 2).setAlpha(0.9).play('fx.fire');
       this.fireViews.set(f.id, s);
+    }
+    // Snow melts when its wave starts
+    for (const [i, v] of this.snowViews) if (!b.padFrozen(i)) {
+      this.snowViews.delete(i);
+      const p = b.map.pads[i];
+      this.pop(p.x, p.y - 30, 'Thawed!', '#cfe8ff');
+      this.tweens.add({ targets: v, alpha: 0, scaleX: 1.3, duration: 500, onComplete: () => v.destroy() });
     }
     // Roots wear off
     for (const t of b.towers) {
@@ -610,20 +635,34 @@ export class GameScene extends Phaser.Scene {
     sfx.whoosh();
   }
 
+  /** The Golem shakes out minions. */
+  private summon(e: Enemy): void {
+    const v = this.enemyViews.get(e.id);
+    if (v && this.anims.exists(`enemy.${e.def.kind}.cast`)) {
+      v.casting = this.time.now + 700;
+      v.sprite.play(`enemy.${e.def.kind}.cast`).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => { if (this.enemyViews.has(e.id)) v.sprite.play(`enemy.${e.def.kind}.walk`); });
+    }
+    this.ring(e.x, e.y, 90, 0xc8a060);
+    this.cameras.main.shake(200, 0.005);
+    sfx.slam();
+  }
+
   private roots(e: Enemy, towers: Tower[]): void {
     const v = this.enemyViews.get(e.id);
     if (v && this.anims.exists(`enemy.${e.def.kind}.cast`)) {
       v.casting = this.time.now + 700;
       v.sprite.play(`enemy.${e.def.kind}.cast`).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => { if (this.enemyViews.has(e.id)) v.sprite.play(`enemy.${e.def.kind}.walk`); });
     }
-    this.ring(e.x, e.y, e.def.boss!.radius, 0x6b8a2b);
+    const freeze = e.def.boss!.ability === 'freeze';
+    this.ring(e.x, e.y, e.def.boss!.radius, freeze ? 0x9ad8ff : 0x6b8a2b);
     for (const t of towers) {
       const tv = this.towerViews.get(t.id);
       if (!tv) continue;
       tv.roots?.destroy();
       tv.roots = this.add.image(t.x, t.y + 34, 'fx.roots').setOrigin(0.5, 1).setDepth(t.y + 1).setScale(1.1, 0);
+      if (freeze) tv.roots.setTint(0xbfe8ff);
       this.tweens.add({ targets: tv.roots, scaleY: 1.1, duration: 300, ease: 'Back.easeOut' });
-      tv.body.setTint(0x9a8a6a);
+      tv.body.setTint(freeze ? 0xa8d8ff : 0x9a8a6a);
     }
     if (this.menu) this.drawMenu();
     this.cameras.main.shake(260, 0.006);
@@ -742,7 +781,7 @@ export class GameScene extends Phaser.Scene {
     c.add(stars);
     if (won) {
       for (let i = 1; i <= b.stars; i++) this.time.delayedCall(250 + i * 260, () => { stars.setFrame(i); this.tweens.add({ targets: stars, scale: 1.05, duration: 120, yoyo: true }); sfx.coin(); });
-      c.add(label(this, x, y + 2, b.stars === 3 ? 'Perfect defence!' : 'Level complete!', 30, '#ffffff'));
+      c.add(label(this, x, y + 2, b.stars === 3 ? 'Great defence!' : 'Level complete!', 30, '#ffffff'));
       c.add(label(this, x, y + 40, `${b.lives} lives left · ${b.kills} enemies`, 20, '#e8d8b8'));
       c.add(label(this, x, y + 72, b.stars < 3 ? 'Lose fewer lives for more stars.' : 'Spend stars on upgrades!', 18, '#b8a888'));
     } else {

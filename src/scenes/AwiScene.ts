@@ -13,14 +13,14 @@ import {
   RARITY_COLOR, RARITIES, TOWER_VARIANTS, HERO_ITEMS, CRYSTALS_PER_STAR, LOADOUT_SIZE,
   SPELL_ITEMS, AWI_SPELLS, awiTitle, awiStat, cantAdd, perkText, type AWI,
 } from '../game/awi.ts';
-import { makeSpellIcons } from '../systems/spellIcons.ts';
 import { HEROES } from '../game/heroes.ts';
 
 type Page = 'connect' | 'reveal' | 'loadout';
 const hex = (n: number) => `#${n.toString(16).padStart(6, '0')}`;
 const CRYSTAL_COLOR: Record<string, number> = { c5y0iq: 0x5ad06a, vqfzxy: 0xe8504a, cfx17w: 0x4a9ae8 };
+const CRYSTAL_ART: Record<string, string> = { c5y0iq: 'green', vqfzxy: 'red', cfx17w: 'blue' };
 
-/** An AWI's picture: its tower (tinted), its knight (tinted), its spell icon, or a crystal. */
+/** An AWI's picture: its tower (tinted), its knight, its spell icon, or its crystal. */
 export function awiIcon(scene: Phaser.Scene, a: AWI, size: number): Phaser.GameObjects.Container {
   const c = scene.add.container(0, 0);
   if (a.slot === 'tower') {
@@ -34,16 +34,13 @@ export function awiIcon(scene: Phaser.Scene, a: AWI, size: number): Phaser.GameO
     img.setScale((size * 1.05) / img.height); // wide frames: the knight stands in the middle
     c.add(img);
   } else if (a.slot === 'spell') {
-    makeSpellIcons(scene);
     const img = scene.add.image(0, 0, `ui.awi.${SPELL_ITEMS[a.itemId]}`);
     img.setScale((size * 0.85) / img.width);
     c.add(img);
   } else {
-    const g = scene.add.graphics(), r = size * 0.36, col = CRYSTAL_COLOR[a.itemId] ?? 0xffffff;
-    g.fillStyle(col, 1).fillPoints([{ x: 0, y: -r * 1.2 }, { x: r * 0.8, y: -r * 0.2 }, { x: 0, y: r * 1.1 }, { x: -r * 0.8, y: -r * 0.2 }], true);
-    g.fillStyle(0xffffff, 0.45).fillPoints([{ x: 0, y: -r * 1.2 }, { x: r * 0.8, y: -r * 0.2 }, { x: 0, y: -r * 0.1 }], true);
-    g.lineStyle(3, 0x1a100a, 1).strokePoints([{ x: 0, y: -r * 1.2 }, { x: r * 0.8, y: -r * 0.2 }, { x: 0, y: r * 1.1 }, { x: -r * 0.8, y: -r * 0.2 }], true);
-    c.add(g);
+    const img = scene.add.image(0, 0, `ui.crystal.${CRYSTAL_ART[a.itemId] ?? 'blue'}`);
+    img.setScale((size * 0.8) / img.width);
+    c.add(img);
   }
   return c;
 }

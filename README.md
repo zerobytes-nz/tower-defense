@@ -33,8 +33,12 @@ own copy of the kit, unzipped outside the repo:
 
 ```bash
 npm run assets:import -- "/path/to/craftpix-net-519305-tower-defense-2d-game-kit"
+npm run assets:import-packs -- --knights "/path/to/knight-characters-pack" --tactical "/path/to/tactical-strategy-kit"
 npm run assets:status
 ```
+
+The second command adds the units from two more CraftPix packs: the three hero knights (*Knight Characters Free
+Sprite*) and the barracks soldiers and militia (*Tactical Strategy Game Kit*, unzipped; see ASSETS.md).
 
 The import only reads the kit and writes packed sheets to `public/assets/licensed/` (gitignored).
 `npm run check-assets` (pre-commit hook and CI) fails if a licensed file or a key is ever staged.
@@ -49,7 +53,7 @@ The import only reads the kit and writes packed sheets to `public/assets/license
 | `src/assets.ts` | Loads art by manifest key; `assets.manifest.json` is the list of every file. |
 | `src/game/awi.ts` | AWIs: TheoSwap item ids → tower variants, knights, spells (numbers from the NFT's attributes), crystals; the loadout rules. Pure, so the sim uses it too. |
 | `src/theoswap.ts`, `src/profile.ts`, `src/deeplink.ts`, `src/demo.ts` | TheoSwap connection, the connected player and their loadout, the `?userCode=` deep link, demo players. |
-| `src/scenes/AwiScene.ts`, `src/systems/spellIcons.ts` | Connect / reveal / loadout screens; AWI spell icons drawn in code. |
+| `src/scenes/AwiScene.ts` | Connect / reveal / loadout screens. |
 | `scripts/` | Asset rails (import, placeholders, docs, checks), PWA icons, deploy, sim. |
 
 ## TheoSwap and the API key

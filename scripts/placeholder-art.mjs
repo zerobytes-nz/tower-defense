@@ -256,7 +256,6 @@ const uiReinforce = roundButton((c, w, h) => {
   for (const d of [-1, 1]) { c.lineWidth = 6; c.strokeStyle = '#e8e8f0'; c.lineCap = 'round'; c.beginPath(); c.moveTo(w / 2 - d * 16, h * 0.68); c.lineTo(w / 2 + d * 16, h * 0.3); c.stroke(); }
   rr(c, w / 2 - 10, h * 0.62, 20, 6, 2, '#ffd040');
 });
-const uiHero = roundButton((c, w, h) => { c.save(); c.translate(w / 2 - 32, h / 2 - 38); knight('hero', 'idle')(c, 64, 64, 0, 4); c.restore(); });
 const rally = (c, w, h) => { rr(c, w * 0.3, 4, 3, h - 8, 1, '#5a3a22'); poly(c, [[w * 0.3 + 3, 5], [w - 4, 11], [w * 0.3 + 3, 19]], '#3a5aa8', OUT, 2); ell(c, w * 0.32, h - 5, 8, 3, 'rgba(0,0,0,0.3)'); };
 
 // ── UI ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -374,7 +373,7 @@ export const drawers = {
   'bg.lava': map('lava', '#4a4448', '#544e52', '#a49c98', '#e8742a'),
   'bg.hollow': map('hollow', '#4a4c4e', '#55585a', '#b0aca4', '#6a6058'),
   'bg.bog': map('bog', '#55605a', '#5e6a62', '#a8aca0', '#9ab83a'),
-  'fx.meteor': meteor, 'fx.fire': fire, 'fx.roots': roots, 'ui.meteor': uiMeteor, 'ui.reinforce': uiReinforce, 'ui.hero': uiHero, 'ui.rally': rally,
+  'fx.meteor': meteor, 'fx.fire': fire, 'fx.roots': roots, 'ui.meteor': uiMeteor, 'ui.reinforce': uiReinforce, 'ui.rally': rally,
   'map.pad': (c, w, h) => padShape(c, w / 2, h / 2, w / 2 - 6, h / 2 - 6),
   'shot.arrow': arrow, 'shot.boulder': boulder, 'shot.bolt': bolt, 'fx.blast': blast,
   'ui.heart': heart, 'ui.coin': coin, 'ui.wave': wave, 'ui.pause': pause, 'ui.fast': fast, 'ui.star': star,
@@ -393,8 +392,6 @@ const BOSS_PAL = { golem: ['#3a3a40', '#5a5a64', '#4a4a54', '#6ac0e8'], yeti: ['
 for (const [k, pal] of Object.entries(BOSS_PAL)) for (const m of ['walk', 'die', 'cast']) drawers[`enemy.${k}.${m}`] = treant(m, pal);
 for (const [kind, ids] of [['archer', ['longbow', 'crossbow']], ['catapult', ['firepot', 'spiked']], ['mage', ['storm', 'frost']], ['barracks', ['paladins', 'drums']]])
   for (const id of ids) drawers[`tower.${kind}.${id}`] = t4(kind, id);
-for (const [key, who] of [['unit.soldier', 'soldier'], ['unit.militia', 'militia']])
-  for (const m of ['idle', 'walk', 'attack', 'die']) drawers[`${key}.${m}`] = knight(who, m);
 /** Heroes: the 64×64 knight drawn at 2× into a wide frame, feet at the bottom centre (the licensed sheets match). */
 const at2x = (draw) => (c, w, h, i, n) => { c.save(); c.translate(w / 2, h); c.scale(2, 2); c.translate(-32, -64); draw(c, 64, 64, i, n); c.restore(); };
 for (const [id, who] of [['silver', 'hero'], ['bronze', 'bronze'], ['black', 'black']])
@@ -402,3 +399,41 @@ for (const [id, who] of [['silver', 'hero'], ['bronze', 'bronze'], ['black', 'bl
 for (const k of ['levels', 'win', 'failed', 'settings', 'upgrade']) drawers[`gui.header.${k}`] = ribbon;
 for (const k of ['menu', 'next', 'restart', 'back', 'forward', 'sound', 'soundoff', 'settings']) drawers[`gui.btn.${k}`] = roundBtn(ICON[k]);
 for (let i = 1; i <= 24; i++) drawers[`perk.${i}`] = perkIcon(i);
+
+// ── Kit-art stand-ins (spell buttons, crystals, hero buttons, spell effects) ──────────────────────
+// Same sizes and anchor points as the kit sheets (see `origin` in the manifest), drawn in code.
+const SPELL_COL = { armor: '#ff7a5a', rally: '#ffc94d', fire: '#ff8a3a', acid: '#9ad04a', slow: '#9a8aff', rock: '#b8a890', freeze: '#bfe8ff', lightning: '#ffe066' };
+const spellGlyph = {
+  armor: (c, C) => { poly(c, [[C - 20, C - 22], [C + 20, C - 22], [C + 20, C + 2], [C, C + 24], [C - 20, C + 2]], '#d8d0c0', '#1a100a', 4); c.lineWidth = 5; c.strokeStyle = '#c0302a'; c.beginPath(); c.moveTo(C - 4, C - 22); c.lineTo(C + 4, C - 8); c.lineTo(C - 4, C + 2); c.lineTo(C + 4, C + 14); c.stroke(); },
+  rally: (c, C) => { rr(c, C - 18, C - 26, 5, 52, 1, '#6a4a2a'); poly(c, [[C - 13, C - 26], [C + 22, C - 18], [C - 13, C - 6]], '#ffc94d', '#1a100a'); c.lineWidth = 5; c.strokeStyle = '#fff'; c.beginPath(); c.moveTo(C, C + 20); c.lineTo(C + 8, C + 8); c.lineTo(C + 16, C + 20); c.stroke(); },
+  fire: (c, C) => { poly(c, [[C, C - 26], [C + 18, C + 4], [C + 12, C + 20], [C, C + 24], [C - 12, C + 20], [C - 18, C + 4], [C - 6, C - 6]], '#ff6a2a'); poly(c, [[C, C - 6], [C + 9, C + 10], [C, C + 20], [C - 9, C + 10]], '#ffd84a'); },
+  acid: (c, C) => { ell(c, C, C - 14, 25, 11, '#6a7a6a'); for (const [x, y] of [[-14, 8], [2, 16], [16, 6]]) poly(c, [[C + x, C + y - 10], [C + x + 5, C + y], [C + x, C + y + 5], [C + x - 5, C + y]], '#9ad04a'); },
+  slow: (c, C) => { const p = [[C - 16, C - 24], [C + 16, C - 24], [C + 3, C], [C + 16, C + 24], [C - 16, C + 24], [C - 3, C]]; poly(c, p, '#9a8aff', '#1a100a', 4); poly(c, [[C - 9, C + 20], [C + 9, C + 20], [C, C + 8]], '#ffe8a0'); },
+  rock: (c, C) => { poly(c, [[C - 24, C + 16], [C - 20, C - 6], [C - 6, C - 20], [C + 12, C - 18], [C + 24, C - 2], [C + 22, C + 18]], '#9a8a7a', '#1a100a', 4); },
+  freeze: (c, C) => { c.lineWidth = 6; c.strokeStyle = '#e8f6ff'; for (let i = 0; i < 3; i++) { const a = (i * Math.PI) / 3; c.beginPath(); c.moveTo(C - Math.cos(a) * 26, C - Math.sin(a) * 26); c.lineTo(C + Math.cos(a) * 26, C + Math.sin(a) * 26); c.stroke(); } ell(c, C, C, 7, 7, '#9ad8ff'); },
+  lightning: (c, C) => { poly(c, [[C + 6, C - 28], [C - 14, C + 4], [C, C + 4], [C - 8, C + 28], [C + 16, C - 6], [C + 2, C - 6]], '#ffe066', '#1a100a'); },
+};
+for (const id of Object.keys(SPELL_COL)) drawers[`ui.awi.${id}`] = (c, w) => { const C = w / 2; ell(c, C, C, C - 1, C - 1, '#1a100a'); ell(c, C, C, C - 5, C - 5, '#3a2a40', SPELL_COL[id], 4); spellGlyph[id](c, C); };
+const gem = (col, hi) => (c, w, h) => { const cx = w / 2, cy = h / 2, r = w * 0.38; poly(c, [[cx, cy + r], [cx - r, cy - r * 0.2], [cx - r * 0.55, cy - r * 0.7], [cx + r * 0.55, cy - r * 0.7], [cx + r, cy - r * 0.2]], col, OUT, 3); poly(c, [[cx - r * 0.3, cy - r * 0.55], [cx + r * 0.2, cy - r * 0.55], [cx - r * 0.05, cy - r * 0.1]], hi); };
+drawers['ui.crystal.green'] = gem('#5ad06a', '#c8f8c8'); drawers['ui.crystal.red'] = gem('#e8504a', '#ffc8c0'); drawers['ui.crystal.blue'] = gem('#4a9ae8', '#c8e8ff');
+for (const [id, who] of [['silver', 'hero'], ['bronze', 'bronze'], ['black', 'black']])
+  drawers[`ui.hero.${id}`] = roundButton((c, w, h) => { c.save(); c.translate(w / 2 - 32, h / 2 - 38); knight(who, 'idle')(c, 64, 64, 0, 4); c.restore(); });
+drawers['fx.meteor'] = (c, w, h) => { // fireball heading down-left, trail up-right
+  for (let k = 5; k >= 0; k--) ell(c, w * 0.35 + k * w * 0.08, h * 0.75 - k * h * 0.1, w * (0.18 - k * 0.02), w * (0.18 - k * 0.02), k ? `rgba(255,${120 + k * 20},40,${0.9 - k * 0.12})` : '#ffd84a');
+};
+for (const [who, base] of [['soldier', 'soldier'], ['militia', 'militia']]) for (const m of ['walk', 'attack', 'die']) drawers[`unit.${who}.${m}`] = at2x(knight(base, m));
+/** One-shot effects: t goes 0→1 over the frames; (ox, oy) is the anchor point in the frame. */
+const fxAt = (ox, oy, draw) => (c, w, h, i, n) => draw(c, w * ox, h * oy, i / Math.max(1, n - 1), w, h);
+const flames = (c, x, y, s, t) => { const r = prng(5); for (let k = 0; k < 5; k++) { const fx = x + (k - 2) * s * 0.4, f = (0.6 + 0.4 * Math.sin((t * 3 + r()) * TAU)) * s; poly(c, [[fx - s * 0.25, y], [fx, y - f], [fx + s * 0.25, y]], '#ff7a20'); poly(c, [[fx - s * 0.12, y], [fx, y - f * 0.55], [fx + s * 0.12, y]], '#ffe060'); } };
+drawers['fx.firefall'] = fxAt(0.4, 0.993, (c, x, y, t, w, h) => { if (t < 0.3) { const k = t / 0.3; ell(c, x + (1 - k) * w * 0.4, y - (1 - k) * h * 0.95 - 8, 12, 12, '#ff7a20', '#ffd84a', 3); } else flames(c, x, y, 28 * (t < 0.85 ? 1 : (1 - t) / 0.15 + 0.1), t); });
+drawers['fx.stone'] = fxAt(0.354, 0.818, (c, x, y, t) => {
+  const k = Math.min(1, t / (12 / 17));
+  if (k < 1 || t <= 12 / 17) { const yy = y - (1 - k) * 220; ell(c, x, y, 34, 8, 'rgba(0,0,0,0.25)'); poly(c, [[x - 30, yy], [x - 26, yy - 24], [x - 10, yy - 40], [x + 12, yy - 38], [x + 28, yy - 20], [x + 30, yy]], '#9a8a7a', '#1a100a', 4); return; }
+  const s = (t - 12 / 17) / (5 / 17), r = prng(3); for (let q = 0; q < 7; q++) { const a = r() * Math.PI, d = s * 50; ell(c, x + Math.cos(a) * d * (r() > 0.5 ? 1 : -1), y - 10 - Math.sin(a) * d * 0.5, 8 * (1 - s * 0.6), 6 * (1 - s * 0.6), '#7a6a5a', '#1a100a', 2); }
+});
+drawers['fx.rain'] = fxAt(0.49, 0.93, (c, x, y, t, w, h) => { const top = y - h * 0.85; ell(c, x, top + 24, 60, 22, `rgba(140,200,70,${Math.min(1, t * 4)})`, '#4a6a2a', 3); if (t > 0.2) for (let k = 0; k < 9; k++) ell(c, x - 48 + k * 12, top + 50 + ((t * 9 + k * 0.37) % 1) * (h * 0.7), 2, 5, '#b8f070'); ell(c, x, y - 4, 60 * Math.min(1, t * 1.5), 12, 'rgba(154,208,74,0.6)'); });
+drawers['fx.zip'] = fxAt(0.5, 0.977, (c, x, y, t, w, h) => { const a = 1 - Math.abs(t - 0.3) * 1.3; if (a <= 0) return; c.globalAlpha = Math.max(0, a); c.lineWidth = 8; c.strokeStyle = '#ffe066'; c.beginPath(); c.moveTo(x + 10, 0); c.lineTo(x - 14, h * 0.35); c.lineTo(x + 12, h * 0.6); c.lineTo(x, y); c.stroke(); c.lineWidth = 3; c.strokeStyle = '#fff'; c.stroke(); c.globalAlpha = 1; });
+drawers['fx.freeze'] = fxAt(0.5, 0.5, (c, x, y, t, w, h) => { ell(c, x, y, w * 0.45 * Math.min(1, t * 1.4), h * 0.4 * Math.min(1, t * 1.4), `rgba(200,236,255,${0.4 + t * 0.5})`, '#8ad0f0', 3); });
+drawers['fx.time'] = fxAt(0.5, 0.49, (c, x, y, t, w, h) => { for (let k = 1; k <= 3; k++) ell(c, x, y, w * 0.15 * k, h * 0.15 * k, null, `rgba(200,200,170,${0.9 - k * 0.2})`, 2); c.lineWidth = 3; c.strokeStyle = '#e8e0c0'; c.beginPath(); c.ellipse(x, y, w * 0.4, h * 0.4, 0, t * TAU, t * TAU + 2); c.stroke(); });
+drawers['fx.damage'] = fxAt(0.5, 0.5, (c, x, y, t) => { c.save(); c.translate(x, y); c.rotate(-0.8); rr(c, -3, -18, 6, 26, 2, '#c8ccd8', OUT, 2); rr(c, -9, 8, 18, 4, 1, '#ffd040'); c.restore(); if (t > 0.3) ell(c, x + 16, y - 12 - t * 8, 3, 3, '#ffe066'); });
+drawers['fx.def'] = fxAt(0.5, 0.5, (c, x, y, t) => { const g = t * 10; c.globalAlpha = 1 - Math.max(0, t - 0.6) * 2.2; for (const d of [-1, 1]) poly(c, [[x + d * g * 0.3, y - 20], [x + d * (16 + g * 0.6), y - 20], [x + d * (16 + g * 0.6), y], [x + d * g * 0.3, y + 18]], '#9aa0aa', OUT, 3); c.globalAlpha = 1; });

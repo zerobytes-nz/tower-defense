@@ -15,7 +15,10 @@ export interface AssetDef {
   /** Frames per row; absent = one row. Phaser reads grid sheets left to right, top to bottom. */
   columns?: number;
   displayScale: number;
-  animation?: { frameRate: number; repeat: number };
+  /** yoyo: play forwards then backwards (a loop with no jump). */
+  animation?: { frameRate: number; repeat: number; yoyo?: boolean };
+  /** Effects: the ground / target point in the frame (0–1). */
+  origin?: [number, number];
   /** Real art for this key is pixel art: drawn with nearest-neighbour scaling so it stays crisp. */
   pixelArt?: boolean;
 }
@@ -53,6 +56,7 @@ export function setupAssets(scene: Phaser.Scene): void {
       frames: scene.anims.generateFrameNumbers(a.key, { start: 0, end: a.frameCount - 1 }),
       frameRate: a.animation.frameRate || 10,
       repeat: a.animation.repeat,
+      yoyo: a.animation.yoyo ?? false,
     });
   }
 }

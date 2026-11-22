@@ -23,6 +23,12 @@
       "url": "https://craftpix.net/freebies/free-knight-character-sprites/",
       "licence": "craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored).",
       "licenceUrl": "https://craftpix.net/file-licenses/"
+    },
+    "craftpix-tactical": {
+      "name": "CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)",
+      "url": "https://craftpix.net/product/tactical-strategy-game-kit/",
+      "licence": "craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored).",
+      "licenceUrl": "https://craftpix.net/file-licenses/"
     }
   },
   "assets": [
@@ -1145,8 +1151,10 @@
       "usedFor": "Hero Sir Aldric: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "silver_knight",
-        "anim": "IDLE"
+        "from": "knights",
+        "dir": "PNG/silver_knight",
+        "anim": "IDLE",
+        "idleHeight": 116
       }
     },
     {
@@ -1166,8 +1174,10 @@
       "usedFor": "Hero Sir Aldric: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "silver_knight",
-        "anim": "WALK"
+        "from": "knights",
+        "dir": "PNG/silver_knight",
+        "anim": "WALK",
+        "idleHeight": 116
       }
     },
     {
@@ -1187,8 +1197,10 @@
       "usedFor": "Hero Sir Aldric: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "silver_knight",
-        "anim": "ATTACK"
+        "from": "knights",
+        "dir": "PNG/silver_knight",
+        "anim": "ATTACK",
+        "idleHeight": 116
       }
     },
     {
@@ -1208,8 +1220,10 @@
       "usedFor": "Hero Sir Aldric: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "silver_knight",
-        "anim": "DIE"
+        "from": "knights",
+        "dir": "PNG/silver_knight",
+        "anim": "DIE",
+        "idleHeight": 116
       }
     },
     {
@@ -1229,8 +1243,10 @@
       "usedFor": "Hero Dame Brona: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "bronze_knight",
-        "anim": "IDLE"
+        "from": "knights",
+        "dir": "PNG/bronze_knight",
+        "anim": "IDLE",
+        "idleHeight": 134
       }
     },
     {
@@ -1250,8 +1266,10 @@
       "usedFor": "Hero Dame Brona: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "bronze_knight",
-        "anim": "WALK"
+        "from": "knights",
+        "dir": "PNG/bronze_knight",
+        "anim": "WALK",
+        "idleHeight": 134
       }
     },
     {
@@ -1271,8 +1289,10 @@
       "usedFor": "Hero Dame Brona: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "bronze_knight",
-        "anim": "ATTACK"
+        "from": "knights",
+        "dir": "PNG/bronze_knight",
+        "anim": "ATTACK",
+        "idleHeight": 134
       }
     },
     {
@@ -1292,8 +1312,10 @@
       "usedFor": "Hero Dame Brona: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "bronze_knight",
-        "anim": "DIE"
+        "from": "knights",
+        "dir": "PNG/bronze_knight",
+        "anim": "DIE",
+        "idleHeight": 134
       }
     },
     {
@@ -1313,8 +1335,10 @@
       "usedFor": "Hero The Black Knight: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "black_knight",
-        "anim": "IDLE"
+        "from": "knights",
+        "dir": "PNG/black_knight",
+        "anim": "IDLE",
+        "idleHeight": 132
       }
     },
     {
@@ -1334,8 +1358,10 @@
       "usedFor": "Hero The Black Knight: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "black_knight",
-        "anim": "WALK"
+        "from": "knights",
+        "dir": "PNG/black_knight",
+        "anim": "WALK",
+        "idleHeight": 132
       }
     },
     {
@@ -1355,8 +1381,10 @@
       "usedFor": "Hero The Black Knight: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "black_knight",
-        "anim": "ATTACK"
+        "from": "knights",
+        "dir": "PNG/black_knight",
+        "anim": "ATTACK",
+        "idleHeight": 132
       }
     },
     {
@@ -1376,141 +1404,212 @@
       "usedFor": "Hero The Black Knight: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
       "source": "craftpix-knights",
       "pack": {
-        "folder": "black_knight",
-        "anim": "DIE"
+        "from": "knights",
+        "dir": "PNG/black_knight",
+        "anim": "DIE",
+        "idleHeight": 132
       }
     },
     {
       "key": "unit.soldier.walk",
       "type": "spritesheet",
       "path": "units/soldier-walk.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 2560,
+      "height": 160,
+      "frameWidth": 320,
+      "frameHeight": 160,
+      "frameCount": 8,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 10,
         "repeat": -1
       },
-      "usedFor": "Barracks soldier: walk (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Barracks soldier: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-tactical",
+      "pack": {
+        "from": "tactical",
+        "dir": "2d-fantasy-people-warrior-character-sprites/PNG/human/2",
+        "anim": "walk",
+        "idleHeight": 104,
+        "flip": true
+      }
     },
     {
       "key": "unit.soldier.attack",
       "type": "spritesheet",
       "path": "units/soldier-attack.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 2560,
+      "height": 160,
+      "frameWidth": 320,
+      "frameHeight": 160,
+      "frameCount": 8,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 12,
         "repeat": 0
       },
-      "usedFor": "Barracks soldier: attack (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Barracks soldier: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-tactical",
+      "pack": {
+        "from": "tactical",
+        "dir": "2d-fantasy-people-warrior-character-sprites/PNG/human/2",
+        "anim": "attack",
+        "idleHeight": 104,
+        "flip": true
+      }
     },
     {
       "key": "unit.soldier.die",
       "type": "spritesheet",
       "path": "units/soldier-die.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 2560,
+      "height": 160,
+      "frameWidth": 320,
+      "frameHeight": 160,
+      "frameCount": 8,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 10,
         "repeat": 0
       },
-      "usedFor": "Barracks soldier: die (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Barracks soldier: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-tactical",
+      "pack": {
+        "from": "tactical",
+        "dir": "2d-fantasy-people-warrior-character-sprites/PNG/human/2",
+        "anim": "hurt",
+        "idleHeight": 104,
+        "flip": true
+      }
     },
     {
       "key": "unit.militia.walk",
       "type": "spritesheet",
       "path": "units/militia-walk.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 2560,
+      "height": 160,
+      "frameWidth": 320,
+      "frameHeight": 160,
+      "frameCount": 8,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 10,
         "repeat": -1
       },
-      "usedFor": "Reinforcements militia: walk (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Reinforcements militia: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-tactical",
+      "pack": {
+        "from": "tactical",
+        "dir": "2d-fantasy-people-warrior-character-sprites/PNG/human/1",
+        "anim": "walk",
+        "idleHeight": 108,
+        "flip": true
+      }
     },
     {
       "key": "unit.militia.attack",
       "type": "spritesheet",
       "path": "units/militia-attack.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 2560,
+      "height": 160,
+      "frameWidth": 320,
+      "frameHeight": 160,
+      "frameCount": 8,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 12,
         "repeat": 0
       },
-      "usedFor": "Reinforcements militia: attack (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Reinforcements militia: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-tactical",
+      "pack": {
+        "from": "tactical",
+        "dir": "2d-fantasy-people-warrior-character-sprites/PNG/human/1",
+        "anim": "attack",
+        "idleHeight": 108,
+        "flip": true
+      }
     },
     {
       "key": "unit.militia.die",
       "type": "spritesheet",
       "path": "units/militia-die.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 2560,
+      "height": 160,
+      "frameWidth": 320,
+      "frameHeight": 160,
+      "frameCount": 8,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 10,
         "repeat": 0
       },
-      "usedFor": "Reinforcements militia: die (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Reinforcements militia: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-tactical",
+      "pack": {
+        "from": "tactical",
+        "dir": "2d-fantasy-people-warrior-character-sprites/PNG/human/1",
+        "anim": "hurt",
+        "idleHeight": 108,
+        "flip": true
+      }
     },
     {
       "key": "fx.meteor",
       "type": "image",
       "path": "fx/meteor.png",
-      "width": 48,
-      "height": 48,
-      "frameWidth": 48,
-      "frameHeight": 48,
+      "width": 64,
+      "height": 106,
+      "frameWidth": 64,
+      "frameHeight": 106,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "Meteor Shower: falling rock.",
-      "source": "own"
+      "usedFor": "Meteor Shower: a falling fireball (heads down-left, no rotation).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/fire",
+        "range": [
+          1,
+          1
+        ],
+        "crop": [
+          500,
+          40,
+          340,
+          565
+        ]
+      }
     },
     {
       "key": "fx.fire",
       "type": "spritesheet",
       "path": "fx/fire.png",
-      "width": 384,
-      "height": 48,
-      "frameWidth": 64,
-      "frameHeight": 48,
-      "frameCount": 6,
+      "width": 1056,
+      "height": 108,
+      "frameWidth": 132,
+      "frameHeight": 108,
+      "frameCount": 8,
       "displayScale": 1,
       "animation": {
-        "frameRate": 12,
-        "repeat": -1
+        "frameRate": 10,
+        "repeat": -1,
+        "yoyo": true
       },
-      "usedFor": "Burning ground (Meteor Shower, Firepot Catapult).",
-      "source": "own"
+      "usedFor": "Burning ground loop (Meteor Shower, Firepot Catapult, Fire spell). Ground at the bottom centre.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/fire",
+        "range": [
+          7,
+          15
+        ],
+        "crop": [
+          40,
+          1600,
+          660,
+          540
+        ]
+      }
     },
     {
       "key": "fx.roots",
@@ -1526,6 +1625,246 @@
       "source": "own"
     },
     {
+      "key": "fx.firefall",
+      "type": "spritesheet",
+      "path": "fx/firefall.png",
+      "width": 3040,
+      "height": 420,
+      "frameWidth": 160,
+      "frameHeight": 420,
+      "frameCount": 19,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 20,
+        "repeat": 0
+      },
+      "usedFor": "Fire spell: a fireball falls on the target and bursts into flames.",
+      "source": "craftpix-td-kit",
+      "origin": [
+        0.4,
+        0.993
+      ],
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/fire",
+        "crop": [
+          40,
+          40,
+          800,
+          2100
+        ]
+      }
+    },
+    {
+      "key": "fx.stone",
+      "type": "spritesheet",
+      "path": "fx/stone.png",
+      "width": 2664,
+      "height": 286,
+      "frameWidth": 148,
+      "frameHeight": 286,
+      "frameCount": 18,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 20,
+        "repeat": 0
+      },
+      "usedFor": "Drop Rock: rocks fall (0–12), hold frame 12 while it blocks, shatter (13–17).",
+      "source": "craftpix-td-kit",
+      "origin": [
+        0.354,
+        0.818
+      ],
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/stone",
+        "crop": [
+          60,
+          960,
+          740,
+          1430
+        ]
+      }
+    },
+    {
+      "key": "fx.rain",
+      "type": "spritesheet",
+      "path": "fx/rain.png",
+      "width": 2800,
+      "height": 186,
+      "frameWidth": 140,
+      "frameHeight": 186,
+      "frameCount": 20,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": 0
+      },
+      "usedFor": "Acid Rain: a cloud rains acid onto the road.",
+      "source": "craftpix-td-kit",
+      "origin": [
+        0.49,
+        0.93
+      ],
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/rain",
+        "crop": [
+          0,
+          1290,
+          700,
+          930
+        ]
+      }
+    },
+    {
+      "key": "fx.zip",
+      "type": "spritesheet",
+      "path": "fx/zip.png",
+      "width": 1568,
+      "height": 240,
+      "frameWidth": 112,
+      "frameHeight": 240,
+      "frameCount": 14,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 20,
+        "repeat": 0
+      },
+      "usedFor": "Lightning Strike: a bolt hits the target.",
+      "source": "craftpix-td-kit",
+      "origin": [
+        0.5,
+        0.977
+      ],
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/zip",
+        "crop": [
+          220,
+          1540,
+          280,
+          600
+        ]
+      }
+    },
+    {
+      "key": "fx.freeze",
+      "type": "spritesheet",
+      "path": "fx/freeze.png",
+      "width": 2336,
+      "height": 104,
+      "frameWidth": 146,
+      "frameHeight": 104,
+      "frameCount": 16,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Freeze: frost swirls into an ice patch (last frame held while it lasts).",
+      "source": "craftpix-td-kit",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/freeze",
+        "crop": [
+          0,
+          1880,
+          730,
+          520
+        ]
+      }
+    },
+    {
+      "key": "fx.time",
+      "type": "spritesheet",
+      "path": "fx/time.png",
+      "width": 1652,
+      "height": 66,
+      "frameWidth": 118,
+      "frameHeight": 66,
+      "frameCount": 14,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": 0
+      },
+      "usedFor": "Slow: a slowing swirl under each enemy.",
+      "source": "craftpix-td-kit",
+      "origin": [
+        0.5,
+        0.49
+      ],
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/time",
+        "crop": [
+          60,
+          1970,
+          590,
+          330
+        ]
+      }
+    },
+    {
+      "key": "fx.damage",
+      "type": "spritesheet",
+      "path": "fx/damage.png",
+      "width": 750,
+      "height": 65,
+      "frameWidth": 75,
+      "frameHeight": 65,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": 0
+      },
+      "usedFor": "Troop Rally: a sword buff over each tower.",
+      "source": "craftpix-td-kit",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/damage",
+        "crop": [
+          180,
+          1930,
+          250,
+          215
+        ]
+      }
+    },
+    {
+      "key": "fx.def",
+      "type": "spritesheet",
+      "path": "fx/def.png",
+      "width": 1020,
+      "height": 63,
+      "frameWidth": 102,
+      "frameHeight": 63,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": 0
+      },
+      "usedFor": "Armor Break: a shield cracks over each enemy hit.",
+      "source": "craftpix-td-kit",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "kit": {
+        "files": "magic-effects-game-sprite/PNG/def",
+        "crop": [
+          195,
+          2015,
+          340,
+          210
+        ]
+      }
+    },
+    {
       "key": "ui.meteor",
       "type": "image",
       "path": "ui/meteor.png",
@@ -1536,7 +1875,10 @@
       "frameCount": 1,
       "displayScale": 1,
       "usedFor": "Spell button: Meteor Shower.",
-      "source": "own"
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "Game Config Image/ico_10.png"
+      }
     },
     {
       "key": "ui.reinforce",
@@ -1549,20 +1891,10 @@
       "frameCount": 1,
       "displayScale": 1,
       "usedFor": "Spell button: Reinforcements.",
-      "source": "own"
-    },
-    {
-      "key": "ui.hero",
-      "type": "image",
-      "path": "ui/hero.png",
-      "width": 88,
-      "height": 88,
-      "frameWidth": 88,
-      "frameHeight": 88,
-      "frameCount": 1,
-      "displayScale": 1,
-      "usedFor": "Hero portrait button (select hero, Shield Slam).",
-      "source": "own"
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "Game Config Image/ico_4.png"
+      }
     },
     {
       "key": "ui.rally",
@@ -1576,6 +1908,236 @@
       "displayScale": 1,
       "usedFor": "Rally-point flag for barracks soldiers.",
       "source": "own"
+    },
+    {
+      "key": "ui.awi.armor",
+      "type": "image",
+      "path": "ui/awi-armor.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI spell button: Armor Break.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/ico_5.png"
+      }
+    },
+    {
+      "key": "ui.awi.rally",
+      "type": "image",
+      "path": "ui/awi-rally.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI spell button: Troop Rally.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/ico_6.png"
+      }
+    },
+    {
+      "key": "ui.awi.fire",
+      "type": "image",
+      "path": "ui/awi-fire.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI spell button: Fire.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/ico_1.png"
+      }
+    },
+    {
+      "key": "ui.awi.acid",
+      "type": "image",
+      "path": "ui/awi-acid.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI spell button: Acid Rain.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/ico_7.png"
+      }
+    },
+    {
+      "key": "ui.awi.slow",
+      "type": "image",
+      "path": "ui/awi-slow.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI spell button: Slow.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/ico_4.png"
+      }
+    },
+    {
+      "key": "ui.awi.rock",
+      "type": "image",
+      "path": "ui/awi-rock.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI spell button: Drop Rock.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/ico_8.png"
+      }
+    },
+    {
+      "key": "ui.awi.freeze",
+      "type": "image",
+      "path": "ui/awi-freeze.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI spell button: Freeze.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/ico_2.png"
+      }
+    },
+    {
+      "key": "ui.awi.lightning",
+      "type": "image",
+      "path": "ui/awi-lightning.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI spell button: Lightning Strike.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/interface_game/ico_3.png"
+      }
+    },
+    {
+      "key": "ui.crystal.green",
+      "type": "image",
+      "path": "ui/crystal-green.png",
+      "width": 72,
+      "height": 72,
+      "frameWidth": 72,
+      "frameHeight": 72,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI green crystal (cards and the crystal bank).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/shop/crystal_3.png"
+      }
+    },
+    {
+      "key": "ui.crystal.red",
+      "type": "image",
+      "path": "ui/crystal-red.png",
+      "width": 72,
+      "height": 72,
+      "frameWidth": 72,
+      "frameHeight": 72,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI red crystal (cards and the crystal bank).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/shop/crystal_2.png"
+      }
+    },
+    {
+      "key": "ui.crystal.blue",
+      "type": "image",
+      "path": "ui/crystal-blue.png",
+      "width": 72,
+      "height": 72,
+      "frameWidth": 72,
+      "frameHeight": 72,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "AWI blue crystal (cards and the crystal bank).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-gui/PNG/shop/crystal_1.png"
+      }
+    },
+    {
+      "key": "ui.hero.silver",
+      "type": "image",
+      "path": "ui/hero-silver.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Hero button (select the hero, use the ability): the silver knight.",
+      "source": "craftpix-knights",
+      "portrait": {
+        "from": "knights",
+        "dir": "PNG/silver_knight",
+        "idleHeight": 116
+      }
+    },
+    {
+      "key": "ui.hero.bronze",
+      "type": "image",
+      "path": "ui/hero-bronze.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Hero button (select the hero, use the ability): the bronze knight.",
+      "source": "craftpix-knights",
+      "portrait": {
+        "from": "knights",
+        "dir": "PNG/bronze_knight",
+        "idleHeight": 134
+      }
+    },
+    {
+      "key": "ui.hero.black",
+      "type": "image",
+      "path": "ui/hero-black.png",
+      "width": 88,
+      "height": 88,
+      "frameWidth": 88,
+      "frameHeight": 88,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Hero button (select the hero, use the ability): the black knight.",
+      "source": "craftpix-knights",
+      "portrait": {
+        "from": "knights",
+        "dir": "PNG/black_knight",
+        "idleHeight": 132
+      }
     },
     {
       "key": "bg.menu",

@@ -6,8 +6,11 @@ Tower Defense is open source, but its art comes from a pack that may **not** be 
 **[CraftPix: Tower Defense 2D Game Kit](https://craftpix.net/product/tower-defense-2d-game-kit/)** (CraftPix.net; [licence](https://craftpix.net/file-licenses/)).
 The downloaded folder is called `craftpix-net-519305-tower-defense-2d-game-kit` (13 sub-packs: monsters, bosses, towers, effects, GUI, tilesets).
 
-The three hero knights come from a second CraftPix pack, **[CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/)** (same licence).
-Import it with `npm run assets:import-knights -- "<pack folder that holds PNG/silver_knight/>"`.
+Two more CraftPix packs (same licence) give the units: the three hero knights from
+**[CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/)**, and the barracks soldiers and militia from
+**[CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)](https://craftpix.net/product/tactical-strategy-game-kit/)** (unzip it; only
+`2d-fantasy-people-warrior-character-sprites/` is used). Import them with
+`npm run assets:import-packs -- --knights "<folder with PNG/silver_knight/>" --tactical "<folder with 2d-fantasy-people-warrior-character-sprites/>"`.
 
 So the repo holds two kinds of art:
 
@@ -48,7 +51,7 @@ Edit `assets.manifest.json` (key, path, size, frames, what it's for, source). If
 `scripts/placeholder-art.mjs`. Then run `npm run assets:placeholders && npm run assets:docs` and commit the
 manifest, the placeholder, and this file. Game code refers to assets **only by manifest key**.
 
-## Every file to replace (168)
+## Every file to replace (189)
 
 ### Maps
 
@@ -106,12 +109,12 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `unit.archer.1` | `towers/archer-unit-1.png` | 672×64 · 12 × 56×64 @ 24 fps | Archer on top of the Archer Tower, tier 1: draw and shoot. | `archer-tower-game-assets/PNG` |
 | `unit.archer.2` | `towers/archer-unit-2.png` | 672×64 · 12 × 56×64 @ 24 fps | Archer on top of the Archer Tower, tier 2: draw and shoot. | `archer-tower-game-assets/PNG` |
 | `unit.archer.3` | `towers/archer-unit-3.png` | 672×64 · 12 × 56×64 @ 24 fps | Archer on top of the Archer Tower, tier 3: draw and shoot. | `archer-tower-game-assets/PNG` |
-| `unit.soldier.walk` | `units/soldier-walk.png` | 384×64 · 6 × 64×64 @ 10 fps, loop | Barracks soldier: walk (faces right). Original art. | Original. Keep the placeholder. |
-| `unit.soldier.attack` | `units/soldier-attack.png` | 384×64 · 6 × 64×64 @ 12 fps | Barracks soldier: attack (faces right). Original art. | Original. Keep the placeholder. |
-| `unit.soldier.die` | `units/soldier-die.png` | 384×64 · 6 × 64×64 @ 10 fps | Barracks soldier: die (faces right). Original art. | Original. Keep the placeholder. |
-| `unit.militia.walk` | `units/militia-walk.png` | 384×64 · 6 × 64×64 @ 10 fps, loop | Reinforcements militia: walk (faces right). Original art. | Original. Keep the placeholder. |
-| `unit.militia.attack` | `units/militia-attack.png` | 384×64 · 6 × 64×64 @ 12 fps | Reinforcements militia: attack (faces right). Original art. | Original. Keep the placeholder. |
-| `unit.militia.die` | `units/militia-die.png` | 384×64 · 6 × 64×64 @ 10 fps | Reinforcements militia: die (faces right). Original art. | Original. Keep the placeholder. |
+| `unit.soldier.walk` | `units/soldier-walk.png` | 2560×160 · 8 × 320×160 @ 10 fps, loop | Barracks soldier: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)](https://craftpix.net/product/tactical-strategy-game-kit/) |
+| `unit.soldier.attack` | `units/soldier-attack.png` | 2560×160 · 8 × 320×160 @ 12 fps | Barracks soldier: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)](https://craftpix.net/product/tactical-strategy-game-kit/) |
+| `unit.soldier.die` | `units/soldier-die.png` | 2560×160 · 8 × 320×160 @ 10 fps | Barracks soldier: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)](https://craftpix.net/product/tactical-strategy-game-kit/) |
+| `unit.militia.walk` | `units/militia-walk.png` | 2560×160 · 8 × 320×160 @ 10 fps, loop | Reinforcements militia: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)](https://craftpix.net/product/tactical-strategy-game-kit/) |
+| `unit.militia.attack` | `units/militia-attack.png` | 2560×160 · 8 × 320×160 @ 12 fps | Reinforcements militia: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)](https://craftpix.net/product/tactical-strategy-game-kit/) |
+| `unit.militia.die` | `units/militia-die.png` | 2560×160 · 8 × 320×160 @ 10 fps | Reinforcements militia: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)](https://craftpix.net/product/tactical-strategy-game-kit/) |
 
 ### Shots
 
@@ -126,9 +129,17 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | Key | File (under `public/assets/licensed/`) | Size · frames | Used for | From the kit |
 |---|---|---|---|---|
 | `fx.blast` | `fx/blast.png` | 768×96 · 8 × 96×96 @ 20 fps | Boulder impact explosion. | `stone-tower-game-assets/PNG` |
-| `fx.meteor` | `fx/meteor.png` | 48×48 | Meteor Shower: falling rock. | Original. Keep the placeholder. |
-| `fx.fire` | `fx/fire.png` | 384×48 · 6 × 64×48 @ 12 fps, loop | Burning ground (Meteor Shower, Firepot Catapult). | Original. Keep the placeholder. |
+| `fx.meteor` | `fx/meteor.png` | 64×106 | Meteor Shower: a falling fireball (heads down-left, no rotation). | `magic-effects-game-sprite/PNG/fire` (crop 500, 40, 340, 565) |
+| `fx.fire` | `fx/fire.png` | 1056×108 · 8 × 132×108 @ 10 fps, loop | Burning ground loop (Meteor Shower, Firepot Catapult, Fire spell). Ground at the bottom centre. | `magic-effects-game-sprite/PNG/fire` (crop 40, 1600, 660, 540) |
 | `fx.roots` | `fx/roots.png` | 96×48 | Boss roots holding a tower. | Original. Keep the placeholder. |
+| `fx.firefall` | `fx/firefall.png` | 3040×420 · 19 × 160×420 @ 20 fps | Fire spell: a fireball falls on the target and bursts into flames. | `magic-effects-game-sprite/PNG/fire` (crop 40, 40, 800, 2100) |
+| `fx.stone` | `fx/stone.png` | 2664×286 · 18 × 148×286 @ 20 fps | Drop Rock: rocks fall (0–12), hold frame 12 while it blocks, shatter (13–17). | `magic-effects-game-sprite/PNG/stone` (crop 60, 960, 740, 1430) |
+| `fx.rain` | `fx/rain.png` | 2800×186 · 20 × 140×186 @ 14 fps | Acid Rain: a cloud rains acid onto the road. | `magic-effects-game-sprite/PNG/rain` (crop 0, 1290, 700, 930) |
+| `fx.zip` | `fx/zip.png` | 1568×240 · 14 × 112×240 @ 20 fps | Lightning Strike: a bolt hits the target. | `magic-effects-game-sprite/PNG/zip` (crop 220, 1540, 280, 600) |
+| `fx.freeze` | `fx/freeze.png` | 2336×104 · 16 × 146×104 @ 16 fps | Freeze: frost swirls into an ice patch (last frame held while it lasts). | `magic-effects-game-sprite/PNG/freeze` (crop 0, 1880, 730, 520) |
+| `fx.time` | `fx/time.png` | 1652×66 · 14 × 118×66 @ 14 fps | Slow: a slowing swirl under each enemy. | `magic-effects-game-sprite/PNG/time` (crop 60, 1970, 590, 330) |
+| `fx.damage` | `fx/damage.png` | 750×65 · 10 × 75×65 @ 14 fps | Troop Rally: a sword buff over each tower. | `magic-effects-game-sprite/PNG/damage` (crop 180, 1930, 250, 215) |
+| `fx.def` | `fx/def.png` | 1020×63 · 10 × 102×63 @ 14 fps | Armor Break: a shield cracks over each enemy hit. | `magic-effects-game-sprite/PNG/def` (crop 195, 2015, 340, 210) |
 
 ### Enemies
 
@@ -191,10 +202,23 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `ui.pause` | `ui/pause.png` | 88×88 | HUD: pause button. | `td-gui/PNG/interface_game/button_pause.png` |
 | `ui.fast` | `ui/fast.png` | 88×88 | HUD: ×2 speed button. | `td-gui/PNG/interface_game/button_quick.png` |
 | `ui.star` | `ui/star.png` | 40×40 | Stars (result screen). | `td-gui/PNG/interface_game/star.png` |
-| `ui.meteor` | `ui/meteor.png` | 88×88 | Spell button: Meteor Shower. | Original. Keep the placeholder. |
-| `ui.reinforce` | `ui/reinforce.png` | 88×88 | Spell button: Reinforcements. | Original. Keep the placeholder. |
-| `ui.hero` | `ui/hero.png` | 88×88 | Hero portrait button (select hero, Shield Slam). | Original. Keep the placeholder. |
+| `ui.meteor` | `ui/meteor.png` | 88×88 | Spell button: Meteor Shower. | `Game Config Image/ico_10.png` |
+| `ui.reinforce` | `ui/reinforce.png` | 88×88 | Spell button: Reinforcements. | `Game Config Image/ico_4.png` |
 | `ui.rally` | `ui/rally.png` | 40×40 | Rally-point flag for barracks soldiers. | Original. Keep the placeholder. |
+| `ui.awi.armor` | `ui/awi-armor.png` | 88×88 | AWI spell button: Armor Break. | `td-gui/PNG/interface_game/ico_5.png` |
+| `ui.awi.rally` | `ui/awi-rally.png` | 88×88 | AWI spell button: Troop Rally. | `td-gui/PNG/interface_game/ico_6.png` |
+| `ui.awi.fire` | `ui/awi-fire.png` | 88×88 | AWI spell button: Fire. | `td-gui/PNG/interface_game/ico_1.png` |
+| `ui.awi.acid` | `ui/awi-acid.png` | 88×88 | AWI spell button: Acid Rain. | `td-gui/PNG/interface_game/ico_7.png` |
+| `ui.awi.slow` | `ui/awi-slow.png` | 88×88 | AWI spell button: Slow. | `td-gui/PNG/interface_game/ico_4.png` |
+| `ui.awi.rock` | `ui/awi-rock.png` | 88×88 | AWI spell button: Drop Rock. | `td-gui/PNG/interface_game/ico_8.png` |
+| `ui.awi.freeze` | `ui/awi-freeze.png` | 88×88 | AWI spell button: Freeze. | `td-gui/PNG/interface_game/ico_2.png` |
+| `ui.awi.lightning` | `ui/awi-lightning.png` | 88×88 | AWI spell button: Lightning Strike. | `td-gui/PNG/interface_game/ico_3.png` |
+| `ui.crystal.green` | `ui/crystal-green.png` | 72×72 | AWI green crystal (cards and the crystal bank). | `td-gui/PNG/shop/crystal_3.png` |
+| `ui.crystal.red` | `ui/crystal-red.png` | 72×72 | AWI red crystal (cards and the crystal bank). | `td-gui/PNG/shop/crystal_2.png` |
+| `ui.crystal.blue` | `ui/crystal-blue.png` | 72×72 | AWI blue crystal (cards and the crystal bank). | `td-gui/PNG/shop/crystal_1.png` |
+| `ui.hero.silver` | `ui/hero-silver.png` | 88×88 | Hero button (select the hero, use the ability): the silver knight. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `ui.hero.bronze` | `ui/hero-bronze.png` | 88×88 | Hero button (select the hero, use the ability): the bronze knight. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `ui.hero.black` | `ui/hero-black.png` | 88×88 | Hero button (select the hero, use the ability): the black knight. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
 
 ### hero
 
@@ -280,5 +304,6 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `craftpix-td-kit` | [CraftPix: Tower Defense 2D Game Kit](https://craftpix.net/product/tower-defense-2d-game-kit/) | no, `licensed/` | craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored). [Licence](https://craftpix.net/file-licenses/) |
 | `own` | [Tower Defense original (placeholder generator)](scripts/placeholder-art.mjs) | yes (placeholder) | MIT, same as the code. Fine to commit. |
 | `craftpix-knights` | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) | no, `licensed/` | craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored). [Licence](https://craftpix.net/file-licenses/) |
+| `craftpix-tactical` | [CraftPix: Tactical Strategy Game Kit (2D Fantasy People Warrior sprites)](https://craftpix.net/product/tactical-strategy-game-kit/) | no, `licensed/` | craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored). [Licence](https://craftpix.net/file-licenses/) |
 
 Always read the licence on the pack's own page; the notes here are not legal advice.

@@ -110,12 +110,14 @@ and variety between fights. The plan now leans on these:
 
 ## Art still wanted
 
-The kit has no knights or spell art in its style, so these are original placeholder art for now (fine to ship,
-but a matching pack would look better). Each is listed in ASSETS.md with `source: own`.
-
-- **Knights** (hero, barracks soldier, militia): idle / walk / attack / die, side view, ~64 px, in the kit's
-  thick-outline cartoon style. The pixel-art knights in `altered-arena/art-src` clash with this kit.
-- **Spell and hero buttons** (`ui.meteor`, `ui.reinforce`, `ui.hero`), the rally flag, the meteor, ground fire and roots.
+Art review (2026-11-22): almost all the code-drawn art now has kit or pack art.
+- The kit's own `magic-effects-game-sprite` and `td-gui/interface_game/ico_1–8` match the 8 AWI spells one to one:
+  buttons, plus an effect each (fireball, falling rocks, acid rain, lightning, ice patch, slow swirl, sword buff,
+  cracking shield). Meteor Shower uses the fireball and burning ground; crystals use `td-gui/shop/crystal_1–3`.
+- Heroes: CraftPix *Knight Characters* (silver / bronze / black), with a round portrait button each.
+- Barracks soldiers and militia: CraftPix *Tactical Strategy Game Kit* human warriors 2 and 1 (mirrored to face
+  right; no death animation, so they play their hurt frames and fade).
+- Still code-drawn (`source: own`): the gold coin, the rally flag and the boss roots: no pack had better ones.
 - TheoSwap item images for configs 21 / 22: the new tower and knight items have none yet (upload on the Developer
   page or with `upload_config_image`); the spells and crystals reuse the old item ids, so the old images can be copied.
 

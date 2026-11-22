@@ -14,7 +14,6 @@ import { think } from '../game/bot.ts';
 import { MenuScene } from './MenuScene.ts';
 import { currentAwis } from '../profile.ts';
 import { RARITIES, RARITY_COLOR } from '../game/awi.ts';
-import { makeSpellIcons } from '../systems/spellIcons.ts';
 import { save, markSeen, recordStars, recordHeroic, recordEndless } from '../save.ts';
 import { modsFor } from '../game/perks.ts';
 import { sfx, soundOn, toggleSound } from '../systems/audio.ts';
@@ -54,8 +53,8 @@ export class GameScene extends Phaser.Scene {
   private towerViews = new Map<number, TowerView>();
   private shotViews = new Map<number, Phaser.GameObjects.Image>();
   private unitViews = new Map<number, UnitView>();
-  private fireViews = new Map<number, Phaser.GameObjects.Sprite | Phaser.GameObjects.Ellipse>();
-  private rockViews = new Map<number, Phaser.GameObjects.Container>();
+  private fireViews = new Map<number, Phaser.GameObjects.Sprite | Phaser.GameObjects.Container>();
+  private rockViews = new Map<number, Phaser.GameObjects.Sprite>();
   private bars!: Phaser.GameObjects.Graphics;
   private rangeG!: Phaser.GameObjects.Graphics;
   private menu: Menu | null = null;
@@ -100,10 +99,12 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     centreCamera(this);
+    this.fxAnims();
     const map = this.b.map;
     wideBackground(this, map.bg).setDepth(-10);
     if (DEBUG) {
-      const g = this.add.graphics().setDepth(-5).lineStyle(3, 0xff00ff, 0.8);
+      // The enemy path: a faint thin line (only with ?debug), so screenshots still look like the game.
+      const g = this.add.graphics().setDepth(-5).lineStyle(2, 0xfff4d0, 0.22);
       for (const t of this.b.tracks) g.strokePoints(t.pts);
       this.fps = this.add.text(GAME_W - 10, GAME_H - 10, '', { fontSize: '14px', color: '#0f0' }).setOrigin(1).setDepth(100);
     }
@@ -189,11 +190,12 @@ export class GameScene extends Phaser.Scene {
     const k = this.k;
     let x = 58 * k;
     if (this.b.hero) {
-      this.heroBtn = this.actionButton(x, 'ui.hero', () => this.setAim(this.aim?.kind === 'hero' ? null : { kind: 'hero' }));
+      const portrait = `ui.hero.${this.b.heroDef!.id}`;
+      this.heroBtn = this.actionButton(x, portrait, () => this.setAim(this.aim?.kind === 'hero' ? null : { kind: 'hero' }));
       this.heroBtn.text = label(this, 28, 26, '1', 20, '#ffdd66');
       this.heroBtn.c.add(this.heroBtn.text);
       x += 86 * k;
-      this.slamBtn = this.actionButton(x, 'ui.hero', () => {
+      this.slamBtn = this.actionButton(x, portrait, () => {
         if (this.b.heroAbility()) { sfx.tap(); this.setAim(null); } else sfx.deny();
       });
       this.slamBtn.img.setTint(0xa0c8ff);
@@ -209,7 +211,6 @@ export class GameScene extends Phaser.Scene {
       x += 86 * k;
     }
     // AWI spells: one more button each, with a coloured rim.
-    makeSpellIcons(this);
     this.b.awiSpells.forEach((s, i) => {
       this.awiBtns.push(this.actionButton(x, `ui.awi.${s.def.id}`, () => {
         if (!this.b.awiSpellReady(i)) { sfx.deny(); return; }
@@ -561,14 +562,20 @@ export class GameScene extends Phaser.Scene {
     for (const f of b.fires) {
       if (this.fireViews.has(f.id)) continue;
       if (f.kind === 'acid' || f.kind === 'frost') {
-        // Acid Rain and Freeze: a glowing patch on the road that pulses.
+        // Acid Rain: the cloud rains on the zone until it ends. Freeze: frost swirls into an ice patch that stays.
+        // A faint ring under it shows the area.
         const col = f.kind === 'acid' ? 0x9ad04a : 0xbfe8ff;
-        const z = this.add.ellipse(f.x, f.y, f.r * 2, f.r * 1.1, col, 0.32).setStrokeStyle(4, col, 0.9).setDepth(1);
-        this.tweens.add({ targets: z, alpha: 0.6, duration: 600, yoyo: true, repeat: -1 });
+        const z = this.add.container(0, 0).setDepth(f.y);
+        z.add(this.add.ellipse(f.x, f.y, f.r * 2, f.r * 1.1, col, 0.14).setStrokeStyle(3, col, 0.5));
+        if (f.kind === 'acid') {
+          const rain = this.fx('fx.rain', f.x, f.y, (f.r * 2) / 112, f.y, true);
+          rain.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => rain.play('fx.rain.loop'));
+          z.add(rain);
+        } else z.add(this.fx('fx.freeze', f.x, f.y, (f.r * 2) / 130, f.y, true).setAlpha(0.9));
         this.fireViews.set(f.id, z);
         continue;
       }
-      const s = this.add.sprite(f.x, f.y + 8, 'fx.fire').setOrigin(0.5, 1).setScale(f.r / 32).setDepth(f.y - 2).setAlpha(0.9).play('fx.fire');
+      const s = this.add.sprite(f.x, f.y + 8, 'fx.fire').setOrigin(0.5, 1).setScale((f.r * 2) / 112).setDepth(f.y - 2).setAlpha(0.95).play('fx.fire');
       this.fireViews.set(f.id, s);
     }
     // Drop Rock
@@ -713,19 +720,26 @@ export class GameScene extends Phaser.Scene {
   private awiSpellFx(e: Extract<SimEvent, { type: 'awiSpell' }>): void {
     const b = this.b;
     switch (e.spell) {
-      case 'armor': this.ring(e.x, e.y, e.r, 0xff7a5a); this.pop(e.x, e.y - 40, 'Armor Break!', '#ff9a7a', 24); sfx.clang(); break;
+      case 'armor':
+        this.ring(e.x, e.y, e.r, 0xff7a5a); this.pop(e.x, e.y - 40, 'Armor Break!', '#ff9a7a', 24); sfx.clang();
+        for (const en of b.enemies) if (en.alive && Math.hypot(en.x - e.x, en.y - e.y) <= e.r) this.fx('fx.def', en.x, en.y - (en.def.flying ? 80 : 56), 0.6, 880);
+        break;
       case 'rally':
         this.banner('Troop Rally!'); sfx.militia();
-        for (const t of b.towers) if (t.kind !== 'barracks') this.ring(t.x, t.y + 10, 60, 0xffc94d);
+        for (const t of b.towers) if (t.kind !== 'barracks') this.fx('fx.damage', t.x, t.y - 96, 0.9, 880);
         break;
-      case 'slow': this.banner('Slow!'); this.cameras.main.flash(300, 150, 140, 255); sfx.whoosh(); break;
-      case 'fire': if (e.target) { this.ring(e.target.x, e.target.y, 50, 0xff8a3a); this.pop(e.target.x, e.target.y - 60, 'Ablaze!', '#ffa060', 22); } sfx.boom(); break;
-      case 'acid': this.ring(e.x, e.y, e.r, 0x9ad04a); sfx.whoosh(); break;
-      case 'freeze': this.ring(e.x, e.y, e.r, 0xbfe8ff); this.pop(e.x, e.y - 40, 'Freeze!', '#cfe8ff', 24); sfx.whoosh(); break;
+      case 'slow':
+        this.banner('Slow!'); this.cameras.main.flash(250, 150, 140, 255); sfx.whoosh();
+        for (const en of b.enemies) if (en.alive && !en.def.flying) this.fx('fx.time', en.x, en.y, 0.55, en.y - 1);
+        break;
+      case 'fire':
+        if (e.target) { this.fx('fx.firefall', e.target.x, e.target.y + 4, 0.5, e.target.y + 2); this.pop(e.target.x, e.target.y - 60, 'Ablaze!', '#ffa060', 22); }
+        sfx.boom(); break;
+      case 'acid': sfx.whoosh(); break;
+      case 'freeze': this.pop(e.x, e.y - 40, 'Freeze!', '#cfe8ff', 24); sfx.whoosh(); break;
       case 'lightning': {
-        const t = e.target, ty = t ? t.y - (t.def.flying ? 46 : 22) : e.y;
-        const tx = t?.x ?? e.x;
-        this.zap([{ x: tx + 30, y: ty - 480 }, { x: tx - 20, y: ty - 300 }, { x: tx + 14, y: ty - 140 }, { x: tx, y: ty + 30 }]);
+        const t = e.target;
+        this.fx('fx.zip', t?.x ?? e.x, (t?.y ?? e.y) + 4, 1.25, 890);
         this.cameras.main.flash(120, 255, 250, 200); this.cameras.main.shake(120, 0.006); sfx.zap();
         break;
       }
@@ -737,24 +751,36 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  /** Drop Rock: the rocks fall onto the road and stay (frame 12) until they're smashed (frames 13–17). */
   private rockView(r: Rock): void {
-    const c = this.add.container(r.x, r.y).setDepth(r.y);
-    const g = this.add.graphics();
-    const s = [[-30, 6], [-26, -18], [-10, -34], [12, -32], [28, -14], [30, 6]].map(([x, y]) => ({ x, y }));
-    g.fillStyle(0x000000, 0.3).fillEllipse(0, 6, 70, 18);
-    g.fillStyle(0x9a8a7a, 1).fillPoints(s, true).lineStyle(4, 0x1a100a, 1).strokePoints(s, true);
-    g.lineStyle(3, 0x5a4a3a, 1).lineBetween(-10, -34, -4, -12).lineBetween(-4, -12, 12, -4);
-    c.add(g);
-    c.y -= 400;
-    this.tweens.add({ targets: c, y: r.y, duration: 320, ease: 'Quad.easeIn', onComplete: () => { this.cameras.main.shake(140, 0.007); sfx.boulder(); this.blast(r.x, r.y, 30); } });
-    this.rockViews.set(r.id, c);
+    const s = this.fx('fx.stone', r.x, r.y + 6, 0.8, r.y, true).play('fx.stone.fall');
+    s.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => { this.cameras.main.shake(140, 0.007); sfx.boulder(); });
+    this.rockViews.set(r.id, s);
   }
 
   private rockDown(r: Rock): void {
     const v = this.rockViews.get(r.id);
     this.rockViews.delete(r.id);
     this.pop(r.x, r.y - 50, 'Smashed!', '#d8c8a8', 20); sfx.boulder();
-    if (v) this.tweens.add({ targets: v, alpha: 0, scaleX: 1.3, scaleY: 0.4, duration: 300, onComplete: () => v.destroy() });
+    if (v) { v.play('fx.stone.break'); v.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => v.destroy()); }
+  }
+
+  /** A kit effect placed by its ground / target point (manifest `origin`). One-shot: gone when it ends, unless `keep`. */
+  private fx(key: string, x: number, y: number, scale: number, depth: number, keep = false): Phaser.GameObjects.Sprite {
+    const [ox, oy] = asset(key).origin ?? [0.5, 0.5];
+    const s = this.add.sprite(x, y, key, 0).setOrigin(ox, oy).setScale(scale).setDepth(depth).play(key);
+    if (!keep) s.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => s.destroy());
+    return s;
+  }
+
+  /** Part-animations of the kit effects (made once per game). */
+  private fxAnims(): void {
+    const part = (key: string, base: string, start: number, end: number, frameRate: number, repeat = 0) => {
+      if (!this.anims.exists(key)) this.anims.create({ key, frames: this.anims.generateFrameNumbers(base, { start, end }), frameRate, repeat });
+    };
+    part('fx.stone.fall', 'fx.stone', 0, 12, 22);
+    part('fx.stone.break', 'fx.stone', 13, 17, 16);
+    part('fx.rain.loop', 'fx.rain', 6, 11, 10, -1);
   }
 
   private ring(x: number, y: number, r: number, color: number): void {
@@ -763,7 +789,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private meteorFall(x: number, y: number, at: number): void {
-    const m = this.add.image(x + 220, y - 560, 'fx.meteor').setDepth(890).setScale(1.3).setRotation(-0.6);
+    const m = this.add.image(x + 220, y - 560, 'fx.meteor').setOrigin(0.3, 0.8).setDepth(890);
     this.tweens.add({ targets: m, x, y: y - 12, duration: (at * 1000) / this.speed, ease: 'Quad.easeIn', onComplete: () => m.destroy() });
     const mark = this.add.ellipse(x, y, METEOR.radius * 2, METEOR.radius * 1.1, 0xff4020, 0.15).setStrokeStyle(2, 0xff6a3a, 0.7).setDepth(1);
     this.tweens.add({ targets: mark, alpha: 0, delay: (at * 1000) / this.speed, duration: 200, onComplete: () => mark.destroy() });

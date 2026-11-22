@@ -92,13 +92,20 @@ and variety between fights. The plan now leans on these:
      +0.2–0.5 ★ on the harder levels, no runaway.
      TheoSwap: draft configs **21** "Free AWIs (2026)" (Common–Epic) and **22** "Theo Swap AWIs (2026)" (Rare–
      Legendary), not published, not default; live configs 11 / 12 untouched. Test codes (5 NFTs each, the game's
-     inventory size), saved: EEEEEEEE (config 21), FFFFFFFF and GGGGGGGG (config 22). AAAAAAAA–DDDDDDDD hold old
+     inventory size), saved (show the new items only once 21 / 22 are published): EEEEEEEE (config 21), FFFFFFFF and GGGGGGGG (config 22). AAAAAAAA–DDDDDDDD hold old
      config-11 spells and crystals (which still work).
 5. **Polish and launch**
    Daily challenge, achievements (kit screen), balance sim per world, real-phone FPS. With the user's OK at each step:
    Jira epic, deploy over `/tower_defense/` (no backup: the old Fiverr build is being retired, user's call
    2026-11-22), nginx proxy with the new live API key, publish the configs and set the default, TheoSwap icon /
    banner / item images. (GitHub repo + CI: done in M2.)
+   **Blockers found 2026-11-22:**
+   - No NFT collection is assigned to any Tower Defense config (TheoSwap's checklist), so real players' NFTs
+     turn into nothing. Needs the exact contract address(es) and chain from the user, then `assign_contract`
+     (dry run first) on the new configs.
+   - TheoSwap's user-items API builds test-code items from **published** configs only. Test tokens saved on
+     drafts 21 / 22 fall back to old config 11, so EEEEEEEE / FFFFFFFF / GGGGGGGG return old spells and crystals
+     until 21 / 22 are published. (The test key works: checked 2026-11-22, all codes return 5 items the game reads.)
 
 ## Art still wanted
 

@@ -92,7 +92,7 @@ and variety between fights. The plan now leans on these:
      +0.2–0.5 ★ on the harder levels, no runaway.
      TheoSwap: draft configs **21** "Free AWIs (2026)" (Common–Epic) and **22** "Theo Swap AWIs (2026)" (Rare–
      Legendary), not published, not default; live configs 11 / 12 untouched. Test codes (5 NFTs each, the game's
-     inventory size), proposed, waiting for OK: EEEEEEEE (config 21), FFFFFFFF and GGGGGGGG (config 22). AAAAAAAA–DDDDDDDD hold old
+     inventory size), saved: EEEEEEEE (config 21), FFFFFFFF and GGGGGGGG (config 22). AAAAAAAA–DDDDDDDD hold old
      config-11 spells and crystals (which still work).
 5. **Polish and launch**
    Daily challenge, achievements (kit screen), balance sim per world, real-phone FPS. With the user's OK at each step:

@@ -62,7 +62,7 @@ refuses to upload a build that contains the key.
 TheoSwap's website setting for the game is `https://games.theoswap.io/tower_defense/?userCode=$USER_CODE`; the game
 reads the code once and ignores an unfilled `$USER_CODE`.
 
-Test codes (with the test key; being set up): `EEEEEEEE` (Free config 21), `FFFFFFFF` and `GGGGGGGG` (Theo Swap config 22).
+Test codes (with the test key): `EEEEEEEE` (Free config 21), `FFFFFFFF` and `GGGGGGGG` (Theo Swap config 22).
 Without a key, the Connect screen's demo players (Whale, Collector, New player) show the same screens.
 
 ## Deploy

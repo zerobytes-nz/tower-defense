@@ -96,8 +96,9 @@ and variety between fights. The plan now leans on these:
      config-11 spells and crystals (which still work).
 5. **Polish and launch**
    Daily challenge, achievements (kit screen), balance sim per world, real-phone FPS. With the user's OK at each step:
-   GitHub repo + CI, Jira epic, back up `/tower_defense/` on the server, deploy, nginx proxy with the new API key,
-   publish the configs and set the default, TheoSwap icon / banner / item images.
+   Jira epic, deploy over `/tower_defense/` (no backup: the old Fiverr build is being retired, user's call
+   2026-11-22), nginx proxy with the new live API key, publish the configs and set the default, TheoSwap icon /
+   banner / item images. (GitHub repo + CI: done in M2.)
 
 ## Art still wanted
 

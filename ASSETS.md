@@ -45,7 +45,7 @@ Edit `assets.manifest.json` (key, path, size, frames, what it's for, source). If
 `scripts/placeholder-art.mjs`. Then run `npm run assets:placeholders && npm run assets:docs` and commit the
 manifest, the placeholder, and this file. Game code refers to assets **only by manifest key**.
 
-## Every file to replace (148)
+## Every file to replace (160)
 
 ### Maps
 
@@ -61,6 +61,9 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `bg.snow` | `maps/snow.png` | 1280×720 | Level map: Frozen Watch. | `td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_4/game_background_4.png` (crop 0, 0, 1920, 1080) |
 | `bg.crystal` | `maps/crystal.png` | 1280×720 | Level map: Crystal Hollow. | `td-tileset3/PNG/game_background_2/game_background_2.png` (crop 0, 0, 1920, 1080) |
 | `bg.dusk` | `maps/dusk.png` | 1280×720 | Level map: Twilight Moor. | `td-tilesets1-2/tower-defense-game-tilesets/PNG/game_background_3/game_background_3.png` (crop 0, 0, 1920, 1080) |
+| `bg.lava` | `maps/lava.png` | 1280×720 | Level map: Molten Gate. | `td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_2/game_background_2.png` (crop 0, 0, 1920, 1080) |
+| `bg.hollow` | `maps/hollow.png` | 1280×720 | Level map: Hollow Woods. | `td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_3/game_background_3.png` (crop 0, 0, 1920, 1080) |
+| `bg.bog` | `maps/bog.png` | 1280×720 | Level map: Witch Bog. | `td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_4/game_background_4.png` (crop 0, 0, 1920, 1080) |
 
 ### Map pieces
 
@@ -165,6 +168,15 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 | `enemy.yeti.die` | `enemies/yeti-die.png` | 1920×192 · 10 × 192×192 @ 16 fps | Enemy yeti: death. | `boss-monster-game-sprites/boss_4/PNG` |
 | `enemy.golem.cast` | `enemies/golem-cast.png` | 1920×192 · 10 × 192×192 @ 14 fps | Boss: the Stone Golem shakes out Dust Mites. | `boss-monster-game-sprites/boss_2/PNG` |
 | `enemy.yeti.cast` | `enemies/yeti-cast.png` | 1920×192 · 10 × 192×192 @ 14 fps | Boss: the Yeti roars and freezes towers. | `boss-monster-game-sprites/boss_4/PNG` |
+| `enemy.skeleton.walk` | `enemies/skeleton-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy skeleton: walk loop (faces right). | `monster-enemy-game-sprites/PNG/6` |
+| `enemy.skeleton.die` | `enemies/skeleton-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy skeleton: death. | `monster-enemy-game-sprites/PNG/6` |
+| `enemy.reaver.walk` | `enemies/reaver-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy reaver: walk loop (faces right). | `tower-defense-monster-2d-sprites/PNG/6` |
+| `enemy.reaver.die` | `enemies/reaver-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy reaver: death. | `tower-defense-monster-2d-sprites/PNG/6` |
+| `enemy.ghoul.walk` | `enemies/ghoul-walk.png` | 960×96 · 10 × 96×96 @ 14 fps, loop | Enemy ghoul: walk loop (faces right). | `2d-monster-sprites/PNG/10` |
+| `enemy.ghoul.die` | `enemies/ghoul-die.png` | 960×96 · 10 × 96×96 @ 16 fps | Enemy ghoul: death. | `2d-monster-sprites/PNG/10` |
+| `enemy.knight.walk` | `enemies/knight-walk.png` | 1920×192 · 10 × 192×192 @ 14 fps, loop | Enemy knight: walk loop (faces right). | `boss-monster-game-sprites/boss_3/PNG` |
+| `enemy.knight.die` | `enemies/knight-die.png` | 1920×192 · 10 × 192×192 @ 16 fps | Enemy knight: death. | `boss-monster-game-sprites/boss_3/PNG` |
+| `enemy.knight.cast` | `enemies/knight-cast.png` | 1920×192 · 10 × 192×192 @ 14 fps | Boss: the Skull Knight raises bone shields. | `boss-monster-game-sprites/boss_3/PNG` |
 
 ### HUD / UI
 

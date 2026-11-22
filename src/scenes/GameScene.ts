@@ -6,13 +6,13 @@ import { centreCamera, wideBackground, BLEED, uiBoost } from '../systems/wide.ts
 import { asset } from '../assets.ts';
 import { button, header, imageButton, label, panel } from '../ui.ts';
 import { Battle, DT, type Enemy, type Shot, type Tower, type Unit } from '../game/sim.ts';
-import { LEVELS } from '../game/levels.ts';
+import { LEVELS, HEROIC_LIVES, type Mode } from '../game/levels.ts';
 import { ENEMIES, type EnemyKind } from '../game/enemies.ts';
 import { TOWERS, TOWER_KINDS, MAX_TIER, towerArt, type TowerKind } from '../game/towers.ts';
 import { SPELLS, SPELL_IDS, METEOR, HERO_XP, type SpellId } from '../game/heroes.ts';
 import { think } from '../game/bot.ts';
 import { MenuScene } from './MenuScene.ts';
-import { save, markSeen, recordStars } from '../save.ts';
+import { save, markSeen, recordStars, recordHeroic, recordEndless } from '../save.ts';
 import { modsFor } from '../game/perks.ts';
 import { sfx, soundOn, toggleSound } from '../systems/audio.ts';
 
@@ -21,7 +21,7 @@ const ARCHER_Y = [-72, -76, -86, -96];
 /** Enemies are drawn a bit bigger than the packed frames; flyers float this far above the road. */
 const ENEMY_SCALE = 1.15, FLY_UP = 34;
 /** Sprite anchor per enemy where the art isn't centred in its frame. */
-const ORIGIN_X: Partial<Record<EnemyKind, number>> = { treant: 0.36, golem: 0.36, yeti: 0.37 };
+const ORIGIN_X: Partial<Record<EnemyKind, number>> = { treant: 0.36, golem: 0.36, yeti: 0.37, knight: 0.38 };
 /** The bottom-left action bar. */
 
 type Menu =
@@ -39,6 +39,9 @@ interface ActionButton { c: Phaser.GameObjects.Container; img: Phaser.GameObject
 export class GameScene extends Phaser.Scene {
   private b!: Battle;
   private levelIndex = 0;
+  private mode: Mode = 'normal';
+  private heroicFirst = false;
+  private endlessBest = 0;
   private speed = 1;
   private paused = false;
   private acc = 0;
@@ -78,10 +81,12 @@ export class GameScene extends Phaser.Scene {
 
   constructor() { super('Game'); }
 
-  init(data: { level?: number }): void {
+  init(data: { level?: number; mode?: Mode }): void {
     this.levelIndex = data.level ?? 0;
+    this.mode = data.mode ?? 'normal';
+    this.heroicFirst = false; this.endlessBest = save().endless[LEVELS[this.levelIndex].id] ?? 0;
     MenuScene.worldPage = Math.max(0, LEVELS[this.levelIndex].world - 1);
-    this.b = new Battle({ level: LEVELS[this.levelIndex], seed: SEED || Math.floor(Math.random() * 1e9), mods: BOT ? undefined : modsFor(save().perks) });
+    this.b = new Battle({ level: LEVELS[this.levelIndex], seed: SEED || Math.floor(Math.random() * 1e9), mods: BOT ? undefined : modsFor(save().perks), mode: this.mode });
     this.speed = 1; this.paused = false; this.acc = 0; this.steps = 0; this.menu = null; this.aim = null;
     this.overlay = undefined; this.card = undefined; this.cardQueue = [];
     this.snowViews.clear(); this.enemyViews.clear(); this.towerViews.clear(); this.shotViews.clear(); this.unitViews.clear(); this.fireViews.clear(); this.spellBtns.clear();
@@ -162,6 +167,15 @@ export class GameScene extends Phaser.Scene {
     this.tweens.add({ targets: this.hint, x: this.hint.x + (right ? -12 : 12), duration: 500, yoyo: true, repeat: -1 });
 
     this.aimHint = label(this, GAME_W / 2, GAME_H - 40, '', 26, '#ffffff').setDepth(960).setVisible(false);
+
+    // Heroic / Endless: say what's different, under the top bar.
+    const b = this.b;
+    const tag = b.mode === 'heroic' ? `Heroic · ${HEROIC_LIVES} lives · no ${TOWERS[b.banned!].name}s`
+      : b.mode === 'endless' ? `Endless · best wave ${save().endless[b.level.id] ?? 0}` : '';
+    if (tag) {
+      const t = label(this, 16 + 14 * k, 14 + 76 * k, tag, 20 * k, b.mode === 'heroic' ? '#ff9a6a' : '#9ad0ff').setOrigin(0, 0.5).setDepth(950);
+      t.setStroke('#1a100a', 5 * k);
+    }
   }
 
   /** Hero portrait, his ability, and the two spells: bottom left. */
@@ -213,7 +227,7 @@ export class GameScene extends Phaser.Scene {
     const b = this.b;
     this.hudLives.setText(String(b.lives));
     this.hudGold.setText(String(b.gold));
-    this.hudWave.setText(`Wave ${Math.max(0, b.wave + 1)}/${b.waveCount}`);
+    this.hudWave.setText(b.mode === 'endless' ? `Wave ${Math.max(0, b.wave + 1)}` : `Wave ${Math.max(0, b.wave + 1)}/${b.waveCount}`);
     const can = b.canCallWave;
     if (this.hint && b.state !== 'ready') { this.hint.destroy(); this.hint = undefined; }
     this.waveBtn.setVisible(can);
@@ -317,6 +331,13 @@ export class GameScene extends Phaser.Scene {
       const spots = [[-74, -62], [74, -62], [-74, 62], [74, 62]];
       TOWER_KINDS.forEach((k, i) => {
         const cost = b.price(TOWERS[k].tiers[0].cost);
+        if (k === b.banned) {
+          this.option(cx + spots[i][0], cy + spots[i][1], (c) => {
+            c.add(this.add.image(0, 22, `tower.${k}.1`).setOrigin(0.5, 1).setScale(0.5).setTint(0x555555));
+            c.add(label(this, 0, 0, '✖', 44, '#ff5a4a'));
+          }, 'Banned', false, false, () => { sfx.deny(); this.menuInfo(cx, cy, TOWERS[k].name, 'Banned in Heroic.'); });
+          return;
+        }
         this.option(cx + spots[i][0], cy + spots[i][1], (c) => c.add(this.add.image(0, 22, `tower.${k}.1`).setOrigin(0.5, 1).setScale(0.5)),
           String(cost), b.gold >= cost, m.pick === k, () => {
             if (m.pick === k) { if (b.build(m.pad, k)) { sfx.build(); this.closeMenu(); } else { sfx.deny(); this.flash(this.hudGold); } return; }
@@ -443,8 +464,14 @@ export class GameScene extends Phaser.Scene {
         case 'meteor': this.blast(e.x, e.y, e.r); this.cameras.main.shake(140, 0.006); sfx.boom(); break;
         case 'roots': this.roots(e.enemy, e.towers); break;
         case 'summon': this.summon(e.enemy); break;
+        case 'ward': this.ward(e.enemy, e.targets); break;
+        case 'rise': this.rise(e.enemy); break;
         case 'end':
-          if (e.won && !BOT) recordStars(b.level.id, b.stars);
+          if (!BOT) {
+            if (e.won && b.mode === 'normal') recordStars(b.level.id, b.stars);
+            if (e.won && b.mode === 'heroic') this.heroicFirst = recordHeroic(b.level.id);
+            if (b.mode === 'endless') { this.endlessBest = save().endless[b.level.id] ?? 0; recordEndless(b.level.id, b.wave + 1); }
+          }
           if (e.won) sfx.win(); else sfx.lose();
           this.time.delayedCall(700, () => this.showEnd(e.won));
           break;
@@ -636,13 +663,35 @@ export class GameScene extends Phaser.Scene {
   }
 
   /** The Golem shakes out minions. */
-  private summon(e: Enemy): void {
+  /** The Skull Knight: bone shields on everything near it. */
+  private ward(e: Enemy, targets: Enemy[]): void {
+    this.summon(e, 0xe8e0d0);
+    for (const t of targets) {
+      const v = this.enemyViews.get(t.id);
+      if (!v) continue;
+      v.sprite.setTint(0xfff0d8);
+      this.time.delayedCall(260, () => v.sprite.clearTint());
+    }
+  }
+
+  /** The Deadlands: a skeleton climbs out where an enemy fell. */
+  private rise(e: Enemy): void {
+    const v = this.enemyViews.get(e.id);
+    if (!v) return;
+    v.sprite.setAlpha(0).setScale(ENEMY_SCALE, 0.2);
+    this.tweens.add({ targets: v.sprite, alpha: 1, scaleY: ENEMY_SCALE, duration: 450, ease: 'Back.easeOut' });
+    const dirt = this.add.ellipse(e.x, e.y, 46, 14, 0x3a2e2a, 0.6).setDepth(-1).setScale(0.3);
+    this.tweens.add({ targets: dirt, scale: 1.2, alpha: 0, duration: 700, onComplete: () => dirt.destroy() });
+    sfx.rise();
+  }
+
+  private summon(e: Enemy, color = 0xc8a060): void {
     const v = this.enemyViews.get(e.id);
     if (v && this.anims.exists(`enemy.${e.def.kind}.cast`)) {
       v.casting = this.time.now + 700;
       v.sprite.play(`enemy.${e.def.kind}.cast`).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => { if (this.enemyViews.has(e.id)) v.sprite.play(`enemy.${e.def.kind}.walk`); });
     }
-    this.ring(e.x, e.y, 90, 0xc8a060);
+    this.ring(e.x, e.y, 90, color);
     this.cameras.main.shake(200, 0.005);
     sfx.slam();
   }
@@ -765,7 +814,7 @@ export class GameScene extends Phaser.Scene {
     const row = y + 82;
     const snd = imageButton(this, x - 150, row, soundOn() ? 'gui.btn.sound' : 'gui.btn.soundoff', () => { toggleSound(); sfx.tap(); snd.setTexture(soundOn() ? 'gui.btn.sound' : 'gui.btn.soundoff'); }, 0.85);
     c.add(snd);
-    c.add(imageButton(this, x, row, 'gui.btn.restart', () => this.scene.restart({ level: this.levelIndex }), 0.85));
+    c.add(imageButton(this, x, row, 'gui.btn.restart', () => this.scene.restart({ level: this.levelIndex, mode: this.mode }), 0.85));
     c.add(imageButton(this, x + 150, row, 'gui.btn.menu', () => this.scene.start('Menu', { page: 'levels' }), 0.85));
     for (const [dx, t] of [[-150, 'Sound'], [0, 'Restart'], [150, 'Levels']] as const) c.add(label(this, x + dx, row + 46, t, 18, '#e8d8b8'));
   }
@@ -775,11 +824,25 @@ export class GameScene extends Phaser.Scene {
     this.card?.destroy(); this.card = undefined;
     const b = this.b, c = this.shade(), x = GAME_W / 2, y = GAME_H / 2 + 20;
     c.add(this.add.image(x, y, 'gui.table.tall').setScale(1.2));
-    c.add(header(this, x, y - 252, won ? 'gui.header.win' : 'gui.header.failed', won ? 'You win!' : 'Failed'));
+    const good = won || (b.mode === 'endless' && b.wave + 1 > this.endlessBest);
+    c.add(header(this, x, y - 252, good ? 'gui.header.win' : 'gui.header.failed', good ? 'You win!' : 'Failed'));
     c.add(this.add.image(x, y - 22, 'gui.window').setDisplaySize(330, 300));
     const stars = this.add.sprite(x, y - 100, 'gui.stars', won ? 0 : 0).setScale(0.95);
     c.add(stars);
-    if (won) {
+    if (b.mode === 'endless') {
+      stars.setVisible(false);
+      const reached = b.wave + 1, best = reached > this.endlessBest;
+      c.add(label(this, x, y - 104, String(reached), 76, '#9ad0ff').setStroke('#1a100a', 10));
+      c.add(label(this, x, y + 2, best ? 'New best wave!' : `Reached wave ${reached}`, 30, '#ffffff'));
+      c.add(label(this, x, y + 40, best && this.endlessBest ? `Old best: ${this.endlessBest}` : `Best: ${Math.max(reached, this.endlessBest)}`, 20, '#e8d8b8'));
+      c.add(label(this, x, y + 72, `${b.kills} enemies`, 18, '#b8a888'));
+      if (best) sfx.levelup();
+    } else if (won && b.mode === 'heroic') {
+      stars.setFrame(3);
+      c.add(label(this, x, y + 2, 'Heroic victory!', 30, '#ffcc33'));
+      c.add(label(this, x, y + 40, this.heroicFirst ? '+1 bonus star for the upgrade tree' : 'Already cleared on Heroic', 20, '#e8d8b8'));
+      c.add(label(this, x, y + 72, `${b.lives} of ${b.startLives} lives left`, 18, '#b8a888'));
+    } else if (won) {
       for (let i = 1; i <= b.stars; i++) this.time.delayedCall(250 + i * 260, () => { stars.setFrame(i); this.tweens.add({ targets: stars, scale: 1.05, duration: 120, yoyo: true }); sfx.coin(); });
       c.add(label(this, x, y + 2, b.stars === 3 ? 'Great defence!' : 'Level complete!', 30, '#ffffff'));
       c.add(label(this, x, y + 40, `${b.lives} lives left · ${b.kills} enemies`, 20, '#e8d8b8'));
@@ -787,13 +850,13 @@ export class GameScene extends Phaser.Scene {
     } else {
       stars.setAlpha(0.35);
       c.add(label(this, x, y + 2, `Held ${b.wave} of ${b.waveCount} waves`, 28, '#ffffff'));
-      c.add(label(this, x, y + 42, 'Try the hero, spells,', 20, '#e8d8b8'));
-      c.add(label(this, x, y + 68, 'upgrades or a new tower mix.', 20, '#e8d8b8'));
+      c.add(label(this, x, y + 42, b.mode === 'heroic' ? 'Heroic is hard: buy upgrades' : 'Try the hero, spells,', 20, '#e8d8b8'));
+      c.add(label(this, x, y + 68, b.mode === 'heroic' ? 'with stars and come back.' : 'upgrades or a new tower mix.', 20, '#e8d8b8'));
     }
-    const next = won && this.levelIndex + 1 < LEVELS.length;
+    const next = won && b.mode === 'normal' && this.levelIndex + 1 < LEVELS.length;
     const by = y + 218, btns: [string, () => void][] = [
       ['gui.btn.menu', () => this.scene.start('Menu', { page: 'levels' })],
-      ['gui.btn.restart', () => this.scene.restart({ level: this.levelIndex })],
+      ['gui.btn.restart', () => this.scene.restart({ level: this.levelIndex, mode: this.mode })],
     ];
     if (next) btns.push(['gui.btn.next', () => this.scene.restart({ level: this.levelIndex + 1 })]);
     btns.forEach(([key, fn], i) => c.add(imageButton(this, x + (i - (btns.length - 1) / 2) * 110, by, key, () => { sfx.tap(); fn(); }, 0.9)));

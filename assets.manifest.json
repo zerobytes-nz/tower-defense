@@ -758,7 +758,7 @@
       "frameHeight": 88,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "HUD: \u00d72 speed button.",
+      "usedFor": "HUD: ×2 speed button.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/interface_game/button_quick.png"
@@ -1547,7 +1547,7 @@
       "frameHeight": 119,
       "frameCount": 4,
       "displayScale": 1,
-      "usedFor": "Three-star group: frame 0 = no stars \u2026 frame 3 = three stars.",
+      "usedFor": "Three-star group: frame 0 = no stars … frame 3 = three stars.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/levels",
@@ -1724,7 +1724,7 @@
       "frameHeight": 62,
       "frameCount": 1,
       "displayScale": 1,
-      "usedFor": "Close (\u00d7) button.",
+      "usedFor": "Close (×) button.",
       "source": "craftpix-td-kit",
       "kit": {
         "files": "td-gui/PNG/upgrade/button_close.png"
@@ -2735,6 +2735,270 @@
       "kit": {
         "files": "boss-monster-game-sprites/boss_4/PNG",
         "match": "0_boss_attack",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "bg.lava",
+      "type": "image",
+      "path": "maps/lava.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Molten Gate.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_2/game_background_2.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "bg.hollow",
+      "type": "image",
+      "path": "maps/hollow.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Hollow Woods.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_3/game_background_3.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "bg.bog",
+      "type": "image",
+      "path": "maps/bog.png",
+      "width": 1280,
+      "height": 720,
+      "frameWidth": 1280,
+      "frameHeight": 720,
+      "frameCount": 1,
+      "displayScale": 1,
+      "usedFor": "Level map: Witch Bog.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "td-tilesets1-2/tower-defense-game-tile-set-pack-2/PNG/game_background_4/game_background_4.png",
+        "crop": [
+          0,
+          0,
+          1920,
+          1080
+        ]
+      }
+    },
+    {
+      "key": "enemy.skeleton.walk",
+      "type": "spritesheet",
+      "path": "enemies/skeleton-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy skeleton: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-enemy-game-sprites/PNG/6",
+        "match": "walk",
+        "scale": 0.28
+      }
+    },
+    {
+      "key": "enemy.skeleton.die",
+      "type": "spritesheet",
+      "path": "enemies/skeleton-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy skeleton: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "monster-enemy-game-sprites/PNG/6",
+        "match": "die",
+        "scale": 0.28
+      }
+    },
+    {
+      "key": "enemy.reaver.walk",
+      "type": "spritesheet",
+      "path": "enemies/reaver-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy reaver: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/6",
+        "match": "walk",
+        "scale": 0.26
+      }
+    },
+    {
+      "key": "enemy.reaver.die",
+      "type": "spritesheet",
+      "path": "enemies/reaver-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy reaver: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "tower-defense-monster-2d-sprites/PNG/6",
+        "match": "die",
+        "scale": 0.26
+      }
+    },
+    {
+      "key": "enemy.ghoul.walk",
+      "type": "spritesheet",
+      "path": "enemies/ghoul-walk.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy ghoul: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "2d-monster-sprites/PNG/10",
+        "match": "walk",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.ghoul.die",
+      "type": "spritesheet",
+      "path": "enemies/ghoul-die.png",
+      "width": 960,
+      "height": 96,
+      "frameWidth": 96,
+      "frameHeight": 96,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy ghoul: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "2d-monster-sprites/PNG/10",
+        "match": "die",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.knight.walk",
+      "type": "spritesheet",
+      "path": "enemies/knight-walk.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": -1
+      },
+      "usedFor": "Enemy knight: walk loop (faces right).",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_3/PNG",
+        "match": "0_boss_walk",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.knight.die",
+      "type": "spritesheet",
+      "path": "enemies/knight-die.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 16,
+        "repeat": 0
+      },
+      "usedFor": "Enemy knight: death.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_3/PNG",
+        "match": "0_boss_die",
+        "scale": 0.3
+      }
+    },
+    {
+      "key": "enemy.knight.cast",
+      "type": "spritesheet",
+      "path": "enemies/knight-cast.png",
+      "width": 1920,
+      "height": 192,
+      "frameWidth": 192,
+      "frameHeight": 192,
+      "frameCount": 10,
+      "displayScale": 1,
+      "animation": {
+        "frameRate": 14,
+        "repeat": 0
+      },
+      "usedFor": "Boss: the Skull Knight raises bone shields.",
+      "source": "craftpix-td-kit",
+      "kit": {
+        "files": "boss-monster-game-sprites/boss_3/PNG",
+        "match": "0_boss_specialty_2",
         "scale": 0.3
       }
     }

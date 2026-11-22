@@ -1,13 +1,16 @@
 // Enemy types. Pure data. `armor` cuts physical damage, `resist` cuts magic damage (0–1).
 
 export type EnemyKind = 'grunt' | 'runner' | 'brute' | 'shaman' | 'bat' | 'ogre' | 'scorpion' | 'imp' | 'treant'
-  | 'raider' | 'polyp' | 'mite' | 'golem' | 'wraith' | 'ape' | 'troll' | 'yeti';
+  | 'raider' | 'polyp' | 'mite' | 'golem' | 'wraith' | 'ape' | 'troll' | 'yeti'
+  | 'skeleton' | 'reaver' | 'ghoul' | 'knight';
 
 export interface BossDef {
   /** Every `every` seconds once below `phase2` of its health:
-   *  roots / freeze: towers within `radius` stop for `time` seconds; summon: calls `summon` minions around it. */
-  ability: 'roots' | 'freeze' | 'summon';
+   *  roots / freeze: towers within `radius` stop for `time` seconds; summon: calls `summon` minions around it;
+   *  ward: enemies within `radius` (itself too) get a bone shield of `ward` (scaled like their health). */
+  ability: 'roots' | 'freeze' | 'summon' | 'ward';
   summon?: { kind: EnemyKind; count: number };
+  ward?: number;
   phase2: number;
   every: number;
   radius: number;
@@ -33,6 +36,8 @@ export interface EnemyDef {
   boss?: BossDef;
   /** A shield that soaks up physical damage (arrows, boulders, swords) before health; magic goes straight through. */
   shield?: number;
+  /** Heals itself this many hit points per second, except while burning. */
+  regen?: number;
   /** Splits into these when it dies. */
   split?: { kind: EnemyKind; count: number };
   /** Shown on the "new enemy" card the first time it appears. */
@@ -79,6 +84,16 @@ export const ENEMIES: Record<EnemyKind, EnemyDef> = {
   yeti: { kind: 'yeti', name: 'The Yeti', hp: 8200, speed: 19, armor: 0.35, resist: 0.35, bounty: 500, lives: 10, size: 2, melee: { damage: 110, rate: 1.6 },
     boss: { ability: 'freeze', phase2: 0.65, every: 8, radius: 260, time: 3 },
     tip: 'Boss. Below 65% health its roar freezes nearby towers. Spread your towers out.' },
+  // World 4: The Deadlands
+  skeleton: { kind: 'skeleton', name: 'Risen Skeleton', hp: 70, speed: 46, armor: 0.25, resist: 0, bounty: 2, lives: 1, size: 0.95, melee: { damage: 6, rate: 1 },
+    tip: 'A fallen enemy back on its feet. Magic and fire put enemies down for good.' },
+  reaver: { kind: 'reaver', name: 'Ash Reaver', hp: 240, speed: 44, armor: 0.45, resist: 0.15, bounty: 26, lives: 1, size: 1.1, shield: 110, melee: { damage: 16, rate: 1.1 },
+    tip: 'Armour and a shield. Mage Towers cut through both.' },
+  ghoul: { kind: 'ghoul', name: 'Bog Ghoul', hp: 210, speed: 38, armor: 0.15, resist: 0.15, bounty: 20, lives: 1, size: 1, regen: 14, melee: { damage: 10, rate: 1 },
+    tip: 'Heals itself fast, unless it is burning. Fire Pots and the Meteor stop it.' },
+  knight: { kind: 'knight', name: 'The Skull Knight', hp: 9800, speed: 18, armor: 0.4, resist: 0.4, bounty: 600, lives: 10, size: 2, shield: 600, melee: { damage: 130, rate: 1.5 },
+    boss: { ability: 'ward', ward: 140, phase2: 0.85, every: 7, radius: 240, time: 0 },
+    tip: 'Boss. Raises bone shields on itself and everything near it. Magic ignores shields.' },
 };
 
 export const ENEMY_KINDS = Object.keys(ENEMIES) as EnemyKind[];

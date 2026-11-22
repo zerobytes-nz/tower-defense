@@ -35,7 +35,8 @@ export function think(b: Battle, opts: BotOptions = {}): void {
 
   let pads = order.get(b);
   if (!pads) { pads = b.map.pads.map((_, i) => i).sort((x, y) => padValue(b, y) - padValue(b, x)); order.set(b, pads); }
-  const mix = opts.mix ?? PLAN;
+  // Heroic bans one tower type: build the closest stand-in instead.
+  const mix = (opts.mix ?? PLAN).map((k) => k === b.banned ? (k === 'mage' ? 'archer' : k === 'archer' ? 'mage' : k === 'catapult' ? 'mage' : 'archer') : k);
   // Build on the next free pad if we can afford the planned tower…
   const free = pads.filter((p) => !b.towerOn(p) && !b.padFrozen(p));
   const built = b.towers.length;

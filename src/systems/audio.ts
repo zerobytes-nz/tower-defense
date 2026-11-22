@@ -79,6 +79,7 @@ export const sfx = {
   militia: () => ok('militia', 0.3) && notes([392, 523, 659], 0.08, 'square', 0.07),
   levelup: () => ok('levelup', 0.3) && notes([523, 659, 784, 1047, 1319], 0.07, 'triangle', 0.16),
   roots: () => { if (ok('roots', 0.3)) { tone('sawtooth', 80, 50, 0.6, 0.18); hiss(0.5, 0.25, 250, 1.5); } },
+  rise: () => ok('rise', 0.25) && tone('triangle', 140, 260, 0.35, 0.12),
   card: () => ok('card', 0.3) && notes([659, 880], 0.09),
   win: () => ok('win', 1) && notes([523, 659, 784, 1047, 784, 1047], 0.12, 'triangle', 0.2),
   lose: () => ok('lose', 1) && notes([392, 330, 262, 196], 0.18, 'sawtooth', 0.12),

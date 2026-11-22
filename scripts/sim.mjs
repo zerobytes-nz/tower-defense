@@ -3,6 +3,7 @@
 //   npm run sim -- --seeds 200
 //   npm run sim -- --passive     no hero and no spells: a player who only builds
 //   npm run sim -- --perks       with the whole upgrade tree bought
+//   npm run sim -- --heroic      Heroic mode (5 lives, one tower type banned); --endless: Endless
 // Node runs the game's own TypeScript (src/game/) directly (type stripping, Node ≥ 22.18).
 import { Battle } from '../src/game/sim.ts';
 import { think } from '../src/game/bot.ts';
@@ -15,16 +16,19 @@ const seeds = arg('--seeds', 40);
 const passive = process.argv.includes('--passive');
 /** --perks: play with the whole upgrade tree bought. */
 const mods = process.argv.includes('--perks') ? modsFor(ALL_PERKS.map((p) => p.id)) : undefined;
+/** --heroic / --endless: play that mode (Endless prints the average wave reached instead of wins). */
+const mode = process.argv.includes('--heroic') ? 'heroic' : process.argv.includes('--endless') ? 'endless' : 'normal';
 
-console.log(`Bot results over ${seeds} seeds\n`);
+console.log(`Bot results over ${seeds} seeds${mode === 'normal' ? '' : `, ${mode}`}\n`);
 console.log('Level'.padEnd(16), 'win%'.padStart(5), 'lives'.padStart(6), '★avg'.padStart(5), 'wave(lost)'.padStart(11), 'time'.padStart(6));
 for (const level of LEVELS) {
   let wins = 0, lives = 0, stars = 0, lostAt = 0, time = 0;
   for (let seed = 1; seed <= seeds; seed++) {
-    const b = new Battle({ level, seed, hero: passive ? null : undefined, mods });
+    const b = new Battle({ level, seed, hero: passive ? null : undefined, mods, mode });
     let k = 0;
-    while ((b.state === 'ready' || b.state === 'playing') && b.time < 1200) { if (k++ % 30 === 0) think(b, { spells: !passive }); b.step(); b.events.length = 0; }
+    while ((b.state === 'ready' || b.state === 'playing') && b.time < (mode === 'endless' ? 6000 : 1200)) { if (k++ % 30 === 0) think(b, { spells: !passive }); b.step(); b.events.length = 0; }
     if (b.state === 'won') { wins++; lives += b.lives; stars += b.stars; } else lostAt += b.wave + 1;
+    if (mode === 'endless' && b.state === 'playing') lostAt += b.wave + 1; // still going at the time limit
     time += b.time;
   }
   const losses = seeds - wins;

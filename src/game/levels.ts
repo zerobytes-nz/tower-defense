@@ -1,5 +1,6 @@
 // Levels: a map plus its waves, grouped into worlds.
-import type { EnemyKind } from './enemies.ts';
+import { ENEMIES, type EnemyKind } from './enemies.ts';
+import type { TowerKind } from './towers.ts';
 
 /** `count` enemies of one kind, `gap` seconds apart, starting `at` seconds into the wave. */
 /** `path`: which road (maps with several); left out, groups and their members take turns. */
@@ -22,6 +23,10 @@ export interface LevelDef {
   ice?: number;
   /** Pads under snow: can't be built on until wave `wave` (1-based) starts. */
   frozen?: { pads: number[]; wave: number };
+  /** The Deadlands: chance that an enemy killed by physical damage gets up again as a skeleton. */
+  rise?: number;
+  /** Heroic: ban this tower type instead of the usual rotation. */
+  ban?: TowerKind;
 }
 
 export interface WorldDef { id: number; name: string; rule: string }
@@ -29,6 +34,7 @@ export const WORLDS: WorldDef[] = [
   { id: 1, name: 'The Green Frontier', rule: 'Learn the ropes: towers, the hero and spells.' },
   { id: 2, name: 'Sunscorch', rule: 'Enemies come in from two sides.' },
   { id: 3, name: 'Frostfall', rule: 'Icy roads speed enemies up, and some pads are snowed in.' },
+  { id: 4, name: 'The Deadlands', rule: 'The fallen rise again as skeletons, unless magic or fire finishes them.' },
 ];
 
 /** A group: `count` enemies `gap` s apart, starting `at` s into the wave, on road `path` (default: alternate roads). */
@@ -202,8 +208,81 @@ export const LEVELS: LevelDef[] = [
       { groups: [g('ogre', 5, 2.6), g('ape', 8, 1.6, 4), g('wraith', 20, 0.45, 8), g('troll', 14, 0.7, 12)] },
       { groups: [g('yeti', 1, 1, 4, 0), g('troll', 14, 0.7), g('ape', 6, 2, 10), g('wraith', 14, 0.6, 16), g('ogre', 3, 4, 24)] },
     ],
+  },  // World 4: The Deadlands. Enemies killed by physical damage may rise as skeletons.
+  {
+    id: 'lava', name: 'Molten Gate', map: 'lava', world: 4, gold: 460, lives: 20, hpGrowth: 0.05, hp: 0.88, rise: 0.3,
+    waves: [
+      { groups: [g('grunt', 10, 0.9), g('runner', 10, 0.6, 4, 1)] },
+      { groups: [g('reaver', 4, 2.2), g('grunt', 10, 0.8, 3, 1)] },
+      { groups: [g('ghoul', 5, 1.8), g('imp', 8, 1, 3, 1)] },
+      { groups: [g('brute', 8, 1.3, 0, 0), g('bat', 10, 0.7, 2, 1), g('reaver', 4, 2, 6)] },
+      { groups: [g('ghoul', 8, 1.3), g('shaman', 4, 2, 3), g('runner', 16, 0.4, 6, 1)] },
+      { groups: [g('ogre', 2, 4), g('reaver', 8, 1.3, 2), g('scorpion', 10, 0.8, 5, 1)] },
+      { groups: [g('ghoul', 10, 1.1, 0, 0), g('reaver', 8, 1.2, 0, 1), g('bat', 14, 0.5, 6)] },
+      { groups: [g('brute', 12, 0.9), g('ghoul', 8, 1.2, 4, 1), g('imp', 12, 0.8, 8)] },
+      { groups: [g('ogre', 4, 3, 0, 0), g('reaver', 12, 0.9, 0, 1), g('shaman', 5, 1.8, 6)] },
+      { groups: [g('ghoul', 14, 0.8), g('reaver', 12, 0.9, 3, 1), g('bat', 16, 0.5, 8), g('ogre', 3, 4, 12)] },
+    ],
+  },
+  {
+    id: 'hollow', name: 'Hollow Woods', map: 'hollow', world: 4, gold: 480, lives: 20, hpGrowth: 0.05, hp: 0.84, rise: 0.3,
+    waves: [
+      { groups: [g('grunt', 12, 0.8), g('ghoul', 3, 2, 5)] },
+      { groups: [g('reaver', 5, 2), g('runner', 12, 0.5, 4)] },
+      { groups: [g('ghoul', 8, 1.3), g('bat', 8, 0.8, 4)] },
+      { groups: [g('brute', 8, 1.2), g('shaman', 3, 2.4, 3), g('reaver', 4, 2, 7)] },
+      { groups: [g('ape', 4, 2.4), g('ghoul', 8, 1.2, 3), g('imp', 10, 0.9, 7)] },
+      { groups: [g('reaver', 10, 1.1), g('wraith', 10, 0.7, 4), g('polyp', 6, 1.5, 8)] },
+      { groups: [g('ogre', 3, 3.5), g('ghoul', 12, 0.9, 3), g('runner', 18, 0.35, 8)] },
+      { groups: [g('reaver', 12, 0.9), g('troll', 12, 0.8, 3), g('shaman', 5, 1.8, 7)] },
+      { groups: [g('ghoul', 14, 0.8), g('ape', 6, 2, 3), g('bat', 16, 0.5, 8)] },
+      { groups: [g('ogre', 4, 3), g('reaver', 14, 0.8, 2), g('wraith', 14, 0.6, 7)] },
+      { groups: [g('ghoul', 16, 0.7), g('reaver', 14, 0.8, 4), g('ape', 6, 2, 8), g('imp', 14, 0.7, 12)] },
+    ],
+  },
+  {
+    id: 'bog', name: 'Witch Bog', map: 'bog', world: 4, gold: 500, lives: 20, hpGrowth: 0.05, hp: 0.6, rise: 0.35, ban: 'barracks',
+    waves: [
+      { groups: [g('grunt', 12, 0.8), g('reaver', 3, 2.4, 5)] },
+      { groups: [g('ghoul', 6, 1.5), g('runner', 14, 0.45, 3)] },
+      { groups: [g('reaver', 8, 1.3), g('bat', 10, 0.7, 4)] },
+      { groups: [g('brute', 10, 1.1), g('ghoul', 6, 1.5, 3), g('shaman', 3, 2.4, 7)] },
+      { groups: [g('ogre', 2, 4), g('reaver', 8, 1.2, 2), g('wraith', 10, 0.7, 6)] },
+      { groups: [g('ghoul', 12, 1), g('troll', 10, 0.9, 3), g('imp', 10, 0.9, 8)] },
+      { groups: [g('reaver', 12, 0.9), g('ape', 5, 2.2, 3), g('polyp', 8, 1.2, 7)] },
+      { groups: [g('ogre', 4, 3), g('ghoul', 14, 0.8, 2), g('bat', 16, 0.5, 7)] },
+      { groups: [g('reaver', 14, 0.8), g('shaman', 6, 1.6, 3), g('wraith', 16, 0.5, 8)] },
+      { groups: [g('ghoul', 16, 0.7), g('ape', 8, 1.8, 3), g('reaver', 12, 0.9, 7), g('ogre', 3, 4, 12)] },
+      { groups: [g('ogre', 5, 2.6), g('reaver', 16, 0.7, 3), g('ghoul', 14, 0.8, 8), g('wraith', 16, 0.5, 12)] },
+      { groups: [g('knight', 1, 1, 4, 1), g('reaver', 12, 0.9), g('ghoul', 12, 0.9, 8), g('ape', 6, 2, 14), g('ogre', 3, 4, 22)] },
+    ],
   },
 ];
+
+/** How a level is played. Heroic and Endless open once the level is cleared. */
+export type Mode = 'normal' | 'heroic' | 'endless';
+
+/** Heroic: few lives, no extra lives from upgrades, and one tower type banned (it rotates from level to level). */
+export const HEROIC_LIVES = 5;
+const BANS: TowerKind[] = ['barracks', 'catapult', 'mage', 'archer'];
+export function heroicBan(level: LevelDef): TowerKind {
+  const ban = level.ban ?? BANS[Math.max(0, LEVELS.indexOf(level)) % BANS.length];
+  // Archers are the only real answer to flyers, so they're never banned on a level that has them.
+  const flyers = level.waves.some((w) => w.groups.some((g) => ENEMIES[g.kind].flying));
+  return ban === 'archer' && flyers ? 'catapult' : ban;
+}
+
+/** Endless: after the last wave the level's waves come round again, bigger, faster and tougher each loop. */
+export function endlessWave(level: LevelDef, n: number): { wave: WaveDef; loop: number } {
+  const W = level.waves, loop = Math.floor(n / W.length), base = W[n % W.length];
+  if (!loop) return { wave: base, loop };
+  return {
+    loop,
+    wave: { groups: base.groups.map((g) => ENEMIES[g.kind].boss ? g : { ...g, count: Math.ceil(g.count * (1 + 0.3 * loop)), gap: g.gap / (1 + 0.25 * loop) }) },
+  };
+}
+/** Endless: health × this per loop on top of the level's own growth (bosses too). */
+export const ENDLESS_HP = 1.15;
 
 /** Seconds between waves before the next one starts by itself (the player can call it early). */
 export const WAVE_BREAK = 18;

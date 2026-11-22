@@ -1,7 +1,7 @@
 // The battle itself: pure TypeScript, deterministic (seeded), fixed 60 Hz steps, no Phaser.
 // The scene draws whatever this holds and reads `events` for one-off effects; `npm run sim` plays it headless.
 import { ENEMIES, type EnemyDef, type EnemyKind } from './enemies.ts';
-import { LEVELS, WAVE_BREAK, EARLY_GOLD_PER_S, starsFor, type LevelDef } from './levels.ts';
+import { LEVELS, WAVE_BREAK, EARLY_GOLD_PER_S, HEROIC_LIVES, ENDLESS_HP, starsFor, heroicBan, endlessWave, type LevelDef, type Mode } from './levels.ts';
 import { MAPS, buildTrack, pointAt, type MapDef, type Pt, type Track } from './maps.ts';
 import { TOWERS, MAX_TIER, SELL_BACK, spentTo, tierStats, type TowerKind, type TowerTier } from './towers.ts';
 import { HEROES, DEFAULT_HERO, METEOR, MILITIA, SPELLS, heroLevel, levelMult, type HeroDef, type SpellId } from './heroes.ts';
@@ -125,6 +125,8 @@ export type SimEvent =
   | { type: 'meteorFall'; x: number; y: number; at: number }
   | { type: 'roots'; enemy: Enemy; towers: Tower[] }   // roots or freeze (the boss's ability says which)
   | { type: 'summon'; enemy: Enemy }
+  | { type: 'ward'; enemy: Enemy; targets: Enemy[] }
+  | { type: 'rise'; enemy: Enemy }
   | { type: 'end'; won: boolean };
 
 /** Small, fast, seedable PRNG (mulberry32). */
@@ -142,7 +144,7 @@ export function rng(seed: number): () => number {
 interface Pending { at: number; kind: EnemyKind; wave: number; path: number }
 interface Impact { at: number; x: number; y: number }
 
-export interface BattleOptions { level?: LevelDef; seed?: number; mods?: Mods; hero?: HeroDef | null }
+export interface BattleOptions { level?: LevelDef; seed?: number; mods?: Mods; hero?: HeroDef | null; mode?: Mode }
 
 const BLOCK_REACH = 26;    // a unit this close to its enemy holds it
 const SOLDIER_ENGAGE = 80; // soldiers leave their spot for enemies this close to it
@@ -189,20 +191,27 @@ export class Battle {
   private impacts: Impact[] = [];
   private nextId = 1;
 
+  /** Normal, Heroic (few lives, one tower type banned) or Endless (waves never stop). */
+  readonly mode: Mode;
+  /** Heroic: the tower type that can't be built. */
+  readonly banned: TowerKind | null;
+
   constructor(opts: BattleOptions = {}) {
     this.level = opts.level ?? LEVELS[0];
+    this.mode = opts.mode ?? 'normal';
+    this.banned = this.mode === 'heroic' ? heroicBan(this.level) : null;
     this.map = MAPS[this.level.map];
     this.tracks = this.map.paths.map((p) => buildTrack(p));
     this.track = this.tracks[0];
     this.rand = rng(opts.seed ?? 1);
     this.mods = opts.mods ?? noMods();
     this.gold = this.level.gold + this.mods.gold;
-    this.lives = this.startLives = this.level.lives + this.mods.lives;
+    this.lives = this.startLives = this.mode === 'heroic' ? HEROIC_LIVES : this.level.lives + this.mods.lives;
     this.heroDef = opts.hero === undefined ? HEROES[DEFAULT_HERO] : opts.hero;
     if (this.heroDef) this.spawnHero();
   }
 
-  get waveCount() { return this.level.waves.length; }
+  get waveCount() { return this.mode === 'endless' ? Infinity : this.level.waves.length; }
   get stars() { return this.state === 'won' ? starsFor(this.lives, this.startLives) : 0; }
   /** True when the player may start the next wave now (the first one, or early during a break). */
   get canCallWave() { return (this.state === 'ready' || (this.state === 'playing' && this.countdown !== null)) && this.wave < this.waveCount - 1; }
@@ -222,7 +231,7 @@ export class Battle {
 
   build(pad: number, kind: TowerKind): Tower | null {
     const cost = this.price(TOWERS[kind].tiers[0].cost);
-    if (this.over || this.towerOn(pad) || this.gold < cost || !this.map.pads[pad] || this.padFrozen(pad)) return null;
+    if (this.over || this.towerOn(pad) || this.gold < cost || !this.map.pads[pad] || this.padFrozen(pad) || kind === this.banned) return null;
     this.gold -= cost;
     const p = this.map.pads[pad];
     const t: Tower = {
@@ -420,7 +429,7 @@ export class Battle {
     this.wave = n;
     this.countdown = null;
     const roads = this.tracks.length;
-    this.level.waves[n].groups.forEach((gr, gi) => {
+    endlessWave(this.level, n).wave.groups.forEach((gr, gi) => {
       // A group walks the road it names; otherwise groups take turns, and so do the members of a group.
       for (let i = 0; i < gr.count; i++) {
         const path = gr.path !== undefined ? gr.path % roads : (gi + i) % roads;
@@ -433,7 +442,8 @@ export class Battle {
 
   private spawn(p: Pending, dist = 0) {
     const def = ENEMIES[p.kind];
-    const k = def.boss ? 1 : (1 + this.level.hpGrowth * p.wave) * (this.level.hp ?? 1);
+    const loop = this.mode === 'endless' ? endlessWave(this.level, p.wave).loop : 0;
+    const k = (def.boss ? 1 : (1 + this.level.hpGrowth * p.wave) * (this.level.hp ?? 1)) * ENDLESS_HP ** loop;
     const hp = Math.round(def.hp * k), shield = Math.round((def.shield ?? 0) * k);
     const e: Enemy = {
       id: this.nextId++, def, hp, maxHp: hp, path: p.path, dist, offset: def.boss ? 0 : (this.rand() - 0.5) * 26,
@@ -476,10 +486,10 @@ export class Battle {
     }
     const cut = magic ? e.def.resist : e.def.armor * (1 - pierce);
     e.hp -= amount * (1 - cut);
-    if (e.hp <= 0) this.kill(e);
+    if (e.hp <= 0) this.kill(e, magic);
   }
 
-  private kill(e: Enemy) {
+  private kill(e: Enemy, magic = false) {
     e.alive = false;
     if (e.blocker !== null) { const u = this.units.find((x) => x.id === e.blocker); if (u) { u.target = null; u.fighting = false; } }
     this.kills++;
@@ -497,6 +507,12 @@ export class Battle {
     this.events.push({ type: 'death', enemy: e, gold: e.def.bounty });
     const sp = e.def.split;
     if (sp) for (let i = 0; i < sp.count; i++) this.spawn({ at: this.time, kind: sp.kind, wave: Math.max(0, this.wave), path: e.path }, Math.max(0, e.dist + (i - (sp.count - 1) / 2) * 14));
+    // The Deadlands: physical kills may get back up (magic and fire put them down for good).
+    const rise = this.level.rise ?? 0;
+    if (rise && !magic && !e.def.boss && !e.def.flying && !sp && e.def.kind !== 'skeleton' && this.rand() < rise) {
+      this.spawn({ at: this.time, kind: 'skeleton', wave: Math.max(0, this.wave), path: e.path }, e.dist);
+      this.events.push({ type: 'rise', enemy: this.enemies[this.enemies.length - 1] });
+    }
   }
 
   // ── Simulation ────────────────────────────────────────────────────────────────────────────────────
@@ -516,6 +532,7 @@ export class Battle {
 
     // Burning: on enemies, and on the ground
     for (const e of this.enemies) if (e.alive && now < e.burnUntil) this.damage(e, e.burnDps * DT, true);
+    for (const e of this.enemies) if (e.alive && e.def.regen && now >= e.burnUntil) e.hp = Math.min(e.maxHp, e.hp + e.def.regen * DT);
     for (const f of this.fires) for (const e of this.enemies) {
       if (e.alive && !e.def.flying && Math.hypot(e.x - f.x, e.y - f.y) <= f.r) { e.burnUntil = Math.max(e.burnUntil, now + 1); e.burnDps = Math.max(e.burnDps, f.dps); }
     }
@@ -564,6 +581,16 @@ export class Battle {
       if (b.ability === 'summon' && b.summon) {
         for (let i = 0; i < b.summon.count; i++) this.spawn({ at: now, kind: b.summon.kind, wave: Math.max(0, this.wave), path: e.path }, Math.max(0, e.dist + 10 + i * 12));
         this.events.push({ type: 'summon', enemy: e });
+        continue;
+      }
+      if (b.ability === 'ward' && b.ward) {
+        const k = (1 + this.level.hpGrowth * Math.max(0, this.wave)) * (this.level.hp ?? 1);
+        const near = this.enemies.filter((x) => x.alive && Math.hypot(x.x - e.x, x.y - e.y) <= b.radius);
+        for (const x of near) {
+          const amt = Math.round(b.ward * (x === e ? 3 : k));
+          x.shield = Math.max(x.shield, amt); x.maxShield = Math.max(x.maxShield, x.shield);
+        }
+        this.events.push({ type: 'ward', enemy: e, targets: near });
         continue;
       }
       const hit = this.towers.filter((t) => Math.hypot(t.x - e.x, t.y - e.y) <= b.radius);

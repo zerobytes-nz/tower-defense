@@ -141,6 +141,38 @@ export const MAPS: Record<string, MapDef> = {
     pads: [{ x: 570, y: 195, painted: true }, { x: 1045, y: 205, painted: true }, { x: 85, y: 445, painted: true }, { x: 350, y: 425, painted: true }, { x: 820, y: 390, painted: true }, { x: 1095, y: 430, painted: true }, { x: 1045, y: 650, painted: true }],
     waveButton: { x: 60, y: 600 },
   },
+  lava: {
+    id: 'lava',
+    name: 'Molten Gate',
+    bg: 'bg.lava',
+    paths: [
+      [{ x: 1320, y: 530 }, { x: 1100, y: 530 }, { x: 960, y: 530 }, ...[{ x: 820, y: 528 }, { x: 760, y: 490 }, { x: 722, y: 420 }, { x: 705, y: 300 }, { x: 690, y: 190 }, { x: 640, y: 125 }, { x: 560, y: 98 }, { x: 440, y: 100 }, { x: 345, y: 130 }, { x: 285, y: 200 }, { x: 240, y: 285 }, { x: 165, y: 330 }, { x: 105, y: 405 }, { x: 95, y: 490 }, { x: 140, y: 560 }, { x: 235, y: 600 }, { x: 300, y: 655 }, { x: 315, y: 770 }]],
+      [{ x: 955, y: -40 }, { x: 955, y: 150 }, { x: 955, y: 350 }, { x: 945, y: 470 }, { x: 900, y: 525 }, ...[{ x: 820, y: 528 }, { x: 760, y: 490 }, { x: 722, y: 420 }, { x: 705, y: 300 }, { x: 690, y: 190 }, { x: 640, y: 125 }, { x: 560, y: 98 }, { x: 440, y: 100 }, { x: 345, y: 130 }, { x: 285, y: 200 }, { x: 240, y: 285 }, { x: 165, y: 330 }, { x: 105, y: 405 }, { x: 95, y: 490 }, { x: 140, y: 560 }, { x: 235, y: 600 }, { x: 300, y: 655 }, { x: 315, y: 770 }]],
+    ],
+    pads: [{ x: 190, y: 265, painted: true }, { x: 525, y: 230, painted: true }, { x: 838, y: 197, painted: true }, { x: 840, y: 422, painted: true }, { x: 1088, y: 424, painted: true }, { x: 235, y: 470, painted: true }, { x: 195, y: 675, painted: true }, { x: 960, y: 628, painted: true }],
+    waveButton: { x: 1210, y: 640 },
+  },
+  hollow: {
+    id: 'hollow',
+    name: 'Hollow Woods',
+    bg: 'bg.hollow',
+    paths: [
+      [{ x: 1320, y: 100 }, { x: 1100, y: 100 }, { x: 900, y: 100 }, { x: 700, y: 100 }, { x: 540, y: 102 }, { x: 465, y: 130 }, { x: 432, y: 195 }, { x: 440, y: 270 }, { x: 490, y: 318 }, { x: 580, y: 333 }, { x: 760, y: 336 }, { x: 830, y: 370 }, { x: 850, y: 435 }, { x: 815, y: 500 }, { x: 720, y: 528 }, { x: 560, y: 532 }, { x: 400, y: 532 }, { x: 250, y: 520 }, { x: 100, y: 512 }, { x: -40, y: 510 }],
+    ],
+    pads: [{ x: 585, y: 205, painted: true }, { x: 780, y: 205, painted: true }, { x: 980, y: 205, painted: true }, { x: 480, y: 435, painted: true }, { x: 680, y: 435, painted: true }, { x: 965, y: 435, painted: true }, { x: 580, y: 655, painted: true }],
+    waveButton: { x: 1210, y: 190 },
+  },
+  bog: {
+    id: 'bog',
+    name: 'Witch Bog',
+    bg: 'bg.bog',
+    paths: [
+      [...[{ x: 1320, y: 360 }, { x: 1235, y: 300 }, { x: 1150, y: 215 }, { x: 1060, y: 140 }, { x: 960, y: 108 }, { x: 890, y: 135 }, { x: 852, y: 195 }, { x: 830, y: 265 }], { x: 790, y: 195 }, { x: 700, y: 178 }, { x: 570, y: 180 }, { x: 480, y: 220 }, { x: 445, y: 300 }, { x: 445, y: 390 }, { x: 430, y: 445 }, ...[{ x: 400, y: 480 }, { x: 300, y: 560 }, { x: 200, y: 640 }, { x: 110, y: 720 }, { x: 60, y: 780 }]],
+      [...[{ x: 1320, y: 360 }, { x: 1235, y: 300 }, { x: 1150, y: 215 }, { x: 1060, y: 140 }, { x: 960, y: 108 }, { x: 890, y: 135 }, { x: 852, y: 195 }, { x: 830, y: 265 }], { x: 828, y: 340 }, { x: 800, y: 405 }, { x: 720, y: 432 }, { x: 600, y: 438 }, { x: 490, y: 442 }, ...[{ x: 400, y: 480 }, { x: 300, y: 560 }, { x: 200, y: 640 }, { x: 110, y: 720 }, { x: 60, y: 780 }]],
+    ],
+    pads: [{ x: 340, y: 178, painted: true }, { x: 755, y: 110, painted: true }, { x: 1020, y: 205, painted: true }, { x: 295, y: 402, painted: true }, { x: 870, y: 488, painted: true }, { x: 155, y: 535, painted: true }, { x: 505, y: 540, painted: true }, { x: 365, y: 662, painted: true }],
+    waveButton: { x: 1210, y: 450 },
+  },
 };
 
 /** A walkable path: points every few pixels plus their running distance, for O(log n) position lookups. */

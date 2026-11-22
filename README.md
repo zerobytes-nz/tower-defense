@@ -13,6 +13,7 @@ npm install      # also installs the pre-commit hook
 npm run dev      # http://localhost:5183
 npm run build    # static site in dist/
 npm run sim      # balance check: the bot plays every level, no browser
+npm run sim -- --heroic   # or --endless, --perks (whole upgrade tree), --passive (no hero or spells)
 ```
 
 URL switches: `?bot` the bot plays · `?seed=N` same fight · `?debug` FPS meter and the enemy path.

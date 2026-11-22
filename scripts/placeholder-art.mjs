@@ -129,9 +129,11 @@ const blast = (c, w, h, i, n) => {
 
 // ── Enemies (face right, feet on the bottom edge) ───────────────────────────────────────────────────
 const SKIN = { grunt: '#6f8a3a', runner: '#8aa63a', brute: '#c86a3a', shaman: '#3a3a44', bat: '#7a6a6a', ogre: '#3a8a8a', imp: '#6a3a9a',
-  raider: '#e8e4d0', polyp: '#d83a3a', mite: '#b0b0a0', wraith: '#5a5a66', ape: '#d8dce0', troll: '#5ab0c8' };
+  raider: '#e8e4d0', polyp: '#d83a3a', mite: '#b0b0a0', wraith: '#5a5a66', ape: '#d8dce0', troll: '#5ab0c8',
+  skeleton: '#e8e0c8', reaver: '#8a4a2a', ghoul: '#6a8a5a' };
 const SIZE = { grunt: 0.5, runner: 0.38, brute: 0.52, shaman: 0.5, bat: 0.45, ogre: 0.62, imp: 0.46,
-  raider: 0.5, polyp: 0.5, mite: 0.5, wraith: 0.45, ape: 0.56, troll: 0.5 };
+  raider: 0.5, polyp: 0.5, mite: 0.5, wraith: 0.45, ape: 0.56, troll: 0.5,
+  skeleton: 0.46, reaver: 0.54, ghoul: 0.5 };
 function enemy(kind, mode) {
   return (c, w, h, i, n) => {
     const s = SIZE[kind] * (w / 96) * 96, cx = w / 2, b = h - 4, t = i / n;
@@ -368,6 +370,9 @@ export const drawers = {
   'bg.snow': map('snow', '#eef2f4', '#e0e8ec', '#c8ccd4', '#a8b0b8'),
   'bg.crystal': map('crystal', '#3a5a66', '#44646e', '#d8f0f0', '#7aa0a8'),
   'bg.dusk': map('dusk', '#6a5a7a', '#74648a', '#b8a8a8', '#8a7a7a'),
+  'bg.lava': map('lava', '#4a4448', '#544e52', '#a49c98', '#e8742a'),
+  'bg.hollow': map('hollow', '#4a4c4e', '#55585a', '#b0aca4', '#6a6058'),
+  'bg.bog': map('bog', '#55605a', '#5e6a62', '#a8aca0', '#9ab83a'),
   'fx.meteor': meteor, 'fx.fire': fire, 'fx.roots': roots, 'ui.meteor': uiMeteor, 'ui.reinforce': uiReinforce, 'ui.hero': uiHero, 'ui.rally': rally,
   'map.pad': (c, w, h) => padShape(c, w / 2, h / 2, w / 2 - 6, h / 2 - 6),
   'shot.arrow': arrow, 'shot.boulder': boulder, 'shot.bolt': bolt, 'fx.blast': blast,
@@ -383,7 +388,7 @@ for (const t of [1, 2, 3]) {
 for (const k of Object.keys(SKIN)) for (const m of ['walk', 'die']) drawers[`enemy.${k}.${m}`] = enemy(k, m);
 for (const m of ['walk', 'die']) { drawers[`enemy.scorpion.${m}`] = scorpion(m); drawers[`enemy.treant.${m}`] = treant(m); }
 drawers['enemy.treant.cast'] = treant('cast');
-const BOSS_PAL = { golem: ['#3a3a40', '#5a5a64', '#4a4a54', '#6ac0e8'], yeti: ['#b8bcc4', '#e8ecf0', '#f4f6f8', '#9ad8ff'] };
+const BOSS_PAL = { golem: ['#3a3a40', '#5a5a64', '#4a4a54', '#6ac0e8'], yeti: ['#b8bcc4', '#e8ecf0', '#f4f6f8', '#9ad8ff'], knight: ['#3a2a2a', '#7a6a62', '#e8e0d0', '#ff5a3a'] };
 for (const [k, pal] of Object.entries(BOSS_PAL)) for (const m of ['walk', 'die', 'cast']) drawers[`enemy.${k}.${m}`] = treant(m, pal);
 for (const [kind, ids] of [['archer', ['longbow', 'crossbow']], ['catapult', ['firepot', 'spiked']], ['mage', ['storm', 'frost']], ['barracks', ['paladins', 'drums']]])
   for (const id of ids) drawers[`tower.${kind}.${id}`] = t4(kind, id);

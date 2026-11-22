@@ -1,9 +1,10 @@
 import Phaser from 'phaser';
 import { GAME_W, GAME_H } from '../config.ts';
 import { centreCamera, wideBackground, BLEED } from '../systems/wide.ts';
-import { header, imageButton, label } from '../ui.ts';
+import { button, header, imageButton, label, panel } from '../ui.ts';
 import { isRealArt } from '../assets.ts';
-import { LEVELS, WORLDS } from '../game/levels.ts';
+import { LEVELS, WORLDS, HEROIC_LIVES, heroicBan, type LevelDef } from '../game/levels.ts';
+import { TOWERS } from '../game/towers.ts';
 import { ENEMIES } from '../game/enemies.ts';
 import { MAPS } from '../game/maps.ts';
 import { PERKS, canBuy, perkById, perksCost, type Perk } from '../game/perks.ts';
@@ -84,12 +85,16 @@ export class MenuScene extends Phaser.Scene {
       c.add(label(this, 0, 46, `${lv.waves.length} waves${boss ? ' · Boss' : ''}`, 18, '#e8d8b8'));
       c.add(this.add.sprite(0, 88, 'gui.stars', stars).setScale(0.55));
       if (!open) c.add(label(this, 0, -88, 'Locked', 34, '#e8d8b8'));
+      // Heroic clear and best Endless wave, on the thumbnail's corners.
+      if (save().heroic.includes(lv.id)) c.add(label(this, -w / 2 + 36, -134, '★', 30, '#ffcc33').setStroke('#5a2a0a', 6));
+      const best = save().endless[lv.id];
+      if (best) c.add(label(this, w / 2 - 24, -38, `∞ ${best}`, 20, '#9ad0ff').setOrigin(1, 0.5));
       c.setSize(w, 300);
       if (open) {
         c.setInteractive({ useHandCursor: true });
         c.on('pointerdown', () => c.setScale(0.97));
         c.on('pointerout', () => c.setScale(1));
-        c.on('pointerup', () => { sfx.tap(); this.goFull(); this.scene.start('Game', { level: i }); });
+        c.on('pointerup', () => { c.setScale(1); sfx.tap(); if (stars > 0) this.modes(lv, i); else this.play(i, 'normal'); });
       }
       this.layer.add(c);
     });
@@ -158,6 +163,33 @@ export class MenuScene extends Phaser.Scene {
     this.layer.add(imageButton(this, cx + 300, 660, 'gui.btn.done', () => { sfx.tap(); this.pick = null; this.show('levels'); }));
     if (!isRealArt('gui.btn.reset')) this.layer.add(label(this, cx + 190, 700, 'Reset', 16, '#e8d8b8'));
     if (!isRealArt('gui.btn.done')) this.layer.add(label(this, cx + 300, 700, 'Done', 16, '#e8d8b8'));
+  }
+
+  private play(level: number, mode: 'normal' | 'heroic' | 'endless'): void {
+    this.goFull();
+    this.scene.start('Game', { level, mode });
+  }
+
+  /** A cleared level: play it again, on Heroic, or Endless. */
+  private modes(lv: LevelDef, i: number): void {
+    const cx = GAME_W / 2, cy = GAME_H / 2 + 10, s = save();
+    const pop = this.add.container(0, 0);
+    const shade = this.add.rectangle(cx, cy, GAME_W + BLEED * 2, GAME_H + BLEED * 2, 0x000000, 0.55).setInteractive();
+    shade.on('pointerup', () => { sfx.tap(); pop.destroy(); });
+    pop.add([shade, panel(this, cx, cy, 640, 470, 0.97)]);
+    pop.add(label(this, cx, cy - 196, `${i + 1}. ${lv.name}`, 36, '#ffcc33'));
+    const rows: [string, string, number, () => void][] = [
+      ['Normal', `Best: ${'★'.repeat(s.stars[lv.id] ?? 0) || 'none yet'}`, 0x7a4a22, () => this.play(i, 'normal')],
+      ['Heroic', `${HEROIC_LIVES} lives, no ${TOWERS[heroicBan(lv)].name}s. ` + (s.heroic.includes(lv.id) ? 'Cleared ★' : 'Clear it for +1 ★'), 0x8a2a1a, () => this.play(i, 'heroic')],
+      ['Endless', `The waves never stop. Best wave: ${s.endless[lv.id] ?? '-'}`, 0x2a4a7a, () => this.play(i, 'endless')],
+    ];
+    rows.forEach(([name, blurb, fill, go], k) => {
+      const y = cy - 104 + k * 112;
+      pop.add(button(this, cx - 160, y, name, () => { sfx.tap(); go(); }, 230, 76, fill));
+      pop.add(label(this, cx + 40, y, blurb, 22, '#fff4d0').setOrigin(0, 0.5).setWordWrapWidth(270));
+    });
+    pop.add(imageButton(this, cx + 300, cy - 216, 'gui.btn.close', () => { sfx.tap(); pop.destroy(); }, 0.8));
+    this.layer.add(pop);
   }
 
   /** Phones: full screen and landscape lock on the first level start (needs a tap; best effort, iOS ignores both). */

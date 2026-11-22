@@ -26,7 +26,7 @@ and variety between fights. The plan now leans on these:
    no blocking), runners, healers, shield walls, splitters, and bosses with two phases. Each new enemy gets an
    intro card the first time it appears, so players learn the counters.
 5. **Each world plays differently:** Greenwood (the basics), Sunscorch (two entrances), Frostfall (icy road: enemies
-   speed up; frozen pads), Ashlands (lava bursts disable towers). Maps with two paths force split defences.
+   speed up; frozen pads), The Deadlands (the fallen rise as skeletons unless magic or fire finishes them). Maps with two paths force split defences.
 6. **Juice:** coins fly to the counter, kill popups, boss intro and slow-motion finish, screen shake on leaks, sounds
    for every shot and hit (moved forward from milestone 4: sound is half of how a TD game feels).
 7. **Reasons to replay:** 3 stars per level (lives), a **Heroic** challenge per level (one tower type banned / one
@@ -52,7 +52,7 @@ and variety between fights. The plan now leans on these:
    Title screen, level select with stars and locks, pause (sound, restart, map), win/lose with Next. Local save.
    Bot (`npm run sim`): wins all three levels, ★ 3.0 / 2.6 / 1.9. Moved to M3: the between-level upgrade tree
    and the kit's GUI art for the screens (M2 uses the shared wooden panels).
-3. **Campaign** (in progress)
+3. **Campaign** ✅
    - ✅ Part 1 (2026-11-22): upgrade tree (24 perks in 6 columns, bought top-down with stars, Reset refunds;
      `src/game/perks.ts` → the sim's `Mods`), kit GUI on the title, level select, upgrade, pause and win/lose screens.
      The whole tree makes World 1 easy even for a build-only player; Worlds 2–4 are balanced assuming some perks.
@@ -66,10 +66,16 @@ and variety between fights. The plan now leans on these:
      below 80 % size (about 48 px on a 667×375 phone); backgrounds mirror on all four sides (tall windows, tablets);
      full screen + landscape lock on Android at the first level start; portrait phones get "Turn your phone sideways".
      Checked at 667×375, 375×812, 768×1024, 1024×768 and 1366×768.
-   - Part 3: World 4, Heroic, Endless.
+   - ✅ Part 3 (2026-11-22): World 4 The Deadlands (an enemy killed by physical damage may rise as a skeleton;
+     magic and fire put it down for good): Molten Gate (two entrances), Hollow Woods, Witch Bog (the road splits
+     round the hanging tree) with the Skull Knight, who puts bone shields on itself and everything near it. New
+     enemies: Ash Reaver (armour + shield), Bog Ghoul (heals itself unless burning), Risen Skeleton.
+     Heroic on every cleared level: 5 lives, upgrades give no extra lives, one tower type banned (rotates; never
+     Archers where there are flyers), +1 ★ the first time. Endless on every cleared level: the waves loop, each loop
+     30 % bigger, faster and ×1.15 health; best wave saved and shown on the level card. A cleared level asks
+     Normal / Heroic / Endless. Bot: World 4 ★ 2.5 / 2.4 / 1.4; Heroic with the whole tree wins 11 of 12 levels every
+     time (Witch Bog about 40 %); Endless with the whole tree reaches wave 40–60.
 
-   Worlds 2–4 (9 more maps from the kit, 3 bosses: Stone Golem, Yeti, Skull Knight) with their world rules, the new
-   enemies, two-path maps. Heroic per level, Endless.
 4. **AWIs**
    New configs for Free (default) and Theo Swap, drafted and shown as a dry run before anything changes: Towers
    (2 named variants per family), Heroes (Silver / Bronze / Black Knight, Arcane / Fire Wizard), Spells (8), Crystals

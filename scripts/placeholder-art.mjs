@@ -194,11 +194,12 @@ function treant(mode, pal = ['#5a3a22', '#6b4a2b', '#3f8a2e', '#5fae3f']) {
   };
 }
 /** Knights: one drawer, three liveries. Feet on the bottom edge, facing right. */
-const LIVERY = { hero: ['#c8ccd8', '#3a5aa8', '#ffd040'], soldier: ['#b08050', '#8a3a2a', '#c8ccd4'], militia: ['#8a8a6a', '#5a6a3a', '#a08060'] };
+const LIVERY = { hero: ['#c8ccd8', '#3a5aa8', '#ffd040'], bronze: ['#d09a5a', '#7a4a2a', '#f0c860'], black: ['#4a4a58', '#2a2a34', '#d04040'], soldier: ['#b08050', '#8a3a2a', '#c8ccd4'], militia: ['#8a8a6a', '#5a6a3a', '#a08060'] };
 function knight(who, mode) {
   const [armour, cloth, trim] = LIVERY[who];
   return (c, w, h, i, n) => {
-    const t = i / n, cx = w / 2, b = h - 3, s = who === 'hero' ? 1 : 0.85;
+    const hero = who === 'hero' || who === 'bronze' || who === 'black';
+    const t = i / n, cx = w / 2, b = h - 3, s = hero ? 1 : 0.85;
     const fall = mode === 'die' ? t : 0, step = mode === 'walk' ? Math.sin(t * TAU) * 4 : 0, bob = mode === 'idle' ? Math.sin(t * TAU) * 1.2 : 0;
     const swing = mode === 'attack' ? Math.sin(t * Math.PI) : 0;
     c.save(); c.globalAlpha = 1 - fall * 0.6; c.translate(cx, b); c.rotate(-fall * 1.2); c.scale(s, s); c.translate(-cx, -b);
@@ -208,7 +209,7 @@ function knight(who, mode) {
     rr(c, cx - 12, b - 22 + bob, 24, 8, 3, cloth);
     ell(c, cx + 1, b - 44 + bob, 10, 10, armour, OUT, 2);
     rr(c, cx + 2, b - 46 + bob, 9, 3, 1, OUT);
-    if (who === 'hero') poly(c, [[cx - 4, b - 54 + bob], [cx + 2, b - 62 + bob], [cx + 6, b - 53 + bob]], trim, OUT, 1.5);
+    if (hero) poly(c, [[cx - 4, b - 54 + bob], [cx + 2, b - 62 + bob], [cx + 6, b - 53 + bob]], trim, OUT, 1.5);
     // shield (left) and sword (right)
     rr(c, cx - 20, b - 34 + bob, 11, 18, 4, cloth, OUT, 2); ell(c, cx - 14.5, b - 25 + bob, 2.5, 2.5, trim);
     const a = -1.3 + swing * 2.2, hx = cx + 12, hy = b - 28 + bob;
@@ -392,8 +393,12 @@ const BOSS_PAL = { golem: ['#3a3a40', '#5a5a64', '#4a4a54', '#6ac0e8'], yeti: ['
 for (const [k, pal] of Object.entries(BOSS_PAL)) for (const m of ['walk', 'die', 'cast']) drawers[`enemy.${k}.${m}`] = treant(m, pal);
 for (const [kind, ids] of [['archer', ['longbow', 'crossbow']], ['catapult', ['firepot', 'spiked']], ['mage', ['storm', 'frost']], ['barracks', ['paladins', 'drums']]])
   for (const id of ids) drawers[`tower.${kind}.${id}`] = t4(kind, id);
-for (const [key, who] of [['hero.silver', 'hero'], ['unit.soldier', 'soldier'], ['unit.militia', 'militia']])
+for (const [key, who] of [['unit.soldier', 'soldier'], ['unit.militia', 'militia']])
   for (const m of ['idle', 'walk', 'attack', 'die']) drawers[`${key}.${m}`] = knight(who, m);
+/** Heroes: the 64×64 knight drawn at 2× into a wide frame, feet at the bottom centre (the licensed sheets match). */
+const at2x = (draw) => (c, w, h, i, n) => { c.save(); c.translate(w / 2, h); c.scale(2, 2); c.translate(-32, -64); draw(c, 64, 64, i, n); c.restore(); };
+for (const [id, who] of [['silver', 'hero'], ['bronze', 'bronze'], ['black', 'black']])
+  for (const m of ['idle', 'walk', 'attack', 'die']) drawers[`hero.${id}.${m}`] = at2x(knight(who, m));
 for (const k of ['levels', 'win', 'failed', 'settings', 'upgrade']) drawers[`gui.header.${k}`] = ribbon;
 for (const k of ['menu', 'next', 'restart', 'back', 'forward', 'sound', 'soundoff', 'settings']) drawers[`gui.btn.${k}`] = roundBtn(ICON[k]);
 for (let i = 1; i <= 24; i++) drawers[`perk.${i}`] = perkIcon(i);

@@ -13,6 +13,7 @@
     "assets:placeholders": "node scripts/gen-placeholders.mjs",
     "assets:pack": "node scripts/pack-frames.mjs",
     "assets:import": "node scripts/import-kit.mjs",
+    "assets:import-knights": "node scripts/import-knights.mjs",
     "pwa:icons": "node scripts/gen-pwa-icons.mjs",
     "pwa:icons:licensed": "node scripts/gen-pwa-icons.mjs --licensed",
     "deploy": "node scripts/deploy.mjs",

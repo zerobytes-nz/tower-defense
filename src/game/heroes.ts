@@ -13,8 +13,6 @@ export interface HeroDef {
   respawn: number;   // seconds
   regen: number;     // hp/s while not fighting
   ability: { name: string; blurb: string; cooldown: number; radius: number; damage: number; stun: number };
-  /** Drawn with this tint (AWI knights share the Silver Knight's art). */
-  tint?: number;
   /** Set when the hero comes from an AWI. */
   rarity?: string;
 }
@@ -27,12 +25,12 @@ export const HEROES: Record<string, HeroDef> = {
   },
   // AWI heroes (TheoSwap): sidegrades of Sir Aldric.
   bronze: {
-    id: 'bronze', name: 'Dame Brona', art: 'hero.silver', tint: 0xe0a868,
+    id: 'bronze', name: 'Dame Brona', art: 'hero.bronze',
     hp: 430, damage: 13, rate: 1, armor: 0.45, speed: 100, respawn: 14, regen: 10,
     ability: { name: 'Bulwark', blurb: 'A wide slam that stuns everything near her for longer.', cooldown: 22, radius: 135, damage: 45, stun: 2.4 },
   },
   black: {
-    id: 'black', name: 'The Black Knight', art: 'hero.silver', tint: 0x7a7a90,
+    id: 'black', name: 'The Black Knight', art: 'hero.black',
     hp: 270, damage: 26, rate: 0.85, armor: 0.25, speed: 125, respawn: 11, regen: 6,
     ability: { name: 'Dark Cleave', blurb: 'One huge blow to everything close by.', cooldown: 18, radius: 90, damage: 160, stun: 0.6 },
   },

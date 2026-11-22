@@ -6,6 +6,9 @@ Tower Defense is open source, but its art comes from a pack that may **not** be 
 **[CraftPix: Tower Defense 2D Game Kit](https://craftpix.net/product/tower-defense-2d-game-kit/)** (CraftPix.net; [licence](https://craftpix.net/file-licenses/)).
 The downloaded folder is called `craftpix-net-519305-tower-defense-2d-game-kit` (13 sub-packs: monsters, bosses, towers, effects, GUI, tilesets).
 
+The three hero knights come from a second CraftPix pack, **[CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/)** (same licence).
+Import it with `npm run assets:import-knights -- "<pack folder that holds PNG/silver_knight/>"`.
+
 So the repo holds two kinds of art:
 
 | Folder | In git? | What goes there |
@@ -45,7 +48,7 @@ Edit `assets.manifest.json` (key, path, size, frames, what it's for, source). If
 `scripts/placeholder-art.mjs`. Then run `npm run assets:placeholders && npm run assets:docs` and commit the
 manifest, the placeholder, and this file. Game code refers to assets **only by manifest key**.
 
-## Every file to replace (160)
+## Every file to replace (168)
 
 ### Maps
 
@@ -197,10 +200,18 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 
 | Key | File (under `public/assets/licensed/`) | Size · frames | Used for | From the kit |
 |---|---|---|---|---|
-| `hero.silver.idle` | `units/silver-idle.png` | 256×64 · 4 × 64×64 @ 6 fps, loop | Hero Sir Aldric: idle (faces right). Original art. | Original. Keep the placeholder. |
-| `hero.silver.walk` | `units/silver-walk.png` | 384×64 · 6 × 64×64 @ 10 fps, loop | Hero Sir Aldric: walk (faces right). Original art. | Original. Keep the placeholder. |
-| `hero.silver.attack` | `units/silver-attack.png` | 384×64 · 6 × 64×64 @ 12 fps | Hero Sir Aldric: attack (faces right). Original art. | Original. Keep the placeholder. |
-| `hero.silver.die` | `units/silver-die.png` | 384×64 · 6 × 64×64 @ 10 fps | Hero Sir Aldric: die (faces right). Original art. | Original. Keep the placeholder. |
+| `hero.silver.idle` | `units/silver-idle.png` | 1920×160 · 5 × 384×160 @ 6 fps, loop | Hero Sir Aldric: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.silver.walk` | `units/silver-walk.png` | 1920×160 · 5 × 384×160 @ 10 fps, loop | Hero Sir Aldric: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.silver.attack` | `units/silver-attack.png` | 1920×160 · 5 × 384×160 @ 12 fps | Hero Sir Aldric: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.silver.die` | `units/silver-die.png` | 1920×160 · 5 × 384×160 @ 10 fps | Hero Sir Aldric: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.bronze.idle` | `units/bronze-idle.png` | 1920×160 · 5 × 384×160 @ 6 fps, loop | Hero Dame Brona: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.bronze.walk` | `units/bronze-walk.png` | 1920×160 · 5 × 384×160 @ 10 fps, loop | Hero Dame Brona: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.bronze.attack` | `units/bronze-attack.png` | 1920×160 · 5 × 384×160 @ 12 fps | Hero Dame Brona: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.bronze.die` | `units/bronze-die.png` | 1920×160 · 5 × 384×160 @ 10 fps | Hero Dame Brona: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.black.idle` | `units/black-idle.png` | 1920×160 · 5 × 384×160 @ 6 fps, loop | Hero The Black Knight: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.black.walk` | `units/black-walk.png` | 1920×160 · 5 × 384×160 @ 10 fps, loop | Hero The Black Knight: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.black.attack` | `units/black-attack.png` | 2720×160 · 5 × 544×160 @ 12 fps | Hero The Black Knight: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
+| `hero.black.die` | `units/black-die.png` | 1920×160 · 5 × 384×160 @ 10 fps | Hero The Black Knight: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x. | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) |
 
 ### gui
 
@@ -268,5 +279,6 @@ manifest, the placeholder, and this file. Game code refers to assets **only by m
 |---|---|---|---|
 | `craftpix-td-kit` | [CraftPix: Tower Defense 2D Game Kit](https://craftpix.net/product/tower-defense-2d-game-kit/) | no, `licensed/` | craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored). [Licence](https://craftpix.net/file-licenses/) |
 | `own` | [Tower Defense original (placeholder generator)](scripts/placeholder-art.mjs) | yes (placeholder) | MIT, same as the code. Fine to commit. |
+| `craftpix-knights` | [CraftPix: Knight Characters Free Sprite](https://craftpix.net/freebies/free-knight-character-sprites/) | no, `licensed/` | craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored). [Licence](https://craftpix.net/file-licenses/) |
 
 Always read the licence on the pack's own page; the notes here are not legal advice.

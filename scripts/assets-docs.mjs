@@ -27,6 +27,9 @@ Tower Defense is open source, but its art comes from a pack that may **not** be 
 **[${kit.name}](${kit.url})** (CraftPix.net; [licence](${kit.licenceUrl})).
 The downloaded folder is called \`craftpix-net-519305-tower-defense-2d-game-kit\` (13 sub-packs: monsters, bosses, towers, effects, GUI, tilesets).
 
+The three hero knights come from a second CraftPix pack, **[${m.sources['craftpix-knights'].name}](${m.sources['craftpix-knights'].url})** (same licence).
+Import it with \`npm run assets:import-knights -- "<pack folder that holds PNG/silver_knight/>"\`.
+
 So the repo holds two kinds of art:
 
 | Folder | In git? | What goes there |

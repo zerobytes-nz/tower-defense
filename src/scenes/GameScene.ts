@@ -834,8 +834,7 @@ export class GameScene extends Phaser.Scene {
     let v = this.unitViews.get(u.id);
     if (!v) {
       const art = this.unitArt(u);
-      const sprite = this.add.sprite(u.x, u.y, `${art}.walk`, 0).setOrigin(0.5, 1).setScale(u.kind === 'hero' ? 1.15 : 0.95);
-      if (u.kind === 'hero' && this.b.heroDef?.tint) sprite.setTint(this.b.heroDef.tint);
+      const sprite = this.add.sprite(u.x, u.y, `${art}.walk`, 0).setOrigin(0.5, 1).setScale((u.kind === 'hero' ? 1.15 : 0.95) * asset(`${art}.walk`).displayScale);
       if (u.kind === 'hero') sprite.setInteractive({ useHandCursor: true }).on('pointerup', () => { if (!this.overlay && !this.card) { sfx.tap(); this.setAim(this.aim?.kind === 'hero' ? null : { kind: 'hero' }); } });
       v = { sprite, art, state: '', busyUntil: 0, dead: false };
       this.unitViews.set(u.id, v);

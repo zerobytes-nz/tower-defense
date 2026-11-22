@@ -17,6 +17,12 @@
       "name": "Tower Defense original (placeholder generator)",
       "url": "scripts/placeholder-art.mjs",
       "licence": "MIT, same as the code. Fine to commit."
+    },
+    "craftpix-knights": {
+      "name": "CraftPix: Knight Characters Free Sprite",
+      "url": "https://craftpix.net/freebies/free-knight-character-sprites/",
+      "licence": "craftpix.net licence: usable in commercial and personal projects; the raw files must NOT be redistributed, and the files may not be used to train AI. Keep them in public/assets/licensed/ (gitignored).",
+      "licenceUrl": "https://craftpix.net/file-licenses/"
     }
   },
   "assets": [
@@ -1126,69 +1132,253 @@
       "key": "hero.silver.idle",
       "type": "spritesheet",
       "path": "units/silver-idle.png",
-      "width": 256,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 4,
-      "displayScale": 1,
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 6,
         "repeat": -1
       },
-      "usedFor": "Hero Sir Aldric: idle (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Hero Sir Aldric: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "silver_knight",
+        "anim": "IDLE"
+      }
     },
     {
       "key": "hero.silver.walk",
       "type": "spritesheet",
       "path": "units/silver-walk.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 10,
         "repeat": -1
       },
-      "usedFor": "Hero Sir Aldric: walk (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Hero Sir Aldric: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "silver_knight",
+        "anim": "WALK"
+      }
     },
     {
       "key": "hero.silver.attack",
       "type": "spritesheet",
       "path": "units/silver-attack.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 12,
         "repeat": 0
       },
-      "usedFor": "Hero Sir Aldric: attack (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Hero Sir Aldric: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "silver_knight",
+        "anim": "ATTACK"
+      }
     },
     {
       "key": "hero.silver.die",
       "type": "spritesheet",
       "path": "units/silver-die.png",
-      "width": 384,
-      "height": 64,
-      "frameWidth": 64,
-      "frameHeight": 64,
-      "frameCount": 6,
-      "displayScale": 1,
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
       "animation": {
         "frameRate": 10,
         "repeat": 0
       },
-      "usedFor": "Hero Sir Aldric: die (faces right). Original art.",
-      "source": "own"
+      "usedFor": "Hero Sir Aldric: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "silver_knight",
+        "anim": "DIE"
+      }
+    },
+    {
+      "key": "hero.bronze.idle",
+      "type": "spritesheet",
+      "path": "units/bronze-idle.png",
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
+      "animation": {
+        "frameRate": 6,
+        "repeat": -1
+      },
+      "usedFor": "Hero Dame Brona: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "bronze_knight",
+        "anim": "IDLE"
+      }
+    },
+    {
+      "key": "hero.bronze.walk",
+      "type": "spritesheet",
+      "path": "units/bronze-walk.png",
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
+      "animation": {
+        "frameRate": 10,
+        "repeat": -1
+      },
+      "usedFor": "Hero Dame Brona: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "bronze_knight",
+        "anim": "WALK"
+      }
+    },
+    {
+      "key": "hero.bronze.attack",
+      "type": "spritesheet",
+      "path": "units/bronze-attack.png",
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
+      "animation": {
+        "frameRate": 12,
+        "repeat": 0
+      },
+      "usedFor": "Hero Dame Brona: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "bronze_knight",
+        "anim": "ATTACK"
+      }
+    },
+    {
+      "key": "hero.bronze.die",
+      "type": "spritesheet",
+      "path": "units/bronze-die.png",
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
+      "animation": {
+        "frameRate": 10,
+        "repeat": 0
+      },
+      "usedFor": "Hero Dame Brona: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "bronze_knight",
+        "anim": "DIE"
+      }
+    },
+    {
+      "key": "hero.black.idle",
+      "type": "spritesheet",
+      "path": "units/black-idle.png",
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
+      "animation": {
+        "frameRate": 6,
+        "repeat": -1
+      },
+      "usedFor": "Hero The Black Knight: idle (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "black_knight",
+        "anim": "IDLE"
+      }
+    },
+    {
+      "key": "hero.black.walk",
+      "type": "spritesheet",
+      "path": "units/black-walk.png",
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
+      "animation": {
+        "frameRate": 10,
+        "repeat": -1
+      },
+      "usedFor": "Hero The Black Knight: walk (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "black_knight",
+        "anim": "WALK"
+      }
+    },
+    {
+      "key": "hero.black.attack",
+      "type": "spritesheet",
+      "path": "units/black-attack.png",
+      "width": 2720,
+      "height": 160,
+      "frameWidth": 544,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
+      "animation": {
+        "frameRate": 12,
+        "repeat": 0
+      },
+      "usedFor": "Hero The Black Knight: attack (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "black_knight",
+        "anim": "ATTACK"
+      }
+    },
+    {
+      "key": "hero.black.die",
+      "type": "spritesheet",
+      "path": "units/black-die.png",
+      "width": 1920,
+      "height": 160,
+      "frameWidth": 384,
+      "frameHeight": 160,
+      "frameCount": 5,
+      "displayScale": 0.5,
+      "animation": {
+        "frameRate": 10,
+        "repeat": 0
+      },
+      "usedFor": "Hero The Black Knight: die (faces right; feet at the bottom centre, 6 px up). Drawn at 2x.",
+      "source": "craftpix-knights",
+      "pack": {
+        "folder": "black_knight",
+        "anim": "DIE"
+      }
     },
     {
       "key": "unit.soldier.walk",

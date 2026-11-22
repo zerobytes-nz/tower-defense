@@ -31,8 +31,7 @@ export function awiIcon(scene: Phaser.Scene, a: AWI, size: number): Phaser.GameO
   } else if (a.slot === 'hero') {
     const h = HEROES[HERO_ITEMS[a.itemId]];
     const img = scene.add.sprite(0, size * 0.45, `${h.art}.idle`, 0).setOrigin(0.5, 1);
-    img.setScale((size * 0.95) / Math.max(img.width, img.height));
-    if (h.tint) img.setTint(h.tint);
+    img.setScale((size * 1.05) / img.height); // wide frames: the knight stands in the middle
     c.add(img);
   } else if (a.slot === 'spell') {
     makeSpellIcons(scene);

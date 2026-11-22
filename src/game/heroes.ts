@@ -13,6 +13,10 @@ export interface HeroDef {
   respawn: number;   // seconds
   regen: number;     // hp/s while not fighting
   ability: { name: string; blurb: string; cooldown: number; radius: number; damage: number; stun: number };
+  /** Drawn with this tint (AWI knights share the Silver Knight's art). */
+  tint?: number;
+  /** Set when the hero comes from an AWI. */
+  rarity?: string;
 }
 
 export const HEROES: Record<string, HeroDef> = {
@@ -20,6 +24,17 @@ export const HEROES: Record<string, HeroDef> = {
     id: 'silver', name: 'Sir Aldric', art: 'hero.silver',
     hp: 320, damage: 16, rate: 0.9, armor: 0.35, speed: 115, respawn: 12, regen: 8,
     ability: { name: 'Shield Slam', blurb: 'Stuns and hurts every enemy around him.', cooldown: 22, radius: 100, damage: 70, stun: 1.6 },
+  },
+  // AWI heroes (TheoSwap): sidegrades of Sir Aldric.
+  bronze: {
+    id: 'bronze', name: 'Dame Brona', art: 'hero.silver', tint: 0xe0a868,
+    hp: 430, damage: 13, rate: 1, armor: 0.45, speed: 100, respawn: 14, regen: 10,
+    ability: { name: 'Bulwark', blurb: 'A wide slam that stuns everything near her for longer.', cooldown: 22, radius: 135, damage: 45, stun: 2.4 },
+  },
+  black: {
+    id: 'black', name: 'The Black Knight', art: 'hero.silver', tint: 0x7a7a90,
+    hp: 270, damage: 26, rate: 0.85, armor: 0.25, speed: 125, respawn: 11, regen: 6,
+    ability: { name: 'Dark Cleave', blurb: 'One huge blow to everything close by.', cooldown: 18, radius: 90, damage: 160, stun: 0.6 },
   },
 };
 export const DEFAULT_HERO = 'silver';

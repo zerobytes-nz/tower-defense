@@ -12,6 +12,8 @@ import { TOWERS, TOWER_KINDS, MAX_TIER, towerArt, type TowerKind } from '../game
 import { SPELLS, SPELL_IDS, METEOR, HERO_XP, type SpellId } from '../game/heroes.ts';
 import { think } from '../game/bot.ts';
 import { MenuScene } from './MenuScene.ts';
+import { currentAwis } from '../profile.ts';
+import { RARITIES, RARITY_COLOR } from '../game/awi.ts';
 import { save, markSeen, recordStars, recordHeroic, recordEndless } from '../save.ts';
 import { modsFor } from '../game/perks.ts';
 import { sfx, soundOn, toggleSound } from '../systems/audio.ts';
@@ -32,7 +34,7 @@ type Menu =
 type Aim = { kind: 'hero' } | { kind: 'spell'; id: SpellId } | { kind: 'rally'; tower: Tower } | null;
 
 interface EnemyView { sprite: Phaser.GameObjects.Sprite; shadow: Phaser.GameObjects.Ellipse; casting: number }
-interface TowerView { body: Phaser.GameObjects.Image; unit?: Phaser.GameObjects.Sprite; roots?: Phaser.GameObjects.Image }
+interface TowerView { body: Phaser.GameObjects.Image; unit?: Phaser.GameObjects.Sprite; roots?: Phaser.GameObjects.Image; aura?: Phaser.GameObjects.Ellipse }
 interface UnitView { sprite: Phaser.GameObjects.Sprite; art: string; state: string; busyUntil: number; dead: boolean }
 interface ActionButton { c: Phaser.GameObjects.Container; img: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Graphics; ring: Phaser.GameObjects.Graphics; text?: Phaser.GameObjects.Text }
 
@@ -86,7 +88,7 @@ export class GameScene extends Phaser.Scene {
     this.mode = data.mode ?? 'normal';
     this.heroicFirst = false; this.endlessBest = save().endless[LEVELS[this.levelIndex].id] ?? 0;
     MenuScene.worldPage = Math.max(0, LEVELS[this.levelIndex].world - 1);
-    this.b = new Battle({ level: LEVELS[this.levelIndex], seed: SEED || Math.floor(Math.random() * 1e9), mods: BOT ? undefined : modsFor(save().perks), mode: this.mode });
+    this.b = new Battle({ level: LEVELS[this.levelIndex], seed: SEED || Math.floor(Math.random() * 1e9), mods: BOT ? undefined : modsFor(save().perks), mode: this.mode, awi: BOT ? undefined : currentAwis() });
     this.speed = 1; this.paused = false; this.acc = 0; this.steps = 0; this.menu = null; this.aim = null;
     this.overlay = undefined; this.card = undefined; this.cardQueue = [];
     this.snowViews.clear(); this.enemyViews.clear(); this.towerViews.clear(); this.shotViews.clear(); this.unitViews.clear(); this.fireViews.clear(); this.spellBtns.clear();
@@ -265,7 +267,7 @@ export class GameScene extends Phaser.Scene {
   private setAim(a: Aim): void {
     this.aim = a;
     if (a) this.closeMenu(true);
-    const text = !a ? '' : a.kind === 'hero' ? 'Tap the road to send Sir Aldric' : a.kind === 'rally' ? 'Tap the road to move the soldiers'
+    const text = !a ? '' : a.kind === 'hero' ? `Tap the road to send ${this.b.heroDef?.name ?? 'the hero'}` : a.kind === 'rally' ? 'Tap the road to move the soldiers'
       : `Tap the road: ${SPELLS[a.id].name}`;
     this.aimHint.setText(text).setVisible(!!a);
     this.rangeG.clear();
@@ -338,7 +340,7 @@ export class GameScene extends Phaser.Scene {
           }, 'Banned', false, false, () => { sfx.deny(); this.menuInfo(cx, cy, TOWERS[k].name, 'Banned in Heroic.'); });
           return;
         }
-        this.option(cx + spots[i][0], cy + spots[i][1], (c) => c.add(this.add.image(0, 22, `tower.${k}.1`).setOrigin(0.5, 1).setScale(0.5)),
+        this.option(cx + spots[i][0], cy + spots[i][1], (c) => { const img = this.add.image(0, 22, `tower.${k}.1`).setOrigin(0.5, 1).setScale(0.5); this.restTint(img, k); c.add(img); },
           String(cost), b.gold >= cost, m.pick === k, () => {
             if (m.pick === k) { if (b.build(m.pad, k)) { sfx.build(); this.closeMenu(); } else { sfx.deny(); this.flash(this.hudGold); } return; }
             sfx.tap(); m.pick = k; this.drawMenu();
@@ -346,7 +348,7 @@ export class GameScene extends Phaser.Scene {
       });
       if (m.pick) {
         this.drawRange(p.x, p.y - 18, TOWERS[m.pick].tiers[0].range * b.mods.range[m.pick]);
-        this.menuInfo(cx, cy, TOWERS[m.pick].name, TOWERS[m.pick].blurb);
+        this.menuInfo(cx, cy, this.towerName(m.pick).name, this.towerName(m.pick).blurb);
       }
       return;
     }
@@ -382,7 +384,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     const s = b.stats(t);
-    const name = t.tier >= MAX_TIER && t.branch !== null ? def.branches[t.branch].name : def.name;
+    const name = t.tier >= MAX_TIER && t.branch !== null ? def.branches[t.branch].name : this.towerName(t.kind).name;
     const stats = t.kind === 'barracks'
       ? `Tier ${t.tier} · ${s.soldiers!.count} soldiers, ${Math.round(s.soldiers!.hp * b.mods.soldierHp)} hp each`
       : `Tier ${t.tier} · ${Math.round(s.damage * t.buff.damage * b.mods.damage[t.kind])} dmg every ${s.rate}s${t.buff.damage > 1 ? ' (boosted)' : ''}`;
@@ -447,7 +449,7 @@ export class GameScene extends Phaser.Scene {
         case 'heal': { const v = this.enemyViews.get(e.enemy.id); if (v) { v.sprite.setTint(0x9aff9a); this.time.delayedCall(180, () => v.sprite.clearTint()); } break; }
         case 'built': case 'upgraded': this.drawTower(e.tower, e.type === 'built'); if (this.menu) this.drawMenu(); break;
         case 'sold': {
-          const v = this.towerViews.get(e.tower.id); v?.body.destroy(); v?.unit?.destroy(); v?.roots?.destroy();
+          const v = this.towerViews.get(e.tower.id); v?.body.destroy(); v?.unit?.destroy(); v?.roots?.destroy(); v?.aura?.destroy();
           this.towerViews.delete(e.tower.id); this.pop(e.tower.x, e.tower.y - 40, `+${e.gold}`, '#ffdd66'); break;
         }
         case 'shot': this.addShot(e.shot, e.tower); break;
@@ -547,7 +549,7 @@ export class GameScene extends Phaser.Scene {
     // Roots wear off
     for (const t of b.towers) {
       const v = this.towerViews.get(t.id);
-      if (v?.roots && b.time >= t.rootedUntil) { const r = v.roots; v.roots = undefined; v.body.clearTint(); this.tweens.add({ targets: r, alpha: 0, duration: 300, onComplete: () => r.destroy() }); }
+      if (v?.roots && b.time >= t.rootedUntil) { const r = v.roots; v.roots = undefined; this.restTint(v.body, t.kind); this.tweens.add({ targets: r, alpha: 0, duration: 300, onComplete: () => r.destroy() }); }
     }
   }
 
@@ -592,9 +594,16 @@ export class GameScene extends Phaser.Scene {
 
   private drawTower(t: Tower, fresh: boolean): void {
     const old = this.towerViews.get(t.id);
-    old?.body.destroy(); old?.unit?.destroy(); old?.roots?.destroy();
+    old?.body.destroy(); old?.unit?.destroy(); old?.roots?.destroy(); old?.aura?.destroy();
     const body = this.add.image(t.x, t.y + 32, towerArt(t.kind, t.tier, t.branch)).setOrigin(0.5, 1).setDepth(t.y);
     const v: TowerView = { body };
+    // AWI towers: tinted, with a glowing ring of their colour (rarity shows in its brightness).
+    const awi = this.b.awi.towers[t.kind];
+    if (awi) {
+      this.restTint(body, t.kind);
+      v.aura = this.add.ellipse(t.x, t.y + 26, 104, 30, awi.variant.tint, 0.32 + 0.08 * RARITIES.indexOf(awi.rarity)).setDepth(t.y - 1).setStrokeStyle(4, RARITY_COLOR[awi.rarity], 1);
+      this.tweens.add({ targets: v.aura, alpha: { from: 0.6, to: 1 }, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
     if (t.kind === 'archer') {
       const key = `unit.archer.${Math.min(3, t.tier)}`;
       v.unit = this.add.sprite(t.x + 2, t.y + 32 + ARCHER_Y[t.tier - 1], key, 0).setOrigin(0.5, 1).setScale(asset(key).displayScale).setDepth(t.y + 0.5);
@@ -606,11 +615,25 @@ export class GameScene extends Phaser.Scene {
     this.pop(t.x, t.y - 70, fresh ? '' : branch ? `${branch}!` : `Tier ${t.tier}!`, '#b8f080');
   }
 
+  /** A tower's resting tint: none, or its AWI colour softened. */
+  private restTint(body: Phaser.GameObjects.Image, kind: TowerKind): void {
+    const awi = this.b.awi.towers[kind];
+    if (!awi) { body.clearTint(); return; }
+    const c = Phaser.Display.Color.IntegerToColor(awi.variant.tint), mix = (v: number) => Math.round(v * 0.7 + 255 * 0.3);
+    body.setTint(Phaser.Display.Color.GetColor(mix(c.red), mix(c.green), mix(c.blue)));
+  }
+
+  /** Name and blurb of a tower family as the player has it (their AWI variant, if any). */
+  private towerName(kind: TowerKind): { name: string; blurb: string } {
+    const awi = this.b.awi.towers[kind];
+    return awi ? { name: awi.variant.name, blurb: `${awi.variant.blurb} (${awi.rarity} AWI)` } : { name: TOWERS[kind].name, blurb: TOWERS[kind].blurb };
+  }
+
   private addShot(s: Shot, t: Tower): void {
     const v = this.towerViews.get(t.id);
     if (t.kind === 'archer' && v?.unit) { v.unit.setFlipX(t.aimX < t.x).play(v.unit.texture.key); s.sy = s.y = v.unit.y - 30; s.sx = s.x = v.unit.x; sfx.arrow(); }
     if (t.kind === 'catapult' && v) { this.tweens.add({ targets: v.body, scaleY: 0.9, duration: 90, yoyo: true }); sfx.boulder(); }
-    if (t.kind === 'mage' && v) { v.body.setTint(0xffb0a0); this.time.delayedCall(120, () => v.body.clearTint()); s.sy = s.y = t.y - 70; sfx.bolt(); }
+    if (t.kind === 'mage' && v) { v.body.setTint(0xffb0a0); this.time.delayedCall(120, () => { if (v.body.active) this.restTint(v.body, t.kind); }); s.sy = s.y = t.y - 70; sfx.bolt(); }
     const img = this.add.image(s.x, s.y, `shot.${s.kind}`).setDepth(800);
     if (s.kind === 'bolt') this.tweens.add({ targets: img, scale: 1.3, duration: 120, yoyo: true, repeat: -1 });
     this.shotViews.set(s.id, img);
@@ -727,6 +750,7 @@ export class GameScene extends Phaser.Scene {
     if (!v) {
       const art = this.unitArt(u);
       const sprite = this.add.sprite(u.x, u.y, `${art}.walk`, 0).setOrigin(0.5, 1).setScale(u.kind === 'hero' ? 1.15 : 0.95);
+      if (u.kind === 'hero' && this.b.heroDef?.tint) sprite.setTint(this.b.heroDef.tint);
       if (u.kind === 'hero') sprite.setInteractive({ useHandCursor: true }).on('pointerup', () => { if (!this.overlay && !this.card) { sfx.tap(); this.setAim(this.aim?.kind === 'hero' ? null : { kind: 'hero' }); } });
       v = { sprite, art, state: '', busyUntil: 0, dead: false };
       this.unitViews.set(u.id, v);

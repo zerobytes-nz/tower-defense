@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { GAME_W, GAME_H, COLORS, FONT } from '../config.ts';
 import { centreCamera } from '../systems/wide.ts';
 import { preloadAll, setupAssets } from '../assets.ts';
-import '../deeplink.ts';
+import { linkCode } from '../deeplink.ts';
 
 export class BootScene extends Phaser.Scene {
   constructor() { super('Boot'); }
@@ -21,6 +21,6 @@ export class BootScene extends Phaser.Scene {
     setupAssets(this);
     // Passion One is a CSS @font-face (index.html); wait for it so the first texts aren't drawn in the fallback.
     const ready = document.fonts?.load(`40px ${FONT.split(',')[0]}`).catch(() => null) ?? Promise.resolve();
-    Promise.race([ready, new Promise((r) => setTimeout(r, 2500))]).then(() => this.scene.start('Menu'));
+    Promise.race([ready, new Promise((r) => setTimeout(r, 2500))]).then(() => (linkCode ? this.scene.start('Awi', { code: linkCode }) : this.scene.start('Menu')));
   }
 }

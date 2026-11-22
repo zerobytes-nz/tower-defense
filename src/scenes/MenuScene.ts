@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GAME_W, GAME_H } from '../config.ts';
 import { centreCamera, wideBackground, BLEED } from '../systems/wide.ts';
 import { button, header, imageButton, label, panel } from '../ui.ts';
+import { profile } from '../profile.ts';
 import { isRealArt } from '../assets.ts';
 import { LEVELS, WORLDS, HEROIC_LIVES, heroicBan, type LevelDef } from '../game/levels.ts';
 import { TOWERS } from '../game/towers.ts';
@@ -54,6 +55,10 @@ export class MenuScene extends Phaser.Scene {
     this.tweens.add({ targets: play, scale: 1.06, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.layer.add(play);
     this.layer.add(this.soundButton(70, 66));
+    // AWIs: connect TheoSwap, or open the loadout
+    const p = profile();
+    this.layer.add(button(this, x, 600, p ? 'My AWIs' : 'Connect TheoSwap', () => { sfx.tap(); this.scene.start('Awi'); }, 320, 64, 0x2a4a7a));
+    this.layer.add(label(this, x, 648, p ? `${p.label} · ${p.loadout.length} AWIs in the loadout` : 'Your NFTs become AWIs (Altered World Items)', 18, '#fff4d0'));
   }
 
   // ── Level select ──────────────────────────────────────────────────────────────────────────────────

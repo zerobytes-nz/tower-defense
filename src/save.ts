@@ -12,10 +12,14 @@ export interface Save {
   heroic: string[];
   /** Best wave reached in Endless, per level. */
   endless: Record<string, number>;
+  /** Crystal AWIs: crystals paid in (once per NFT, by token) and the tokens already paid. */
+  crystals: { bank: number; paid: string[] };
 }
 
+import { CRYSTALS_PER_STAR } from './game/awi.ts';
+
 const KEY = 'tower-defense.save.v1';
-const fresh = (): Save => ({ v: 1, stars: {}, seen: [], sound: true, perks: [], heroic: [], endless: {} });
+const fresh = (): Save => ({ v: 1, stars: {}, seen: [], sound: true, perks: [], heroic: [], endless: {}, crystals: { bank: 0, paid: [] } });
 
 let cache: Save | null = null;
 
@@ -24,7 +28,7 @@ export function save(): Save {
   try {
     const raw = localStorage.getItem(KEY);
     const s = raw ? (JSON.parse(raw) as Partial<Save>) : null;
-    cache = s && s.v === 1 ? { ...fresh(), ...s, stars: { ...(s.stars ?? {}) }, seen: [...(s.seen ?? [])], perks: [...(s.perks ?? [])], heroic: [...(s.heroic ?? [])], endless: { ...(s.endless ?? {}) } } : fresh();
+    cache = s && s.v === 1 ? { ...fresh(), ...s, stars: { ...(s.stars ?? {}) }, seen: [...(s.seen ?? [])], perks: [...(s.perks ?? [])], heroic: [...(s.heroic ?? [])], endless: { ...(s.endless ?? {}) }, crystals: { bank: s.crystals?.bank ?? 0, paid: [...(s.crystals?.paid ?? [])] } } : fresh();
   } catch { cache = fresh(); }
   return cache;
 }
@@ -68,8 +72,20 @@ export function recordEndless(level: string, wave: number): boolean {
   return true;
 }
 
-/** Up to 3 per level, plus 1 per Heroic clear. */
-export const totalStars = (): number => Object.values(save().stars).reduce((a, b) => a + b, 0) + save().heroic.length;
+/** Crystal AWIs: pay each NFT's crystals in once. Returns how many crystals were new. */
+export function payCrystals(nfts: { token: string; amount: number }[]): number {
+  const c = save().crystals;
+  let paid = 0;
+  for (const n of nfts) if (!c.paid.includes(n.token)) { c.paid.push(n.token); c.bank += n.amount; paid += n.amount; }
+  if (paid) write();
+  return paid;
+}
+
+/** Bonus stars from the crystal bank. */
+export const crystalStars = (per: number): number => Math.floor(save().crystals.bank / per);
+
+/** Up to 3 per level, plus 1 per Heroic clear, plus crystal stars (src/game/awi.ts). */
+export const totalStars = (): number => Object.values(save().stars).reduce((a, b) => a + b, 0) + save().heroic.length + crystalStars(CRYSTALS_PER_STAR);
 
 /** Stars not yet spent on perks. */
 export const freeStars = (spent: number): number => totalStars() - spent;

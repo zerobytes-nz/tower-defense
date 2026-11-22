@@ -4,6 +4,7 @@ import { ENEMIES, type EnemyDef, type EnemyKind } from './enemies.ts';
 import { LEVELS, WAVE_BREAK, EARLY_GOLD_PER_S, HEROIC_LIVES, ENDLESS_HP, starsFor, heroicBan, endlessWave, type LevelDef, type Mode } from './levels.ts';
 import { MAPS, buildTrack, pointAt, type MapDef, type Pt, type Track } from './maps.ts';
 import { TOWERS, MAX_TIER, SELL_BACK, spentTo, tierStats, type TowerKind, type TowerTier } from './towers.ts';
+import { variantStats, type AwiBattle } from './awi.ts';
 import { HEROES, DEFAULT_HERO, METEOR, MILITIA, SPELLS, heroLevel, levelMult, type HeroDef, type SpellId } from './heroes.ts';
 
 export const DT = 1 / 60;
@@ -144,7 +145,7 @@ export function rng(seed: number): () => number {
 interface Pending { at: number; kind: EnemyKind; wave: number; path: number }
 interface Impact { at: number; x: number; y: number }
 
-export interface BattleOptions { level?: LevelDef; seed?: number; mods?: Mods; hero?: HeroDef | null; mode?: Mode }
+export interface BattleOptions { level?: LevelDef; seed?: number; mods?: Mods; hero?: HeroDef | null; mode?: Mode; awi?: AwiBattle }
 
 const BLOCK_REACH = 26;    // a unit this close to its enemy holds it
 const SOLDIER_ENGAGE = 80; // soldiers leave their spot for enemies this close to it
@@ -195,11 +196,15 @@ export class Battle {
   readonly mode: Mode;
   /** Heroic: the tower type that can't be built. */
   readonly banned: TowerKind | null;
+  /** AWIs (TheoSwap NFTs) the player brought: tower variants, hero. */
+  readonly awi: AwiBattle;
+  private statCache = new Map<string, TowerTier>();
 
   constructor(opts: BattleOptions = {}) {
     this.level = opts.level ?? LEVELS[0];
     this.mode = opts.mode ?? 'normal';
     this.banned = this.mode === 'heroic' ? heroicBan(this.level) : null;
+    this.awi = opts.awi ?? { towers: {} };
     this.map = MAPS[this.level.map];
     this.tracks = this.map.paths.map((p) => buildTrack(p));
     this.track = this.tracks[0];
@@ -207,7 +212,7 @@ export class Battle {
     this.mods = opts.mods ?? noMods();
     this.gold = this.level.gold + this.mods.gold;
     this.lives = this.startLives = this.mode === 'heroic' ? HEROIC_LIVES : this.level.lives + this.mods.lives;
-    this.heroDef = opts.hero === undefined ? HEROES[DEFAULT_HERO] : opts.hero;
+    this.heroDef = opts.hero === undefined ? this.awi.hero ?? HEROES[DEFAULT_HERO] : opts.hero;
     if (this.heroDef) this.spawnHero();
   }
 
@@ -358,7 +363,14 @@ export class Battle {
 
   // ── Helpers ───────────────────────────────────────────────────────────────────────────────────────
 
-  stats(t: Tower): TowerTier { return tierStats(t.kind, t.tier, t.branch); }
+  stats(t: Tower): TowerTier {
+    const v = this.awi.towers[t.kind];
+    if (!v) return tierStats(t.kind, t.tier, t.branch);
+    const key = `${t.kind}${t.tier}${t.branch}`;
+    let st = this.statCache.get(key);
+    if (!st) { st = variantStats(tierStats(t.kind, t.tier, t.branch), v); this.statCache.set(key, st); }
+    return st;
+  }
   range(t: Tower) { return this.stats(t).range * t.buff.range * this.mods.range[t.kind]; }
 
   /** The closest point on the road to (x, y). */
@@ -697,6 +709,10 @@ export class Battle {
       }
       if (st.burn) this.fires.push({ id: this.nextId++, x, y, r: r * 0.8, dps: st.burn.dps, until: now + st.burn.time });
     } else if (target) {
+      // AWI tricks on single-target shots: poison (burn), slow, stun.
+      if (st.burn) { target.burnUntil = Math.max(target.burnUntil, now + st.burn.time); target.burnDps = Math.max(now < target.burnUntil ? target.burnDps : 0, st.burn.dps); }
+      if (st.slow) { target.slow = Math.max(st.slow.pct * (target.def.boss ? 0.5 : 1), now < target.slowUntil ? target.slow : 0); target.slowUntil = now + st.slow.time; }
+      if (st.stun) target.stunUntil = Math.max(target.stunUntil, now + st.stun * (target.def.boss ? 0.3 : 1));
       this.damage(target, s.damage, s.magic, st.pierce);
       if (st.chain) {
         const hit = new Set([target.id]), points: Pt[] = [{ x, y }];

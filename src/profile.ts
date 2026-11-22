@@ -1,27 +1,55 @@
-// The TheoSwap-connected player: their code and the raw user-items results (AWIs are rebuilt from these with
-// awi.ts, so a rule change never needs a re-connect). Kept in localStorage, so the player stays connected and keeps
-// their AWIs (Altered World Items) offline. Their game progress is the 'me' save in save.ts.
-import { fetchItems, type ApiItem } from './theoswap.ts';
+// The connected TheoSwap player on this device: their code, their AWIs, and the loadout they picked.
+// Demo players use bundled items (src/demo.ts). Crystals are paid into the save once per NFT on connect.
+import { parseAwis, defaultLoadout, battleAwis, type AWI, type AwiBattle } from './game/awi.ts';
+import { fetchItems } from './theoswap.ts';
+import { DEMO_PROFILES, type DemoId } from './demo.ts';
+import { payCrystals } from './save.ts';
 
-export interface Connection {
-  code: string;
-  source: 'live' | 'cache'; // a fresh answer, or the last good one (offline)
-  at: number;               // when the items were fetched
-  results: ApiItem[];
+export type Source = 'live' | 'cache' | 'demo';
+export interface Profile {
+  code: string;          // TheoSwap user code, or demo:<id>
+  label: string;         // "Collector (demo)", "Code AB12CD34"
+  source: Source;
+  awis: AWI[];
+  /** AWI keys in the loadout (src/game/awi.ts: up to LOADOUT_SIZE). */
+  loadout: string[];
+  fetchedAt: number;
 }
 
-const KEY = 'tower-defense.theoswap.v1';
+const LS = 'tower-defense.profile.v1';
+let cache: Profile | null | undefined;
 
-export function loadConnection(): Connection | null {
-  try { const v = localStorage.getItem(KEY); const c = v ? (JSON.parse(v) as Connection) : null; return c && typeof c.code === 'string' && Array.isArray(c.results) ? c : null; } catch { return null; }
+export function profile(): Profile | null {
+  if (cache !== undefined) return cache;
+  try { const v = localStorage.getItem(LS); cache = v ? (JSON.parse(v) as Profile) : null; } catch { cache = null; }
+  return cache;
 }
-const keep = (c: Connection): void => { try { localStorage.setItem(KEY, JSON.stringify(c)); } catch { /* private mode */ } };
-export const forgetConnection = (): void => { try { localStorage.removeItem(KEY); } catch { /* private mode */ } };
+export function saveProfile(p: Profile | null): void {
+  cache = p;
+  try { if (p) localStorage.setItem(LS, JSON.stringify(p)); else localStorage.removeItem(LS); } catch { /* private mode */ }
+}
 
-/** Sign in with a TheoSwap player code. Throws ConnectError with a message for the player. */
-export async function connect(code: string): Promise<Connection> {
-  const { results, cached, at } = await fetchItems(code);
-  const c: Connection = { code, source: cached ? 'cache' : 'live', at, results };
-  keep(c);
-  return c;
+function make(code: string, label: string, source: Source, awis: AWI[], fetchedAt: number): { profile: Profile; crystals: number } {
+  const prev = profile();
+  const p: Profile = { code, label, source, awis, fetchedAt, loadout: defaultLoadout(awis, prev?.code === code ? prev.loadout : undefined) };
+  saveProfile(p);
+  const crystals = payCrystals(awis.filter((a) => a.slot === 'crystal').flatMap((a) => a.tokens.map((token) => ({ token: `${code.startsWith('demo:') ? 'demo|' : ''}${token}`, amount: a.value }))));
+  return { profile: p, crystals };
+}
+
+/** Look up a player's AWIs by their TheoSwap code. */
+export async function connect(code: string): Promise<{ profile: Profile; crystals: number }> {
+  const r = await fetchItems(code);
+  return make(code, `Code ${code}`, r.cached ? 'cache' : 'live', parseAwis(r.results), r.at);
+}
+
+export function connectDemo(id: DemoId): { profile: Profile; crystals: number } {
+  const d = DEMO_PROFILES[id];
+  return make(`demo:${id}`, `${d.name} (demo)`, 'demo', parseAwis(d.sample), Date.now());
+}
+
+/** What the connected player's loadout brings into a battle (nothing for guests). */
+export function currentAwis(): AwiBattle {
+  const p = profile();
+  return p ? battleAwis(p.awis, p.loadout) : { towers: {} };
 }

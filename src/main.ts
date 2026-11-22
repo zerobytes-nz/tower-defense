@@ -3,6 +3,7 @@ import { GAME_W, GAME_H, DEBUG, COLORS } from './config.ts';
 import { BootScene } from './scenes/BootScene.ts';
 import { MenuScene } from './scenes/MenuScene.ts';
 import { GameScene } from './scenes/GameScene.ts';
+import { AwiScene } from './scenes/AwiScene.ts';
 import { initAudio } from './systems/audio.ts';
 import './systems/install.ts'; // listen for the browser's install prompt from the very first moment
 
@@ -19,7 +20,8 @@ const game = new Phaser.Game({
   disableContextMenu: true,
   banner: false,
   audio: { noAudio: true }, // our own Web Audio synth (systems/audio.ts), not Phaser's sound manager
-  scene: [BootScene, MenuScene, GameScene],
+  dom: { createContainer: true }, // the player-code box on the Connect screen
+  scene: [BootScene, MenuScene, GameScene, AwiScene],
 });
 
 initAudio();

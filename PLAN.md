@@ -118,8 +118,9 @@ Art review (2026-11-22): almost all the code-drawn art now has kit or pack art.
 - Barracks soldiers and militia: CraftPix *Tactical Strategy Game Kit* human warriors 2 and 1 (mirrored to face
   right; no death animation, so they play their hurt frames and fade).
 - Still code-drawn (`source: own`): the gold coin, the rally flag and the boss roots: no pack had better ones.
-- TheoSwap item images for configs 21 / 22: the new tower and knight items have none yet (upload on the Developer
-  page or with `upload_config_image`); the spells and crystals reuse the old item ids, so the old images can be copied.
+- TheoSwap item images (configs 21 and 22): all 22 items have images. On 2026-11-22 the 8 spell items got the kit's
+  spell icons (`td-gui/.../interface_game/ico_1–8`, 176 px), the same art as the in-game buttons. The Free config
+  also has its own icon (archer tower with a FREE banner).
 
 ## Notes
 

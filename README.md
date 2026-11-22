@@ -2,7 +2,7 @@
 
 A landscape tower defense game for the phone browser (Phaser 3 + TypeScript + Vite), and TheoSwap game 5
 (https://games.theoswap.io/tower_defense/). Build towers on the pads beside the road, upgrade them, and stop the
-waves. Players' NFTs become **AWIs (Altered World Items)**: towers, heroes and spells (milestone 4).
+waves. Players' NFTs become **AWIs (Altered World Items)**: towers, knights, spells and crystals.
 See [PLAN.md](PLAN.md) for the design and milestones.
 
 The same NFTs are hero skins in [Altered Run](https://github.com/zerobytes-nz/altered-run) and unit cards in
@@ -47,7 +47,9 @@ The import only reads the kit and writes packed sheets to `public/assets/license
 | `src/scenes/` | Boot, Menu (title and level select), Game (draws the battle and handles taps, hero orders, spells). |
 | `src/save.ts`, `src/systems/audio.ts` | Local save (stars, perks, seen enemies, sound) and synthesized sound effects. |
 | `src/assets.ts` | Loads art by manifest key; `assets.manifest.json` is the list of every file. |
-| `src/theoswap.ts`, `src/profile.ts`, `src/deeplink.ts` | TheoSwap connection (wired in in milestone 4). |
+| `src/game/awi.ts` | AWIs: TheoSwap item ids → tower variants, knights, spells (numbers from the NFT's attributes), crystals; the loadout rules. Pure, so the sim uses it too. |
+| `src/theoswap.ts`, `src/profile.ts`, `src/deeplink.ts`, `src/demo.ts` | TheoSwap connection, the connected player and their loadout, the `?userCode=` deep link, demo players. |
+| `src/scenes/AwiScene.ts`, `src/systems/spellIcons.ts` | Connect / reveal / loadout screens; AWI spell icons drawn in code. |
 | `scripts/` | Asset rails (import, placeholders, docs, checks), PWA icons, deploy, sim. |
 
 ## TheoSwap and the API key
@@ -59,6 +61,9 @@ refuses to upload a build that contains the key.
 
 TheoSwap's website setting for the game is `https://games.theoswap.io/tower_defense/?userCode=$USER_CODE`; the game
 reads the code once and ignores an unfilled `$USER_CODE`.
+
+Test codes (with the test key; being set up): `EEEEEEEE` (Free config 21), `FFFFFFFF` and `GGGGGGGG` (Theo Swap config 22).
+Without a key, the Connect screen's demo players (Whale, Collector, New player) show the same screens.
 
 ## Deploy
 

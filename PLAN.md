@@ -81,6 +81,19 @@ and variety between fights. The plan now leans on these:
    (2 named variants per family), Heroes (Silver / Bronze / Black Knight, Arcane / Fire Wizard), Spells (8), Crystals
    (3, paid out once per NFT). Loadout of up to 5 AWIs (the listing's inventory size). Connect screen with code and
    deep link, NFT reveal, demo profiles (Guest / Collector / Whale) and test items.
+   - ✅ Part 1 (2026-11-22): connect (code, deep link, demo players), NFT reveal, loadout screen, AWI towers (8, two
+     per family, rarity +0–15 % damage) and knights (Sir Aldric, Dame Brona, The Black Knight), crystals paid once
+     per NFT into a bank (200 = a bonus star). Wizards dropped for now (no art in the kit's style).
+   - ✅ Part 2 (2026-11-22): the 8 AWI spells, using the original items' ids and attributes, so each NFT's rolled
+     numbers count (capped; missing values fall back to defaults). Up to 2 ride along as extra spell buttons:
+     Armor Break (area takes +X % damage), Troop Rally (all towers +X % damage and speed), Fire (one enemy burns),
+     Acid Rain (burning patch of road), Slow (whole map), Drop Rock (blocks the road until smashed), Freeze (slowing,
+     hurting patch), Lightning Strike (one enemy, flyers too). Icons drawn in code. Bot, mid rolls, one spell each:
+     +0.2–0.5 ★ on the harder levels, no runaway.
+     TheoSwap: draft configs **21** "Free AWIs (2026)" (Common–Epic) and **22** "Theo Swap AWIs (2026)" (Rare–
+     Legendary), not published, not default; live configs 11 / 12 untouched. Test codes (5 NFTs each, the game's
+     inventory size), proposed, waiting for OK: EEEEEEEE (config 21), FFFFFFFF and GGGGGGGG (config 22). AAAAAAAA–DDDDDDDD hold old
+     config-11 spells and crystals (which still work).
 5. **Polish and launch**
    Daily challenge, achievements (kit screen), balance sim per world, real-phone FPS. With the user's OK at each step:
    GitHub repo + CI, Jira epic, back up `/tower_defense/` on the server, deploy, nginx proxy with the new API key,
@@ -94,7 +107,8 @@ but a matching pack would look better). Each is listed in ASSETS.md with `source
 - **Knights** (hero, barracks soldier, militia): idle / walk / attack / die, side view, ~64 px, in the kit's
   thick-outline cartoon style. The pixel-art knights in `altered-arena/art-src` clash with this kit.
 - **Spell and hero buttons** (`ui.meteor`, `ui.reinforce`, `ui.hero`), the rally flag, the meteor, ground fire and roots.
-- Later (M4): AWI hero portraits for the other knights and the wizards.
+- TheoSwap item images for configs 21 / 22: the new tower and knight items have none yet (upload on the Developer
+  page or with `upload_config_image`); the spells and crystals reuse the old item ids, so the old images can be copied.
 
 ## Notes
 

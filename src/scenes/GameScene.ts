@@ -5,7 +5,7 @@ import { GAME_W, GAME_H, COLORS, DEBUG, BOT, SEED } from '../config.ts';
 import { centreCamera, wideBackground, BLEED, uiBoost } from '../systems/wide.ts';
 import { asset } from '../assets.ts';
 import { button, header, imageButton, label, panel } from '../ui.ts';
-import { Battle, DT, type Enemy, type Shot, type Tower, type Unit } from '../game/sim.ts';
+import { Battle, DT, type Enemy, type Rock, type Shot, type Tower, type Unit, type SimEvent } from '../game/sim.ts';
 import { LEVELS, HEROIC_LIVES, type Mode } from '../game/levels.ts';
 import { ENEMIES, type EnemyKind } from '../game/enemies.ts';
 import { TOWERS, TOWER_KINDS, MAX_TIER, towerArt, type TowerKind } from '../game/towers.ts';
@@ -14,6 +14,7 @@ import { think } from '../game/bot.ts';
 import { MenuScene } from './MenuScene.ts';
 import { currentAwis } from '../profile.ts';
 import { RARITIES, RARITY_COLOR } from '../game/awi.ts';
+import { makeSpellIcons } from '../systems/spellIcons.ts';
 import { save, markSeen, recordStars, recordHeroic, recordEndless } from '../save.ts';
 import { modsFor } from '../game/perks.ts';
 import { sfx, soundOn, toggleSound } from '../systems/audio.ts';
@@ -31,7 +32,7 @@ type Menu =
   | { kind: 'tower'; tower: Tower; pick: 'upgrade' | 'sell' | 'b0' | 'b1' | null };
 
 /** A pending "tap the map" order. */
-type Aim = { kind: 'hero' } | { kind: 'spell'; id: SpellId } | { kind: 'rally'; tower: Tower } | null;
+type Aim = { kind: 'hero' } | { kind: 'spell'; id: SpellId } | { kind: 'awi'; i: number } | { kind: 'rally'; tower: Tower } | null;
 
 interface EnemyView { sprite: Phaser.GameObjects.Sprite; shadow: Phaser.GameObjects.Ellipse; casting: number }
 interface TowerView { body: Phaser.GameObjects.Image; unit?: Phaser.GameObjects.Sprite; roots?: Phaser.GameObjects.Image; aura?: Phaser.GameObjects.Ellipse }
@@ -53,7 +54,8 @@ export class GameScene extends Phaser.Scene {
   private towerViews = new Map<number, TowerView>();
   private shotViews = new Map<number, Phaser.GameObjects.Image>();
   private unitViews = new Map<number, UnitView>();
-  private fireViews = new Map<number, Phaser.GameObjects.Sprite>();
+  private fireViews = new Map<number, Phaser.GameObjects.Sprite | Phaser.GameObjects.Ellipse>();
+  private rockViews = new Map<number, Phaser.GameObjects.Container>();
   private bars!: Phaser.GameObjects.Graphics;
   private rangeG!: Phaser.GameObjects.Graphics;
   private menu: Menu | null = null;
@@ -75,6 +77,7 @@ export class GameScene extends Phaser.Scene {
   private heroBtn?: ActionButton;
   private slamBtn?: ActionButton;
   private spellBtns = new Map<SpellId, ActionButton>();
+  private awiBtns: ActionButton[] = [];
   private overlay?: Phaser.GameObjects.Container;
   private card?: Phaser.GameObjects.Container;
   private cardQueue: EnemyKind[] = [];
@@ -92,6 +95,7 @@ export class GameScene extends Phaser.Scene {
     this.speed = 1; this.paused = false; this.acc = 0; this.steps = 0; this.menu = null; this.aim = null;
     this.overlay = undefined; this.card = undefined; this.cardQueue = [];
     this.snowViews.clear(); this.enemyViews.clear(); this.towerViews.clear(); this.shotViews.clear(); this.unitViews.clear(); this.fireViews.clear(); this.spellBtns.clear();
+    this.rockViews.clear(); this.awiBtns = [];
   }
 
   create(): void {
@@ -168,7 +172,7 @@ export class GameScene extends Phaser.Scene {
     this.hint = label(this, wb.x + (right ? -70 : 70) * k, wb.y + 4, 'Tap to start!', 26 * k, '#ffffff').setOrigin(right ? 1 : 0, 0.5).setDepth(942);
     this.tweens.add({ targets: this.hint, x: this.hint.x + (right ? -12 : 12), duration: 500, yoyo: true, repeat: -1 });
 
-    this.aimHint = label(this, GAME_W / 2, GAME_H - 40, '', 26, '#ffffff').setDepth(960).setVisible(false);
+    this.aimHint = label(this, GAME_W / 2, GAME_H - 130 * k, '', 26 * k, '#ffffff').setDepth(960).setVisible(false);
 
     // Heroic / Endless: say what's different, under the top bar.
     const b = this.b;
@@ -204,6 +208,17 @@ export class GameScene extends Phaser.Scene {
       }));
       x += 86 * k;
     }
+    // AWI spells: one more button each, with a coloured rim.
+    makeSpellIcons(this);
+    this.b.awiSpells.forEach((s, i) => {
+      this.awiBtns.push(this.actionButton(x, `ui.awi.${s.def.id}`, () => {
+        if (!this.b.awiSpellReady(i)) { sfx.deny(); return; }
+        if (s.def.target === 'instant') { if (this.b.castAwiSpell(i)) this.setAim(null); return; }
+        sfx.tap();
+        this.setAim(this.aim?.kind === 'awi' && this.aim.i === i ? null : { kind: 'awi', i });
+      }));
+      x += 86 * k;
+    });
   }
 
   private actionButton(x: number, key: string, onTap: () => void): ActionButton {
@@ -255,6 +270,7 @@ export class GameScene extends Phaser.Scene {
       this.heroBtn.shade.fillStyle(0x7ad0ff, 1).fillRect(-29, 37, hi === undefined ? 58 : 58 * Math.min(1, (b.heroXp - lo) / (hi - lo)), 4);
     }
     for (const [id, btn] of this.spellBtns) this.drawCharge(btn, b.spellCharge(id), this.aim?.kind === 'spell' && this.aim.id === id);
+    this.awiBtns.forEach((btn, i) => this.drawCharge(btn, b.awiSpellCharge(i), this.aim?.kind === 'awi' && this.aim.i === i));
   }
 
   private callWave(): void {
@@ -268,6 +284,7 @@ export class GameScene extends Phaser.Scene {
     this.aim = a;
     if (a) this.closeMenu(true);
     const text = !a ? '' : a.kind === 'hero' ? `Tap the road to send ${this.b.heroDef?.name ?? 'the hero'}` : a.kind === 'rally' ? 'Tap the road to move the soldiers'
+      : a.kind === 'awi' ? `${this.b.awiSpells[a.i].def.target === 'enemy' ? 'Tap an enemy' : 'Tap the road'}: ${this.b.awiSpells[a.i].def.name}`
       : `Tap the road: ${SPELLS[a.id].name}`;
     this.aimHint.setText(text).setVisible(!!a);
     this.rangeG.clear();
@@ -277,10 +294,14 @@ export class GameScene extends Phaser.Scene {
   private doAim(x: number, y: number): void {
     const a = this.aim, b = this.b;
     if (!a) return;
-    const ok = a.kind === 'hero' ? b.moveHero(x, y) : a.kind === 'spell' ? b.castSpell(a.id, x, y) : b.setRally(a.tower, x, y);
-    if (!ok) { sfx.deny(); this.pop(x, y - 10, a.kind === 'rally' ? 'Too far' : 'On the road!', '#ff8a7a', 20); return; }
-    if (a.kind === 'spell' && a.id === 'reinforce') sfx.militia(); else sfx.tap();
-    if (a.kind !== 'spell') {
+    const ok = a.kind === 'hero' ? b.moveHero(x, y) : a.kind === 'spell' ? b.castSpell(a.id, x, y) : a.kind === 'awi' ? b.castAwiSpell(a.i, x, y) : b.setRally(a.tower, x, y);
+    if (!ok) {
+      sfx.deny();
+      const miss = a.kind === 'rally' ? 'Too far' : a.kind === 'awi' && b.awiSpells[a.i].def.target === 'enemy' ? 'Tap an enemy!' : 'On the road!';
+      this.pop(x, y - 10, miss, '#ff8a7a', 20); return;
+    }
+    if (a.kind === 'spell' && a.id === 'reinforce') sfx.militia(); else if (a.kind !== 'awi') sfx.tap();
+    if (a.kind === 'hero' || a.kind === 'rally') {
       const flag = this.add.image(x, y, 'ui.rally').setOrigin(0.3, 1).setDepth(y);
       this.tweens.add({ targets: flag, alpha: 0, delay: 600, duration: 300, onComplete: () => flag.destroy() });
     }
@@ -468,6 +489,8 @@ export class GameScene extends Phaser.Scene {
         case 'summon': this.summon(e.enemy); break;
         case 'ward': this.ward(e.enemy, e.targets); break;
         case 'rise': this.rise(e.enemy); break;
+        case 'awiSpell': this.awiSpellFx(e); break;
+        case 'rockDown': this.rockDown(e.rock); break;
         case 'end':
           if (!BOT) {
             if (e.won && b.mode === 'normal') recordStars(b.level.id, b.stars);
@@ -491,13 +514,14 @@ export class GameScene extends Phaser.Scene {
       const fy = e.def.flying ? FLY_UP : 0;
       v.sprite.setPosition(e.x, e.y + 6 - fy).setFlipX(e.facing < 0).setDepth(e.y);
       v.shadow.setPosition(e.x, e.y + 4);
-      const stunned = b.time < e.stunUntil, still = stunned || e.held;
+      const stunned = b.time < e.stunUntil, still = stunned || e.held || e.rock !== null;
       if (v.casting < now) {
         if (still && v.sprite.anims.isPlaying) v.sprite.anims.pause();
         else if (!still && v.sprite.anims.isPaused) v.sprite.anims.resume();
       }
       if (!v.sprite.isTinted || v.sprite.tintTopLeft !== 0x9aff9a) {
-        const tint = stunned ? 0xfff08a : b.time < e.burnUntil ? 0xffa070 : b.time < e.slowUntil ? 0x9ad8ff : null;
+        const tint = stunned ? 0xfff08a : b.time < e.burnUntil ? 0xffa070 : b.time < e.vulnUntil ? 0xff8a8a
+          : b.time < e.slowUntil || b.time < b.globalSlow.until ? 0x9ad8ff : null;
         if (tint === null) v.sprite.clearTint(); else v.sprite.setTint(tint);
       }
       const by = e.y - 50 * e.def.size * ENEMY_SCALE - fy;
@@ -536,8 +560,21 @@ export class GameScene extends Phaser.Scene {
     for (const [id, s] of this.fireViews) if (!live.has(id)) { this.fireViews.delete(id); this.tweens.add({ targets: s, alpha: 0, duration: 250, onComplete: () => s.destroy() }); }
     for (const f of b.fires) {
       if (this.fireViews.has(f.id)) continue;
+      if (f.kind === 'acid' || f.kind === 'frost') {
+        // Acid Rain and Freeze: a glowing patch on the road that pulses.
+        const col = f.kind === 'acid' ? 0x9ad04a : 0xbfe8ff;
+        const z = this.add.ellipse(f.x, f.y, f.r * 2, f.r * 1.1, col, 0.32).setStrokeStyle(4, col, 0.9).setDepth(1);
+        this.tweens.add({ targets: z, alpha: 0.6, duration: 600, yoyo: true, repeat: -1 });
+        this.fireViews.set(f.id, z);
+        continue;
+      }
       const s = this.add.sprite(f.x, f.y + 8, 'fx.fire').setOrigin(0.5, 1).setScale(f.r / 32).setDepth(f.y - 2).setAlpha(0.9).play('fx.fire');
       this.fireViews.set(f.id, s);
+    }
+    // Drop Rock
+    for (const r of b.rocks) {
+      const v = this.rockViews.get(r.id);
+      if (v) { if (r.hp < r.maxHp) this.hpBar(r.x, r.y - 44, 34, r.hp / r.maxHp, 0xd8c8a8); }
     }
     // Snow melts when its wave starts
     for (const [i, v] of this.snowViews) if (!b.padFrozen(i)) {
@@ -670,6 +707,54 @@ export class GameScene extends Phaser.Scene {
     }
     this.tweens.add({ targets: g, alpha: 0, duration: 180, onComplete: () => g.destroy() });
     sfx.zap();
+  }
+
+  /** What an AWI spell looks like when it goes off. */
+  private awiSpellFx(e: Extract<SimEvent, { type: 'awiSpell' }>): void {
+    const b = this.b;
+    switch (e.spell) {
+      case 'armor': this.ring(e.x, e.y, e.r, 0xff7a5a); this.pop(e.x, e.y - 40, 'Armor Break!', '#ff9a7a', 24); sfx.clang(); break;
+      case 'rally':
+        this.banner('Troop Rally!'); sfx.militia();
+        for (const t of b.towers) if (t.kind !== 'barracks') this.ring(t.x, t.y + 10, 60, 0xffc94d);
+        break;
+      case 'slow': this.banner('Slow!'); this.cameras.main.flash(300, 150, 140, 255); sfx.whoosh(); break;
+      case 'fire': if (e.target) { this.ring(e.target.x, e.target.y, 50, 0xff8a3a); this.pop(e.target.x, e.target.y - 60, 'Ablaze!', '#ffa060', 22); } sfx.boom(); break;
+      case 'acid': this.ring(e.x, e.y, e.r, 0x9ad04a); sfx.whoosh(); break;
+      case 'freeze': this.ring(e.x, e.y, e.r, 0xbfe8ff); this.pop(e.x, e.y - 40, 'Freeze!', '#cfe8ff', 24); sfx.whoosh(); break;
+      case 'lightning': {
+        const t = e.target, ty = t ? t.y - (t.def.flying ? 46 : 22) : e.y;
+        const tx = t?.x ?? e.x;
+        this.zap([{ x: tx + 30, y: ty - 480 }, { x: tx - 20, y: ty - 300 }, { x: tx + 14, y: ty - 140 }, { x: tx, y: ty + 30 }]);
+        this.cameras.main.flash(120, 255, 250, 200); this.cameras.main.shake(120, 0.006); sfx.zap();
+        break;
+      }
+      case 'rock': {
+        const r = b.rocks[b.rocks.length - 1];
+        if (r) this.rockView(r);
+        break;
+      }
+    }
+  }
+
+  private rockView(r: Rock): void {
+    const c = this.add.container(r.x, r.y).setDepth(r.y);
+    const g = this.add.graphics();
+    const s = [[-30, 6], [-26, -18], [-10, -34], [12, -32], [28, -14], [30, 6]].map(([x, y]) => ({ x, y }));
+    g.fillStyle(0x000000, 0.3).fillEllipse(0, 6, 70, 18);
+    g.fillStyle(0x9a8a7a, 1).fillPoints(s, true).lineStyle(4, 0x1a100a, 1).strokePoints(s, true);
+    g.lineStyle(3, 0x5a4a3a, 1).lineBetween(-10, -34, -4, -12).lineBetween(-4, -12, 12, -4);
+    c.add(g);
+    c.y -= 400;
+    this.tweens.add({ targets: c, y: r.y, duration: 320, ease: 'Quad.easeIn', onComplete: () => { this.cameras.main.shake(140, 0.007); sfx.boulder(); this.blast(r.x, r.y, 30); } });
+    this.rockViews.set(r.id, c);
+  }
+
+  private rockDown(r: Rock): void {
+    const v = this.rockViews.get(r.id);
+    this.rockViews.delete(r.id);
+    this.pop(r.x, r.y - 50, 'Smashed!', '#d8c8a8', 20); sfx.boulder();
+    if (v) this.tweens.add({ targets: v, alpha: 0, scaleX: 1.3, scaleY: 0.4, duration: 300, onComplete: () => v.destroy() });
   }
 
   private ring(x: number, y: number, r: number, color: number): void {

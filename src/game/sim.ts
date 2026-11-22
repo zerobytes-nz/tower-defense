@@ -4,7 +4,7 @@ import { ENEMIES, type EnemyDef, type EnemyKind } from './enemies.ts';
 import { LEVELS, WAVE_BREAK, EARLY_GOLD_PER_S, HEROIC_LIVES, ENDLESS_HP, starsFor, heroicBan, endlessWave, type LevelDef, type Mode } from './levels.ts';
 import { MAPS, buildTrack, pointAt, type MapDef, type Pt, type Track } from './maps.ts';
 import { TOWERS, MAX_TIER, SELL_BACK, spentTo, tierStats, type TowerKind, type TowerTier } from './towers.ts';
-import { variantStats, type AwiBattle } from './awi.ts';
+import { variantStats, type AwiBattle, type AwiSpellDef, type AwiSpellId, type SpellParams } from './awi.ts';
 import { HEROES, DEFAULT_HERO, METEOR, MILITIA, SPELLS, heroLevel, levelMult, type HeroDef, type SpellId } from './heroes.ts';
 
 export const DT = 1 / 60;
@@ -39,6 +39,10 @@ export interface Enemy {
   slowUntil: number; slow: number;
   stunUntil: number;
   burnUntil: number; burnDps: number;
+  /** Armor Break: takes `vuln` more damage until `vulnUntil`. */
+  vulnUntil: number; vuln: number;
+  /** Drop Rock: the rock this enemy is smashing (null: none). */
+  rock: number | null;
   /** The unit that stops this enemy (null: walking). `held`: that unit has reached it. */
   blocker: number | null;
   held: boolean;
@@ -102,8 +106,14 @@ export interface Shot {
   speed: number;
 }
 
-/** Burning ground (Fire Pot, Meteor). */
-export interface Fire { id: number; x: number; y: number; r: number; dps: number; until: number }
+/** Burning ground (Fire Pot, Meteor), Acid Rain, or a Freeze patch (`slow`). */
+export interface Fire { id: number; x: number; y: number; r: number; dps: number; until: number; kind?: 'fire' | 'acid' | 'frost'; slow?: number }
+
+/** Drop Rock: blocks its road until enemies smash it. */
+export interface Rock { id: number; x: number; y: number; hp: number; maxHp: number; /** Where it sits on each road (null: not on it; roads can share a stretch). */ at: (number | null)[] }
+
+/** An AWI spell the player brought, with its cooldown. */
+export interface AwiSpell { def: AwiSpellDef; params: SpellParams; readyAt: number }
 
 export type SimEvent =
   | { type: 'wave'; n: number }
@@ -128,6 +138,8 @@ export type SimEvent =
   | { type: 'summon'; enemy: Enemy }
   | { type: 'ward'; enemy: Enemy; targets: Enemy[] }
   | { type: 'rise'; enemy: Enemy }
+  | { type: 'awiSpell'; spell: AwiSpellId; x: number; y: number; r: number; target?: Enemy; time: number }
+  | { type: 'rockDown'; rock: Rock }
   | { type: 'end'; won: boolean };
 
 /** Small, fast, seedable PRNG (mulberry32). */
@@ -176,6 +188,7 @@ export class Battle {
   units: Unit[] = [];
   shots: Shot[] = [];
   fires: Fire[] = [];
+  rocks: Rock[] = [];
   events: SimEvent[] = [];
   kills = 0;
   leaks = 0;
@@ -185,6 +198,12 @@ export class Battle {
   heroLvl = 1;
   heroAbilityAt = 0;      // time the ability is ready
   spellReadyAt: Record<SpellId, number> = { meteor: Infinity, reinforce: Infinity };
+  /** AWI spells (extra buttons). */
+  awiSpells: AwiSpell[] = [];
+  /** Troop Rally: tower damage and speed bonus until `until`. */
+  rally = { until: 0, damage: 0, speed: 0 };
+  /** Slow: every enemy slower until `until`. */
+  globalSlow = { until: 0, pct: 0 };
   /** Every enemy kind that has appeared (for "new enemy" cards). */
   seen = new Set<EnemyKind>();
 
@@ -213,6 +232,7 @@ export class Battle {
     this.gold = this.level.gold + this.mods.gold;
     this.lives = this.startLives = this.mode === 'heroic' ? HEROIC_LIVES : this.level.lives + this.mods.lives;
     this.heroDef = opts.hero === undefined ? this.awi.hero ?? HEROES[DEFAULT_HERO] : opts.hero;
+    this.awiSpells = (this.awi.spells ?? []).map((s) => ({ def: s.def, params: s.params, readyAt: Infinity }));
     if (this.heroDef) this.spawnHero();
   }
 
@@ -347,6 +367,69 @@ export class Battle {
     return true;
   }
 
+  awiSpellReady(i: number) { const s = this.awiSpells[i]; return !!s && this.state === 'playing' && this.time >= s.readyAt; }
+  awiSpellCharge(i: number) {
+    const s = this.awiSpells[i];
+    if (!s || this.state !== 'playing') return 0;
+    return Math.max(0, Math.min(1, 1 - (s.readyAt - this.time) / (s.def.cooldown * this.mods.cooldown)));
+  }
+
+  /** The enemy nearest (x, y) within `reach` (flyers count where they are drawn, up in the air). */
+  enemyNear(x: number, y: number, reach = 90): Enemy | null {
+    let best: Enemy | null = null, bd = reach;
+    for (const e of this.enemies) {
+      if (!e.alive) continue;
+      const d = Math.hypot(e.x - x, e.y - (e.def.flying ? 46 : 18) - y);
+      if (d < bd) { bd = d; best = e; }
+    }
+    return best;
+  }
+
+  /** Cast AWI spell `i` at (x, y) (instant spells ignore the point). */
+  castAwiSpell(i: number, x = 0, y = 0): boolean {
+    if (!this.awiSpellReady(i)) return false;
+    const s = this.awiSpells[i], d = s.def, p = s.params, now = this.time, pow = this.mods.spellPower;
+    const time = p.time ?? 0, dmg = (p.dmg ?? 0) * pow;
+    let target: Enemy | undefined, at = { x, y };
+    if (d.target === 'enemy') {
+      const e = this.enemyNear(x, y);
+      if (!e) return false;
+      target = e; at = { x: e.x, y: e.y };
+    } else if (d.target === 'road') {
+      const road = this.nearestRoad(x, y);
+      if (Math.hypot(road.x - x, road.y - y) > 70) return false;
+      at = road;
+    }
+    switch (d.id) {
+      case 'armor':
+        for (const e of this.enemies) if (e.alive && Math.hypot(e.x - at.x, e.y - at.y) <= d.radius) { e.vuln = Math.max(e.vuln, p.pct ?? 0); e.vulnUntil = Math.max(e.vulnUntil, now + time); }
+        break;
+      case 'rally': this.rally = { until: now + time, damage: (p.pct ?? 0) * pow, speed: p.speed ?? 0 }; break;
+      case 'slow': this.globalSlow = { until: now + time, pct: p.pct ?? 0 }; break;
+      case 'fire':
+        target!.burnDps = Math.max(now < target!.burnUntil ? target!.burnDps : 0, dmg);
+        target!.burnUntil = Math.max(target!.burnUntil, now + time);
+        break;
+      case 'acid': this.fires.push({ id: this.nextId++, x: at.x, y: at.y, r: d.radius, dps: dmg, until: now + time, kind: 'acid' }); break;
+      case 'freeze': this.fires.push({ id: this.nextId++, x: at.x, y: at.y, r: d.radius, dps: dmg, until: now + time, kind: 'frost', slow: p.pct ?? 0 }); break;
+      case 'lightning': this.damage(target!, dmg, true); break;
+      case 'rock': {
+        const spot = this.roadSpot(at.x, at.y);
+        const hp = Math.round((p.hp ?? 0) * pow);
+        const onRoad = this.tracks.map((t) => {
+          let best: number | null = null, bd = 20 ** 2;
+          t.pts.forEach((q, i) => { const d = (q.x - spot.x) ** 2 + (q.y - spot.y) ** 2; if (d < bd) { bd = d; best = t.dist[i]; } });
+          return best;
+        });
+        this.rocks.push({ id: this.nextId++, x: spot.x, y: spot.y, hp, maxHp: hp, at: onRoad });
+        break;
+      }
+    }
+    s.readyAt = now + d.cooldown * this.mods.cooldown;
+    this.events.push({ type: 'awiSpell', spell: d.id, x: at.x, y: at.y, r: d.radius, target, time });
+    return true;
+  }
+
   /** Start the first wave, or the next one early (with bonus gold). */
   callWave(): boolean {
     if (!this.canCallWave) return false;
@@ -355,6 +438,7 @@ export class Battle {
     if (this.state === 'ready') {
       this.state = 'playing';
       for (const id of Object.keys(SPELLS) as SpellId[]) this.spellReadyAt[id] = this.time + SPELLS[id].firstReady;
+      for (const s of this.awiSpells) s.readyAt = this.time + 3;
       this.heroAbilityAt = this.time + 5;
     }
     this.startWave(this.wave + 1);
@@ -381,6 +465,18 @@ export class Battle {
       if (d < bd) { bd = d; best = p; }
     }
     return { x: best.x, y: best.y };
+  }
+
+  /** The road and distance along it nearest (x, y). */
+  roadSpot(x: number, y: number): { path: number; dist: number; x: number; y: number } {
+    let best = { path: 0, dist: 0, x: this.track.pts[0].x, y: this.track.pts[0].y }, bd = Infinity;
+    this.tracks.forEach((t, path) => {
+      for (let i = 0; i < t.pts.length; i++) {
+        const p = t.pts[i], d = (p.x - x) ** 2 + (p.y - y) ** 2;
+        if (d < bd) { bd = d; best = { path, dist: t.dist[i], x: p.x, y: p.y }; }
+      }
+    });
+    return best;
   }
 
   private slotPos(p: Pt, slot: number): Pt {
@@ -459,7 +555,7 @@ export class Battle {
     const hp = Math.round(def.hp * k), shield = Math.round((def.shield ?? 0) * k);
     const e: Enemy = {
       id: this.nextId++, def, hp, maxHp: hp, path: p.path, dist, offset: def.boss ? 0 : (this.rand() - 0.5) * 26,
-      x: 0, y: 0, facing: 1, alive: true, slowUntil: 0, slow: 0, stunUntil: 0, burnUntil: 0, burnDps: 0,
+      x: 0, y: 0, facing: 1, alive: true, slowUntil: 0, slow: 0, stunUntil: 0, burnUntil: 0, burnDps: 0, vulnUntil: 0, vuln: 0, rock: null,
       blocker: null, held: false, shield, maxShield: shield, atkCd: 0.5, bossCd: def.boss?.every ?? 0,
     };
     this.place(e);
@@ -485,11 +581,14 @@ export class Battle {
 
   private speedOf(e: Enemy) {
     const ice = this.level.ice && !e.def.flying ? this.level.ice : 1;
-    return e.def.speed * ice * (this.time < e.slowUntil ? 1 - e.slow : 1);
+    const own = this.time < e.slowUntil ? e.slow : 0;
+    const all = this.time < this.globalSlow.until ? this.globalSlow.pct * (e.def.boss ? 0.5 : 1) : 0;
+    return e.def.speed * ice * (1 - Math.max(own, all));
   }
 
   private damage(e: Enemy, amount: number, magic: boolean, pierce = 0) {
     if (!e.alive) return;
+    if (this.time < e.vulnUntil) amount *= 1 + e.vuln;
     if (!magic && e.shield > 0) {
       // The shield takes physical hits first (armour doesn't apply to it); what's left goes on to health.
       const soak = Math.min(e.shield, amount);
@@ -546,7 +645,9 @@ export class Battle {
     for (const e of this.enemies) if (e.alive && now < e.burnUntil) this.damage(e, e.burnDps * DT, true);
     for (const e of this.enemies) if (e.alive && e.def.regen && now >= e.burnUntil) e.hp = Math.min(e.maxHp, e.hp + e.def.regen * DT);
     for (const f of this.fires) for (const e of this.enemies) {
-      if (e.alive && !e.def.flying && Math.hypot(e.x - f.x, e.y - f.y) <= f.r) { e.burnUntil = Math.max(e.burnUntil, now + 1); e.burnDps = Math.max(e.burnDps, f.dps); }
+      if (!e.alive || e.def.flying || Math.hypot(e.x - f.x, e.y - f.y) > f.r) continue;
+      if (f.dps > 0) { e.burnDps = Math.max(now < e.burnUntil ? e.burnDps : 0, f.dps); e.burnUntil = Math.max(e.burnUntil, now + 1); }
+      if (f.slow) { e.slow = Math.max(f.slow * (e.def.boss ? 0.5 : 1), now < e.slowUntil ? e.slow : 0); e.slowUntil = Math.max(e.slowUntil, now + 0.3); }
     }
     this.fires = this.fires.filter((f) => f.until > now);
 
@@ -559,6 +660,13 @@ export class Battle {
         else e.held = Math.hypot(u.x - e.x, u.y - e.y) <= BLOCK_REACH + 4;
       }
       if (e.held || now < e.stunUntil) continue;
+      // Drop Rock: walkers stop in front of a rock on their road and smash it.
+      e.rock = null;
+      if (!e.def.flying) for (const r of this.rocks) {
+        const d = r.at[e.path];
+        if (d !== null && e.dist <= d && e.dist + this.speedOf(e) * DT >= d - 22) { e.rock = r.id; break; }
+      }
+      if (e.rock !== null) continue;
       e.dist += this.speedOf(e) * DT;
       if (e.dist >= this.tracks[e.path].length) {
         e.alive = false;
@@ -612,6 +720,22 @@ export class Battle {
 
     this.stepUnits(now);
 
+    // Enemies smash rocks
+    for (const e of this.enemies) {
+      if (!e.alive || e.rock === null || e.held || now < e.stunUntil) continue;
+      const r = this.rocks.find((x) => x.id === e.rock);
+      if (!r) { e.rock = null; continue; }
+      e.atkCd -= DT;
+      if (e.atkCd > 0) continue;
+      e.atkCd = e.def.melee.rate;
+      r.hp -= e.def.melee.damage * (e.def.boss ? 2 : 1);
+    }
+    for (const r of this.rocks) if (r.hp <= 0) {
+      this.events.push({ type: 'rockDown', rock: r });
+      for (const e of this.enemies) if (e.rock === r.id) e.rock = null;
+    }
+    this.rocks = this.rocks.filter((r) => r.hp > 0);
+
     // Enemies hit the unit holding them
     for (const e of this.enemies) {
       if (!e.alive || !e.held || now < e.stunUntil) continue;
@@ -637,6 +761,8 @@ export class Battle {
         t.buff.speed = Math.max(t.buff.speed, 1 + aura.speed);
       }
     }
+    // Troop Rally
+    if (now < this.rally.until) for (const t of this.towers) { t.buff.damage *= 1 + this.rally.damage; t.buff.speed *= 1 + this.rally.speed; }
 
     // Towers fire
     for (const t of this.towers) {

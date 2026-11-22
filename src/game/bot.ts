@@ -29,6 +29,24 @@ export function think(b: Battle, opts: BotOptions = {}): void {
     if (crowd && crowd.n >= 4 && b.spellReady('meteor')) b.castSpell('meteor', crowd.x, crowd.y);
     const lead = b.enemies.filter((e) => !e.def.flying).sort((x, y) => y.dist - x.dist)[0];
     if (lead && lead.dist > b.tracks[lead.path].length * 0.6 && b.spellReady('reinforce')) b.castSpell('reinforce', lead.x + 30 * lead.facing, lead.y);
+    b.awiSpells.forEach((s, i) => {
+      if (!b.awiSpellReady(i)) return;
+      const ground = b.enemies.filter((e) => !e.def.flying);
+      switch (s.def.target) {
+        case 'instant': if (b.enemies.length >= 8 || b.enemies.some((e) => e.def.boss)) b.castAwiSpell(i); break;
+        case 'enemy': {
+          const big = [...b.enemies].sort((x, y) => y.hp - x.hp)[0];
+          if (big && big.hp > (s.params.dmg ?? 0) * 0.5) b.castAwiSpell(i, big.x, big.y - (big.def.flying ? 46 : 18));
+          break;
+        }
+        case 'road':
+          if (s.def.id === 'rock') {
+            const lead = ground.sort((x, y) => y.dist - x.dist)[0];
+            if (lead && lead.dist > b.tracks[lead.path].length * 0.5) b.castAwiSpell(i, lead.x + 50 * lead.facing, lead.y);
+          } else if (crowd && crowd.n >= 4) b.castAwiSpell(i, crowd.x, crowd.y);
+          break;
+      }
+    });
     const h = b.hero;
     if (h?.alive && b.heroAbilityReady && b.enemies.filter((e) => !e.def.flying && Math.hypot(e.x - h.x, e.y - h.y) < 90).length >= 3) b.heroAbility();
   }

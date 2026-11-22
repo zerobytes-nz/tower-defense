@@ -8,23 +8,27 @@ const item = (n: number, itemId: string, Rarity: string, extra: Record<string, u
   contract: '0x0000000000000000000000000000000000000000', token_id: n, itemData: { itemId, Rarity, ...extra },
 });
 const crystal = (n: number, itemId: string, Crystal: number) => item(n, itemId, 'Common', { Crystal });
+// Spells carry their rolled numbers by attribute name, as the API sends them (percentages as "35").
+const spell = (n: number, itemId: string, attrs: Record<string, unknown>) => item(n, itemId, 'Common', attrs);
 
 export const DEMO_PROFILES: Record<DemoId, { name: string; blurb: string; sample: ApiItem[] }> = {
   whale: {
-    name: 'Whale', blurb: '12 NFTs: both knights, every tower family, crystals',
+    name: 'Whale', blurb: '15 NFTs: both knights, every tower family, spells, crystals',
     sample: [
       item(1, 'hero_black', 'Legendary'), item(2, 'hero_bronze', 'Rare'),
       item(3, 'tower_mage_storm', 'Epic'), item(4, 'tower_mage_frost', 'Rare'), item(5, 'tower_archer_venom', 'Legendary'),
       item(6, 'tower_archer_ranger', 'Common'), item(7, 'tower_catapult_ember', 'Epic'), item(8, 'tower_catapult_quake', 'Common'),
       item(9, 'tower_barracks_iron', 'Rare'), item(10, 'tower_barracks_iron', 'Rare'),
       crystal(11, 'vqfzxy', 640), crystal(12, 'cfx17w', 420),
+      spell(13, '5f00yg', { Damage: 1600 }), spell(14, 'wqgm6w', { 'Speed Reduction': '60', Damage: '20', Duration: 14 }),
+      spell(15, '05s41q', { 'Damage Buff': '50', 'Attack Speed': '30', Duration: 16 }),
     ],
   },
   collector: {
-    name: 'Collector', blurb: '5 NFTs: a knight, three towers and a crystal',
+    name: 'Collector', blurb: '6 NFTs: a knight, three towers, a spell and a crystal',
     sample: [
       item(21, 'hero_bronze', 'Common'), item(22, 'tower_mage_frost', 'Rare'), item(23, 'tower_barracks_wolf', 'Common'),
-      item(24, 'tower_archer_ranger', 'Epic'), crystal(25, 'c5y0iq', 260),
+      item(24, 'tower_archer_ranger', 'Epic'), crystal(25, 'c5y0iq', 260), spell(26, 'mb2qqv', { Damage: 55, Duration: 6 }),
     ],
   },
   newbie: {

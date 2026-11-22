@@ -11,15 +11,16 @@ import { normalizeCode } from '../theoswap.ts';
 import { save, crystalStars } from '../save.ts';
 import {
   RARITY_COLOR, RARITIES, TOWER_VARIANTS, HERO_ITEMS, CRYSTALS_PER_STAR, LOADOUT_SIZE,
-  awiTitle, cantAdd, perkText, type AWI,
+  SPELL_ITEMS, AWI_SPELLS, awiTitle, awiStat, cantAdd, perkText, type AWI,
 } from '../game/awi.ts';
+import { makeSpellIcons } from '../systems/spellIcons.ts';
 import { HEROES } from '../game/heroes.ts';
 
 type Page = 'connect' | 'reveal' | 'loadout';
 const hex = (n: number) => `#${n.toString(16).padStart(6, '0')}`;
 const CRYSTAL_COLOR: Record<string, number> = { c5y0iq: 0x5ad06a, vqfzxy: 0xe8504a, cfx17w: 0x4a9ae8 };
 
-/** An AWI's picture: its tower (tinted), its knight (tinted), or a crystal. */
+/** An AWI's picture: its tower (tinted), its knight (tinted), its spell icon, or a crystal. */
 export function awiIcon(scene: Phaser.Scene, a: AWI, size: number): Phaser.GameObjects.Container {
   const c = scene.add.container(0, 0);
   if (a.slot === 'tower') {
@@ -32,6 +33,11 @@ export function awiIcon(scene: Phaser.Scene, a: AWI, size: number): Phaser.GameO
     const img = scene.add.sprite(0, size * 0.45, `${h.art}.idle`, 0).setOrigin(0.5, 1);
     img.setScale((size * 0.95) / Math.max(img.width, img.height));
     if (h.tint) img.setTint(h.tint);
+    c.add(img);
+  } else if (a.slot === 'spell') {
+    makeSpellIcons(scene);
+    const img = scene.add.image(0, 0, `ui.awi.${SPELL_ITEMS[a.itemId]}`);
+    img.setScale((size * 0.85) / img.width);
     c.add(img);
   } else {
     const g = scene.add.graphics(), r = size * 0.36, col = CRYSTAL_COLOR[a.itemId] ?? 0xffffff;
@@ -46,7 +52,7 @@ export function awiIcon(scene: Phaser.Scene, a: AWI, size: number): Phaser.GameO
 /** A card: rarity frame, picture, name. */
 function card(scene: Phaser.Scene, a: AWI, w: number, h: number, picked = false): Phaser.GameObjects.Container {
   const c = scene.add.container(0, 0);
-  const col = a.slot === 'crystal' ? CRYSTAL_COLOR[a.itemId] : RARITY_COLOR[a.rarity];
+  const col = a.slot === 'crystal' ? CRYSTAL_COLOR[a.itemId] : a.slot === 'spell' ? AWI_SPELLS[SPELL_ITEMS[a.itemId]].color : RARITY_COLOR[a.rarity];
   const g = scene.add.graphics();
   g.fillStyle(0x1a100a, 1).fillRoundedRect(-w / 2 - 3, -h / 2 - 3, w + 6, h + 6, 14);
   g.fillStyle(picked ? 0x4a6a2a : 0x5a3a22, 1).fillRoundedRect(-w / 2, -h / 2, w, h, 12);
@@ -56,7 +62,7 @@ function card(scene: Phaser.Scene, a: AWI, w: number, h: number, picked = false)
   icon.setY(-h * 0.1);
   c.add(icon);
   c.add(label(scene, 0, h / 2 - 34, a.slot === 'crystal' ? `${a.name}` : a.name, Math.round(h * 0.1), '#ffffff').setWordWrapWidth(w - 12).setAlign('center'));
-  c.add(label(scene, 0, h / 2 - 14, a.slot === 'crystal' ? `×${a.value}` : a.rarity, Math.round(h * 0.085), hex(col)));
+  c.add(label(scene, 0, h / 2 - 14, awiStat(a), Math.round(h * (a.slot === 'spell' ? 0.075 : 0.085)), hex(col)));
   if (a.count > 1) c.add(label(scene, w / 2 - 20, -h / 2 + 18, `×${a.count}`, 20, '#ffdd66'));
   c.setSize(w, h);
   return c;
